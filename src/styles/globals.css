@@ -1,0 +1,109 @@
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Google+Sans+Display:wght@400;500;700&family=Google+Sans+Mono&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply font-body text-slate-900 bg-slate-50 antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    @apply font-display font-medium leading-tight tracking-tight;
+  }
+
+  h1 {
+    @apply text-2xl md:text-3xl font-bold;
+  }
+
+  h2 {
+    @apply text-xl font-medium;
+  }
+
+  h3 {
+    @apply text-lg font-medium;
+  }
+
+  a {
+    @apply no-underline;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply font-body font-normal text-sm text-slate-900 bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 w-full outline-none transition-colors;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    @apply border-brand ring-2 ring-brand/10;
+  }
+
+  label {
+    @apply font-medium text-xs text-slate-700 block mb-1.5;
+  }
+
+  code,
+  pre {
+    @apply font-mono text-xs;
+  }
+}
+
+@layer components {
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-pending {
+    @apply bg-amber-100 text-amber-900;
+  }
+
+  .badge-approved {
+    @apply bg-green-100 text-green-900;
+  }
+
+  .badge-rejected {
+    @apply bg-red-100 text-red-900;
+  }
+
+  .badge-revision {
+    @apply bg-purple-100 text-purple-900;
+  }
+
+  .page-enter {
+    @apply animate-in fade-in duration-300;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
