@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { UserRole, ROLE_PERMISSIONS } from "@/types";
+import type { UserRole } from "@/types";
 
 interface ProtectedRouteProps {
   children: ReactNode;

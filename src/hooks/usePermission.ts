@@ -1,5 +1,4 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { UserRole } from "@/types";
 
 export function usePermission() {
   const { profile, hasPermission, canManageUsers } = useAuth();

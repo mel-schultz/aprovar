@@ -1,19 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Plus,
   Trash2,
   Edit2,
-  Shield,
-  User,
-  Mail,
-  LogIn,
   AlertCircle,
+  Users,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button, Card, Modal, FormField, EmptyState, StatusBadge } from "@/components/ui";
+import { Button, Card, Modal, FormField, EmptyState } from "@/components/ui";
 import { TeamMember, ROLE_LABELS, ROLE_COLORS, UserRole } from "@/types";
 import { AppLayout } from "@/components/layout/AppLayout";
 import toast from "react-hot-toast";
@@ -143,21 +140,21 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState<null | "create" | { edit: TeamMember }>(null);
 
-  useEffect(() => {
-    if (!profile) return;
-    loadUsers();
-  }, [profile]);
-
-  async function loadUsers() {
+  const loadUsers = useCallback(async () => {
+    if (!profile?.id) return;
     const { data, error } = await supabase
       .from("team_members")
       .select("*")
-      .eq("profile_id", profile?.id || "")
+      .eq("profile_id", profile.id)
       .order("created_at", { ascending: false });
 
     if (!error) setUsers(data || []);
     setLoading(false);
-  }
+  }, [profile?.id]);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   async function handleSave(form: any) {
     try {
@@ -373,19 +370,19 @@ export default function UsersPage() {
           <UserForm onSave={handleSave} onCancel={() => setModal(null)} />
         </Modal>
 
-        <Modal
-          open={!!modal && "edit" in modal}
-          onClose={() => setModal(null)}
-          title="Editar usuário"
-        >
-          {modal && "edit" in modal && (
+        {modal && typeof modal === "object" && "edit" in modal && (
+          <Modal
+            open={true}
+            onClose={() => setModal(null)}
+            title="Editar usuário"
+          >
             <UserForm
               initial={modal.edit}
               onSave={handleSave}
               onCancel={() => setModal(null)}
             />
-          )}
-        </Modal>
+          </Modal>
+        )}
       </div>
     </AppLayout>
   );
