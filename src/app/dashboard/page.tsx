@@ -70,26 +70,26 @@ export default function DashboardPage() {
         supabase
           .from("clients")
           .select("*", { count: "exact", head: true })
-          .eq("profile_id", user.id),
+          .eq("profile_id", user?.id || ""),
         supabase
           .from("deliverables")
           .select("*", { count: "exact", head: true })
-          .eq("profile_id", user.id)
+          .eq("profile_id", user?.id || "")
           .eq("status", "pending"),
         supabase
           .from("deliverables")
           .select("*", { count: "exact", head: true })
-          .eq("profile_id", user.id)
+          .eq("profile_id", user?.id || "")
           .eq("status", "approved"),
         supabase
           .from("deliverables")
           .select("*", { count: "exact", head: true })
-          .eq("profile_id", user.id)
+          .eq("profile_id", user?.id || "")
           .not("scheduled_at", "is", null),
         supabase
           .from("deliverables")
           .select("id,title,status,created_at,clients(name)")
-          .eq("profile_id", user.id)
+          .eq("profile_id", user?.id || "")
           .order("created_at", { ascending: false })
           .limit(6),
       ]);
