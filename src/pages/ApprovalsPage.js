@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { Plus, Send, Eye, Link as LinkIcon, CheckSquare, Filter } from 'lucide-react'
+import { Plus, Send, Eye, Link as LinkIcon, CheckSquare } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { Button, Card, Modal, FormField, EmptyState, StatusBadge } from '../components/ui'

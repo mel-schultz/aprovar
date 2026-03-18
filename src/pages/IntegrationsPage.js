@@ -62,7 +62,7 @@ const integrations = [
 ]
 
 function IntegrationCard({ integration }) {
-  const { name, description, color, connected, webhook, configRequired, authUrl, docsUrl } = integration
+  const { name, description, color, connected, configRequired, authUrl, docsUrl } = integration
 
   return (
     <Card style={{ padding: 22 }}>

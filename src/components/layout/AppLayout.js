@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Users, CheckSquare, Calendar,
   Settings, Bell, LogOut, ChevronLeft, ChevronRight,
-  Puzzle, CreditCard, Menu, X
+  Puzzle, CreditCard, Menu
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import toast from 'react-hot-toast'

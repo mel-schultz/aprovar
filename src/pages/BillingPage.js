@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Check, X, Zap } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
-import { Button, Card } from '../components/ui'
+import { Button } from '../components/ui'
 import toast from 'react-hot-toast'
 
 const PLANS = [
