@@ -1,31 +1,29 @@
 {
-  "name": "aprovaai",
+  "name": "aprovar",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@supabase/supabase-js": "^2.39.0",
-    "@supabase/auth-ui-react": "^0.4.7",
-    "@supabase/auth-ui-shared": "^0.1.8",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.0",
-    "react-scripts": "5.0.1",
-    "react-hot-toast": "^2.4.1",
-    "date-fns": "^3.2.0",
-    "lucide-react": "^0.309.0",
-    "clsx": "^2.1.0"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "eslintConfig": {
-    "extends": ["react-app"]
+  "dependencies": {
+    "next": "14.2.3",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "@supabase/ssr": "^0.3.0",
+    "date-fns": "^3.6.0",
+    "lucide-react": "^0.378.0",
+    "react-hot-toast": "^2.4.1",
+    "clsx": "^2.1.1"
   },
-  "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
-    "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3"
   }
 }
