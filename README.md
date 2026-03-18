@@ -1,4 +1,4 @@
-# Aprovar — Clone React + Supabase + Vercel
+# AprovaAí — Clone React + Supabase + Vercel
 
 Plataforma de aprovações e agendamento de postagens para agências e profissionais de marketing.
 

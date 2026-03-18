@@ -142,7 +142,7 @@ export default function BillingPage() {
               <p style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 20 }}>{plan.description}</p>
 
               <div style={{ marginBottom: 24 }}>
-                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 38 }}>
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 38 }}>
                   R$ {price.toFixed(2).replace('.', ',')}
                 </span>
                 <span style={{ fontSize: 13, color: 'var(--text-2)' }}>/mês</span>

@@ -92,7 +92,7 @@ export default function ApprovalPublicPage() {
             <CheckCircle size={20} color="#fff" />
           </div>
           <div>
-            <p style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: 'var(--brand)' }}>AprovaAí</p>
+            <p style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, color: 'var(--brand)' }}>AprovaAí</p>
             <p style={{ fontSize: 12, color: 'var(--text-3)' }}>Aprovação de conteúdo</p>
           </div>
         </div>

@@ -93,11 +93,11 @@ export default function SettingsPage() {
         <div style={{ background: 'var(--surface-3)', borderRadius: 10, padding: 16, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12 }}>
           {form.logo_url
             ? <img src={form.logo_url} alt="logo" style={{ width: 40, height: 40, borderRadius: 10, objectFit: 'contain' }} />
-            : <div style={{ width: 40, height: 40, borderRadius: 10, background: form.brand_color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18 }}>
+            : <div style={{ width: 40, height: 40, borderRadius: 10, background: form.brand_color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18 }}>
                 {(form.company || 'A').charAt(0)}
               </div>
           }
-          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: form.brand_color }}>
+          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, color: form.brand_color }}>
             {form.company || 'Sua Agência'}
           </span>
           <span style={{ fontSize: 12, color: 'var(--text-3)', marginLeft: 'auto' }}>Pré-visualização</span>

@@ -51,7 +51,7 @@ export default function LoginPage() {
             <div style={{ width: 42, height: 42, background: 'var(--brand)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CheckSquare size={22} color="#fff" />
             </div>
-            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 28, color: 'var(--brand)' }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 28, color: 'var(--brand)' }}>
               Aprova<span style={{ color: 'var(--text)' }}>Aí</span>
             </span>
           </div>

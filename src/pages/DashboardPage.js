@@ -13,7 +13,7 @@ function StatCard({ icon: Icon, label, value, color = 'var(--brand)', sub }) {
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div>
           <p style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 8 }}>{label}</p>
-          <p style={{ fontSize: 32, fontFamily: 'var(--font-display)', fontWeight: 800, color }}>{value}</p>
+          <p style={{ fontSize: 32, fontFamily: 'var(--font-display)', fontWeight: 700, color }}>{value}</p>
           {sub && <p style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 4 }}>{sub}</p>}
         </div>
         <div style={{ width: 44, height: 44, borderRadius: 12, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

@@ -4,7 +4,7 @@ import { X } from 'lucide-react'
 export function Button({ children, variant = 'primary', size = 'md', loading, className = '', ...props }) {
   const base = {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-    gap: 6, fontFamily: 'var(--font-body)', fontWeight: 500, cursor: 'pointer',
+    gap: 6, fontFamily: 'var(--font-body)', fontVariationSettings: "'wght' 500", fontWeight: 500, cursor: 'pointer',
     border: 'none', borderRadius: 'var(--radius-sm)', transition: 'all .15s',
     whiteSpace: 'nowrap',
   }

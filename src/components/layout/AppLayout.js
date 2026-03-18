@@ -58,7 +58,7 @@ export default function AppLayout({ children }) {
               <div style={{ width: 30, height: 30, background: 'var(--brand)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <CheckSquare size={16} color="#fff" />
               </div>
-              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 17, color: 'var(--brand)' }}>
+              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17, color: 'var(--brand)' }}>
                 Aprova<span style={{ color: 'var(--text)' }}>Aí</span>
               </span>
             </div>
