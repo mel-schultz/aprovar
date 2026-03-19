@@ -12,12 +12,11 @@ export default async function PortalPage() {
 
   const profile = await getOrCreateProfile(supabase, session.user)
 
-  // Admins não acessam o portal — vão para o dashboard
+  // Admin vai para o dashboard
   if (profile?.role === 'admin') redirect('/dashboard')
 
-  // Busca os entregáveis do cliente vinculado
   let deliverables = []
-  let clientName = null
+  let clientName   = null
 
   if (profile?.linked_client_id) {
     const [{ data: dels }, { data: client }] = await Promise.all([
@@ -33,7 +32,7 @@ export default async function PortalPage() {
         .single(),
     ])
     deliverables = dels || []
-    clientName = client?.name || null
+    clientName   = client?.name || null
   }
 
   return (

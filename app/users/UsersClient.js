@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react'
 import {
   Plus, Users, Trash2, Edit2, Shield, User,
   Eye, EyeOff, Search, ToggleLeft, ToggleRight,
-  Building2, UserCheck, ChevronRight, X,
+  Building2, UserCheck, ChevronRight,
 } from 'lucide-react'
 import { createClient } from '../../lib/supabase/client'
-import { Button, Card, Modal, FormField, EmptyState } from '../../components/ui'
+import { Button, Modal, FormField, EmptyState } from '../../components/ui'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import toast from 'react-hot-toast'

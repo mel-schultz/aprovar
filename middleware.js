@@ -1,9 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 
-const ADMIN_ONLY_PATHS = ['/users']
-const CLIENT_BLOCKED   = ['/dashboard', '/clients', '/approvals', '/schedule', '/team', '/integrations', '/settings', '/users']
-
 export async function middleware(request) {
   let response = NextResponse.next({ request: { headers: request.headers } })
 
@@ -12,7 +9,7 @@ export async function middleware(request) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
-        get(name)          { return request.cookies.get(name)?.value },
+        get(name)                { return request.cookies.get(name)?.value },
         set(name, value, options) {
           request.cookies.set({ name, value, ...options })
           response = NextResponse.next({ request: { headers: request.headers } })
@@ -27,52 +24,23 @@ export async function middleware(request) {
     }
   )
 
+  // Lê a sessão dos cookies — não faz chamada de rede
   const { data: { session } } = await supabase.auth.getSession()
 
   const { pathname } = request.nextUrl
-  const publicPaths  = ['/login', '/approve', '/api']
-  const isPublic     = publicPaths.some(p => pathname.startsWith(p))
 
-  // ── Sem sessão em rota protegida → login ───────────────────
+  // Rotas públicas: login, aprovação pública, API
+  const publicPaths = ['/login', '/approve', '/api']
+  const isPublic = publicPaths.some(p => pathname.startsWith(p))
+
+  // Sem sessão → login
   if (!session && !isPublic) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  if (session) {
-    // ── Busca o role do perfil ───────────────────────────────
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role, is_active')
-      .eq('id', session.user.id)
-      .single()
-
-    const role     = profile?.role      ?? 'admin'
-    const isActive = profile?.is_active ?? true
-
-    // ── Conta inativa → logout ───────────────────────────────
-    if (!isActive && !isPublic) {
-      await supabase.auth.signOut()
-      return NextResponse.redirect(new URL('/login?reason=inactive', request.url))
-    }
-
-    // ── Raiz e /login → destino correto por role ─────────────
-    if (pathname === '/' || pathname === '/login') {
-      const dest = role === 'client' ? '/portal' : '/dashboard'
-      return NextResponse.redirect(new URL(dest, request.url))
-    }
-
-    // ── Cliente tenta acessar área de admin ──────────────────
-    if (role === 'client') {
-      const isBlocked = CLIENT_BLOCKED.some(p => pathname === p || pathname.startsWith(p + '/'))
-      if (isBlocked) {
-        return NextResponse.redirect(new URL('/portal', request.url))
-      }
-    }
-
-    // ── Não-admin tenta acessar /users ────────────────────────
-    if (role !== 'admin' && ADMIN_ONLY_PATHS.some(p => pathname.startsWith(p))) {
-      return NextResponse.redirect(new URL('/portal', request.url))
-    }
+  // Com sessão → não pode ficar em /login ou /
+  if (session && (pathname === '/login' || pathname === '/')) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   return response
