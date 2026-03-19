@@ -43,7 +43,13 @@ function ApproverForm({ clientId, onClose }) {
 
   async function add(e) {
     e.preventDefault(); if (!form.name) return; setLoading(true)
-    const { data, error } = await supabase.from('approvers').insert({ ...form, client_id: clientId }).select().single()
+    // Tenta com whatsapp; se a coluna não existir, retenta sem ela
+    let approverPayload = { ...form, client_id: clientId }
+    let { data, error } = await supabase.from('approvers').insert(approverPayload).select().single()
+    if (error && error.message && error.message.includes('whatsapp')) {
+      const { whatsapp: _w, ...payloadSemWhatsapp } = approverPayload
+      ;({ data, error } = await supabase.from('approvers').insert(payloadSemWhatsapp).select().single())
+    }
     if (error) { toast.error(error.message); setLoading(false); return }
     setList(l => [...l, data]); setForm({ name: '', email: '', whatsapp: '' })
     toast.success('Aprovador adicionado!'); setLoading(false)
