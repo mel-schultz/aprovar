@@ -1,0 +1,11 @@
+--- a/app/approvals/ApprovalsClient.js
++++ b/app/approvals/ApprovalsClient.js
+@@ -2,8 +2,6 @@
+ 
+ import { getDeliverablesWithClientName } from "../../lib/supabase/queries";
+ 
+-import Modal from "@/components/Modal";
+-
+ import { useState } from "react";
+ import {
+   Plus,
