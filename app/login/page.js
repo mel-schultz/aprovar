@@ -31,9 +31,14 @@ export default function LoginPage() {
         // Verificar role para redirecionar para o destino correto
         const { data: profile } = await supabase
           .from('profiles')
-          .select('role')
+          .select('role, is_active')
           .eq('id', data.session.user.id)
           .single()
+
+        if (profile?.is_active === false) {
+          await supabase.auth.signOut()
+          throw new Error('Sua conta está inativa. Entre em contato com o administrador.')
+        }
 
         const dest = profile?.role === 'client' ? '/portal' : '/dashboard'
         window.location.replace(dest)

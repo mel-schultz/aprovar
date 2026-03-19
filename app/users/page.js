@@ -13,19 +13,32 @@ export default async function UsersPage() {
 
   const profile = await getOrCreateProfile(supabase, session.user)
 
-  // Apenas admins acessam esta página
+  // Guard duplo: middleware + server component
   if (profile?.role !== 'admin') redirect('/portal')
 
-  const [{ data: users }, { data: clients }] = await Promise.all([
-    supabase.from('users_with_clients').select('*').order('created_at', { ascending: false }),
-    supabase.from('clients').select('id,name').eq('profile_id', session.user.id).order('name'),
+  // Busca todos os usuários (a view já une com client_name)
+  const [
+    { data: users,   error: usersErr },
+    { data: clients, error: clientsErr },
+  ] = await Promise.all([
+    supabase
+      .from('users_with_clients')
+      .select('*')
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('clients')
+      .select('id, name')
+      .order('name'),
   ])
+
+  if (usersErr)   console.error('users error:', usersErr.message)
+  if (clientsErr) console.error('clients error:', clientsErr.message)
 
   return (
     <AppLayout profile={profile}>
       <UsersClient
-        initialUsers={users || []}
-        clients={clients || []}
+        initialUsers={users   || []}
+        clients={clients      || []}
         currentUserId={session.user.id}
       />
     </AppLayout>
