@@ -1,5 +1,7 @@
 'use client'
 
+import { getDeliverablesWithClientName } from '../../lib/supabase/queries'
+
 import { useState, useEffect, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, startOfWeek, endOfWeek, addMonths, subMonths } from 'date-fns'
@@ -19,7 +21,12 @@ export default function ScheduleClient({ initialScheduled, userId }) {
   const loadMonth = useCallback(async (date) => {
     const from = startOfMonth(date).toISOString()
     const to   = endOfMonth(date).toISOString()
-    const { data } = await supabase.from('deliverables').select('id,title,status,scheduled_at,network,clients(name)').eq('profile_id', userId).gte('scheduled_at', from).lte('scheduled_at', to)
+    const { data } = await getDeliverablesWithClientName(supabase, {
+      profileId: userId,
+      fields: 'id,title,status,scheduled_at,network,client_id',
+      filters: [['scheduled_at', 'gte', from], ['scheduled_at', 'lte', to]],
+      orderBy: { column: 'scheduled_at', ascending: true },
+    }).then(r => r)
     setScheduled(data || [])
   }, [supabase, userId])
 

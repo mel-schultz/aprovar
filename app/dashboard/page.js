@@ -1,3 +1,4 @@
+import { getDeliverablesWithClientName } from '../../lib/supabase/queries'
 import { createClient } from '../../lib/supabase/server'
 import { redirect } from 'next/navigation'
 import AppLayout from '../../components/layout/AppLayout'
@@ -27,7 +28,7 @@ export default async function DashboardPage() {
     supabase.from('deliverables').select('*', { count: 'exact', head: true }).eq('profile_id', session.user.id).eq('status', 'pending'),
     supabase.from('deliverables').select('*', { count: 'exact', head: true }).eq('profile_id', session.user.id).eq('status', 'approved'),
     supabase.from('deliverables').select('*', { count: 'exact', head: true }).eq('profile_id', session.user.id).not('scheduled_at', 'is', null),
-    supabase.from('deliverables').select('id,title,status,created_at,clients(name)').eq('profile_id', session.user.id).order('created_at', { ascending: false }).limit(6),
+    getDeliverablesWithClientName(supabase, { profileId: session.user.id, fields: 'id,title,status,created_at,client_id', orderBy: { column: 'created_at', ascending: false }, limit: 6 }),
   ])
 
   return (

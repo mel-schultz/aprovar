@@ -1,5 +1,7 @@
 'use client'
 
+import { getDeliverablesWithClientName } from '../../lib/supabase/queries'
+
 import { useState } from 'react'
 import { Plus, Send, Eye, Link as LinkIcon, CheckSquare } from 'lucide-react'
 import { createClient } from '../../lib/supabase/client'
@@ -95,11 +97,12 @@ export default function ApprovalsClient({ initialDeliverables, clients, userId }
   const [selected, setSelected] = useState(null)
 
   async function handleSave(form) {
-    const { data, error } = await supabase
+    const { data: inserted, error } = await supabase
       .from('deliverables')
       .insert({ ...form, profile_id: userId, status: 'pending' })
-      .select('*, clients(name)')
+      .select('*')
       .single()
+    const data = inserted ? { ...inserted, clients: null } : null
     if (error) { toast.error(error.message); return }
     setDeliverables(d => [data, ...d])
     setModal(false)

@@ -1,5 +1,7 @@
 'use client'
 
+import { insertClientWithApproverCount, updateClientWithApproverCount } from '../../lib/supabase/queries'
+
 import { useState, useEffect } from 'react'
 import {
   Plus, Users, Trash2, Edit2, Shield, User,
@@ -348,11 +350,11 @@ function ClientsTab({ clients, setClients }) {
   async function handleSave(form) {
     if (modal === 'create') {
       const { data: { session } } = await supabase.auth.getSession()
-      const { data, error } = await supabase.from('clients').insert({ ...form, profile_id: session.user.id }).select('*, approvers(count)').single()
+      const { data, error } = await insertClientWithApproverCount(supabase, { ...form, profile_id: session.user.id })
       if (error) { toast.error(error.message); return }
       setClients(c => [data, ...c]); toast.success('Cliente criado!')
     } else if (modal?.edit) {
-      const { data, error } = await supabase.from('clients').update(form).eq('id', modal.edit.id).select('*, approvers(count)').single()
+      const { data, error } = await updateClientWithApproverCount(supabase, form, modal.edit.id)
       if (error) { toast.error(error.message); return }
       setClients(c => c.map(cl => cl.id === data.id ? data : cl)); toast.success('Cliente atualizado!')
     }

@@ -1,5 +1,6 @@
 import { createClient } from '../../lib/supabase/server'
 import { getOrCreateProfile } from '../../lib/supabase/getOrCreateProfile'
+import { getDeliverablesWithClientName } from '../../lib/supabase/queries'
 import { redirect } from 'next/navigation'
 import AppLayout from '../../components/layout/AppLayout'
 import ScheduleClient from './ScheduleClient'
@@ -16,14 +17,22 @@ export default async function SchedulePage() {
   const from = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
   const to   = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString()
 
-  const [profile, { data: scheduled }] = await Promise.all([
+  const [profile, { data: deliverables }] = await Promise.all([
     getOrCreateProfile(supabase, user),
-    supabase.from('deliverables').select('id,title,status,scheduled_at,network,clients(name)').eq('profile_id', user.id).gte('scheduled_at', from).lte('scheduled_at', to),
+    getDeliverablesWithClientName(supabase, {
+      profileId: user.id,
+      fields: 'id,title,status,scheduled_at,network,client_id',
+      filters: [
+        ['scheduled_at', 'gte', from],
+        ['scheduled_at', 'lte', to],
+      ],
+      orderBy: { column: 'scheduled_at', ascending: true },
+    }),
   ])
 
   return (
     <AppLayout profile={profile}>
-      <ScheduleClient initialScheduled={scheduled || []} userId={user.id} />
+      <ScheduleClient initialDeliverables={deliverables || []} userId={user.id} />
     </AppLayout>
   )
 }

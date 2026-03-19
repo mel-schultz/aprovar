@@ -221,3 +221,35 @@ set
   full_name = coalesce(p.full_name, split_part(u.email,'@',1))
 from auth.users u
 where p.id = u.id and (p.email is null or p.full_name is null);
+
+
+-- ============================================================
+-- CORREÇÃO v2.1 — Reforço de FKs para o schema cache do PostgREST
+-- Execute este bloco se aparecer o erro:
+-- "Could not find a relationship between 'X' and 'Y' in the schema cache"
+-- ============================================================
+
+-- Recriar FK approvers → clients (garante que o PostgREST a reconheça)
+ALTER TABLE public.approvers
+  DROP CONSTRAINT IF EXISTS approvers_client_id_fkey;
+ALTER TABLE public.approvers
+  ADD CONSTRAINT approvers_client_id_fkey
+    FOREIGN KEY (client_id) REFERENCES public.clients(id) ON DELETE CASCADE;
+
+-- Recriar FK deliverables → clients
+ALTER TABLE public.deliverables
+  DROP CONSTRAINT IF EXISTS deliverables_client_id_fkey;
+ALTER TABLE public.deliverables
+  ADD CONSTRAINT deliverables_client_id_fkey
+    FOREIGN KEY (client_id) REFERENCES public.clients(id) ON DELETE CASCADE;
+
+-- Recriar FK deliverables → profiles
+ALTER TABLE public.deliverables
+  DROP CONSTRAINT IF EXISTS deliverables_profile_id_fkey;
+ALTER TABLE public.deliverables
+  ADD CONSTRAINT deliverables_profile_id_fkey
+    FOREIGN KEY (profile_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
+
+-- Forçar reload do schema cache do PostgREST
+-- (equivalente a clicar em "Reload Schema" no Dashboard → Settings → API)
+NOTIFY pgrst, 'reload schema';

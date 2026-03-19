@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { insertClientWithApproverCount, updateClientWithApproverCount } from '../../lib/supabase/queries'
 import { Plus, Users, Trash2, Edit2, ChevronRight } from 'lucide-react'
 import { createClient } from '../../lib/supabase/client'
 import { Button, Card, Modal, FormField, EmptyState } from '../../components/ui'
@@ -86,11 +87,11 @@ export default function ClientsClient({ initialClients, userId }) {
 
   async function handleSave(form) {
     if (modal === 'create') {
-      const { data, error } = await supabase.from('clients').insert({ ...form, profile_id: userId }).select('*, approvers(count)').single()
+      const { data, error } = await insertClientWithApproverCount(supabase, { ...form, profile_id: userId })
       if (error) { toast.error(error.message); return }
       setClients(c => [data, ...c]); toast.success('Cliente criado!')
     } else if (modal?.edit) {
-      const { data, error } = await supabase.from('clients').update(form).eq('id', modal.edit.id).select('*, approvers(count)').single()
+      const { data, error } = await updateClientWithApproverCount(supabase, form, modal.edit.id)
       if (error) { toast.error(error.message); return }
       setClients(c => c.map(cl => cl.id === data.id ? data : cl)); toast.success('Atualizado!')
     }

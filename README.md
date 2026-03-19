@@ -81,3 +81,39 @@ lib/supabase/
 ├── admin.js        Admin client (service_role — só em API Routes)
 └── getOrCreateProfile.js  Busca/cria perfil no primeiro acesso
 ```
+
+---
+
+## 🔧 Correção: "Could not find a relationship in the schema cache"
+
+Se aparecer o erro `Could not find a relationship between 'clients' and 'approvers' in the schema cache`, siga estes passos:
+
+### Passo 1 — Execute o SQL de correção no Supabase
+
+No **SQL Editor** do Supabase Dashboard, execute o bloco de correção que está no final do arquivo `supabase_schema.sql`:
+
+```sql
+-- Recriar FKs para o PostgREST reconhecer os relacionamentos
+ALTER TABLE public.approvers
+  DROP CONSTRAINT IF EXISTS approvers_client_id_fkey;
+ALTER TABLE public.approvers
+  ADD CONSTRAINT approvers_client_id_fkey
+    FOREIGN KEY (client_id) REFERENCES public.clients(id) ON DELETE CASCADE;
+
+ALTER TABLE public.deliverables
+  DROP CONSTRAINT IF EXISTS deliverables_client_id_fkey;
+ALTER TABLE public.deliverables
+  ADD CONSTRAINT deliverables_client_id_fkey
+    FOREIGN KEY (client_id) REFERENCES public.clients(id) ON DELETE CASCADE;
+
+-- Forçar reload do schema cache
+NOTIFY pgrst, 'reload schema';
+```
+
+### Passo 2 — Se o erro persistir
+
+O código já inclui **fallback automático**: todas as queries que usam a sintaxe embedded `tabela(campo)` tentam primeiro via PostgREST e, se falharem, fazem queries separadas e montam o mesmo resultado. Isso está centralizado em `lib/supabase/queries.js`.
+
+### Causa raiz
+
+O PostgREST (camada de API do Supabase) constrói um **schema cache** com base nas foreign keys do banco. Se o schema SQL foi executado em partes ou com erros silenciosos, algumas FKs podem não ter sido criadas, fazendo com que o PostgREST não consiga resolver os relacionamentos embedded.

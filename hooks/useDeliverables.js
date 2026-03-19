@@ -3,6 +3,75 @@
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '../lib/supabase/client'
 
+// Helper local: busca deliverables com clients(name), com fallback manual
+async function fetchDeliverablesWithClient(supabase, userId, filters = {}) {
+  let query = supabase
+    .from('deliverables')
+    .select('*, clients(name)')
+    .eq('profile_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (filters.status)   query = query.eq('status', filters.status)
+  if (filters.clientId) query = query.eq('client_id', filters.clientId)
+
+  const { data, error } = await query
+  if (!error) return data || []
+
+  // Fallback: query sem embedded relation
+  let q2 = supabase
+    .from('deliverables')
+    .select('*')
+    .eq('profile_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (filters.status)   q2 = q2.eq('status', filters.status)
+  if (filters.clientId) q2 = q2.eq('client_id', filters.clientId)
+
+  const { data: rows } = await q2
+  if (!rows) return []
+
+  const clientIds = [...new Set(rows.map(d => d.client_id).filter(Boolean))]
+  let clientMap = {}
+  if (clientIds.length > 0) {
+    const { data: clients } = await supabase
+      .from('clients')
+      .select('id, name')
+      .in('id', clientIds)
+    ;(clients || []).forEach(c => { clientMap[c.id] = c })
+  }
+
+  return rows.map(d => ({
+    ...d,
+    clients: clientMap[d.client_id] ? { name: clientMap[d.client_id].name } : null,
+  }))
+}
+
+// Helper: insert/update com clients(name), com fallback manual
+async function upsertDeliverable(supabase, method, payload, id = null) {
+  let q = method === 'insert'
+    ? supabase.from('deliverables').insert(payload)
+    : supabase.from('deliverables').update(payload).eq('id', id)
+
+  const { data, error } = await q.select('*, clients(name)').single()
+  if (!error) return { data, error: null }
+
+  // Fallback
+  let q2 = method === 'insert'
+    ? supabase.from('deliverables').insert(payload)
+    : supabase.from('deliverables').update(payload).eq('id', id)
+
+  const { data: row, error: err2 } = await q2.select('*').single()
+  if (err2) return { data: null, error: err2 }
+
+  let clientData = null
+  if (row?.client_id) {
+    const { data: c } = await supabase
+      .from('clients').select('id, name').eq('id', row.client_id).single()
+    clientData = c
+  }
+  return { data: { ...row, clients: clientData }, error: null }
+}
+
 export function useDeliverables(userId, filters = {}) {
   const supabase = createClient()
   const [deliverables, setDeliverables] = useState([])
@@ -10,17 +79,8 @@ export function useDeliverables(userId, filters = {}) {
 
   const fetch = useCallback(async () => {
     if (!userId) return
-    let query = supabase
-      .from('deliverables')
-      .select('*, clients(name)')
-      .eq('profile_id', userId)
-      .order('created_at', { ascending: false })
-
-    if (filters.status) query = query.eq('status', filters.status)
-    if (filters.clientId) query = query.eq('client_id', filters.clientId)
-
-    const { data } = await query
-    setDeliverables(data || [])
+    const data = await fetchDeliverablesWithClient(supabase, userId, filters)
+    setDeliverables(data)
     setLoading(false)
   }, [userId, filters.status, filters.clientId])
 
@@ -47,19 +107,15 @@ export function useDeliverables(userId, filters = {}) {
   }, [userId])
 
   async function create(data) {
-    const { data: created, error } = await supabase
-      .from('deliverables')
-      .insert({ ...data, profile_id: userId, status: 'pending' })
-      .select('*, clients(name)')
-      .single()
+    const { data: created, error } = await upsertDeliverable(
+      supabase, 'insert', { ...data, profile_id: userId, status: 'pending' }
+    )
     if (!error) setDeliverables(prev => [created, ...prev])
     return { data: created, error }
   }
 
   async function update(id, updates) {
-    const { data: updated, error } = await supabase
-      .from('deliverables').update(updates).eq('id', id)
-      .select('*, clients(name)').single()
+    const { data: updated, error } = await upsertDeliverable(supabase, 'update', updates, id)
     if (!error) setDeliverables(prev => prev.map(d => d.id === id ? updated : d))
     return { data: updated, error }
   }
