@@ -26,20 +26,23 @@ export default function LoginPage() {
           password: form.password,
         })
         if (error) throw error
+        if (!data.session) throw new Error('Sessão não iniciada. Tente novamente.')
 
-        // Aguarda a sessão ser confirmada antes de redirecionar
-        if (data.session) {
-          window.location.replace('/dashboard')
-        } else {
-          throw new Error('Sessão não iniciada. Tente novamente.')
-        }
+        // Verificar role para redirecionar para o destino correto
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', data.session.user.id)
+          .single()
+
+        const dest = profile?.role === 'client' ? '/portal' : '/dashboard'
+        window.location.replace(dest)
+
       } else {
         const { error } = await supabase.auth.signUp({
           email: form.email,
           password: form.password,
-          options: {
-            data: { full_name: form.name, company: form.company },
-          },
+          options: { data: { full_name: form.name, company: form.company } },
         })
         if (error) throw error
         toast.success('Conta criada! Verifique seu e-mail para confirmar o cadastro.')
@@ -54,21 +57,15 @@ export default function LoginPage() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--surface-2)' }}>
-
-      {/* Formulário */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 32px' }}>
         <div style={{ marginBottom: 40, textAlign: 'center' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
             <div style={{ width: 42, height: 42, background: 'var(--brand)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CheckSquare size={22} color="#fff" />
             </div>
-            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 28, color: 'var(--brand)' }}>
-              Aprovar
-            </span>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 28, color: 'var(--brand)' }}>Aprovar</span>
           </div>
-          <p style={{ color: 'var(--text-2)', fontSize: 14 }}>
-            Plataforma de aprovações e agendamento de conteúdo
-          </p>
+          <p style={{ color: 'var(--text-2)', fontSize: 14 }}>Plataforma de aprovações e agendamento de conteúdo</p>
         </div>
 
         <div style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', boxShadow: 'var(--shadow)', padding: 36, width: '100%', maxWidth: 420 }}>
@@ -103,24 +100,20 @@ export default function LoginPage() {
 
           <p style={{ textAlign: 'center', marginTop: 20, fontSize: 14, color: 'var(--text-2)' }}>
             {mode === 'login' ? 'Não tem conta? ' : 'Já tem conta? '}
-            <button
-              onClick={() => setMode(m => m === 'login' ? 'signup' : 'login')}
-              style={{ color: 'var(--brand)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}
-            >
+            <button onClick={() => setMode(m => m === 'login' ? 'signup' : 'login')} style={{ color: 'var(--brand)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>
               {mode === 'login' ? 'Criar agora' : 'Entrar'}
             </button>
           </p>
         </div>
       </div>
 
-      {/* Hero */}
       <div style={{ flex: 1, background: 'var(--brand)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 60 }}>
         <div style={{ maxWidth: 420, color: '#fff' }}>
           <h1 style={{ fontSize: 36, lineHeight: 1.15, marginBottom: 20, color: '#fff' }}>
             Chega de caos nas aprovações de conteúdo
           </h1>
           <p style={{ fontSize: 16, opacity: .85, lineHeight: 1.7, marginBottom: 36 }}>
-            Envie, aprove e agende posts em um só lugar. Seus clientes aprovam com um clique — você publica no piloto automático.
+            Envie, aprove e agende posts em um só lugar. Seus clientes aprovam com um clique.
           </p>
           {['67% menos pedidos de refação', '75% menos reuniões de aprovação', '29% menos contratos perdidos'].map(stat => (
             <div key={stat} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
@@ -132,7 +125,6 @@ export default function LoginPage() {
           ))}
         </div>
       </div>
-
     </div>
   )
 }

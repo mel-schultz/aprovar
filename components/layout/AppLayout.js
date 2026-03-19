@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Users, CheckSquare, Calendar,
   Settings, Bell, LogOut, ChevronLeft, ChevronRight,
-  Puzzle,
+  Puzzle, UserCog,
 } from 'lucide-react'
 import { createClient } from '../../lib/supabase/client'
 import AuthListener from './AuthListener'
@@ -14,6 +14,7 @@ import toast from 'react-hot-toast'
 
 const navItems = [
   { href: '/dashboard',    label: 'Início',        icon: LayoutDashboard },
+  { href: '/users',        label: 'Usuários',       icon: UserCog },
   { href: '/clients',      label: 'Clientes',       icon: Users },
   { href: '/approvals',    label: 'Aprovações',     icon: CheckSquare },
   { href: '/schedule',     label: 'Calendário',     icon: Calendar },
