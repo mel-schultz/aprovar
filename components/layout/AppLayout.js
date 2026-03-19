@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Users, CheckSquare, Calendar,
   Settings, Bell, LogOut, ChevronLeft, ChevronRight,
@@ -24,15 +24,13 @@ const navItems = [
 
 export default function AppLayout({ children, profile }) {
   const pathname = usePathname()
-  const router = useRouter()
   const [collapsed, setCollapsed] = useState(false)
   const supabase = createClient()
 
   async function handleSignOut() {
     await supabase.auth.signOut()
     toast.success('Até logo!')
-    router.push('/login')
-    router.refresh()
+    window.location.replace('/login')
   }
 
   const sidebarW = collapsed ? 64 : 240

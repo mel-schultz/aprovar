@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
-import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
 
 export async function GET(request) {
   const { searchParams, origin } = new URL(request.url)
@@ -14,28 +14,24 @@ export async function GET(request) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       {
         cookies: {
-          getAll() {
-            return cookieStore.getAll()
+          get(name) {
+            return cookieStore.get(name)?.value
           },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
+          set(name, value, options) {
+            cookieStore.set({ name, value, ...options })
+          },
+          remove(name, options) {
+            cookieStore.set({ name, value: '', ...options })
           },
         },
       }
     )
 
     const { error } = await supabase.auth.exchangeCodeForSession(code)
-
     if (!error) {
-      // Força o browser a revalidar o layout (garante que os cookies
-      // do novo token sejam lidos pelo Server Component raiz)
-      const redirectUrl = new URL(next, origin)
-      return NextResponse.redirect(redirectUrl)
+      return NextResponse.redirect(`${origin}${next}`)
     }
   }
 
-  // Qualquer falha no fluxo OAuth redireciona para login com mensagem
-  return NextResponse.redirect(new URL('/login?error=auth_callback_failed', origin))
+  return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`)
 }

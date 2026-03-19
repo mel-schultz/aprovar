@@ -7,7 +7,6 @@ import { Button, FormField } from '../../components/ui'
 import toast from 'react-hot-toast'
 
 export default function LoginPage() {
-  const supabase = createClient()
   const [mode, setMode] = useState('login')
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({ email: '', password: '', name: '', company: '' })
@@ -17,21 +16,30 @@ export default function LoginPage() {
   async function handleSubmit(e) {
     e.preventDefault()
     setLoading(true)
+
+    const supabase = createClient()
+
     try {
       if (mode === 'login') {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email: form.email,
           password: form.password,
         })
         if (error) throw error
-        // Full page reload para garantir que os cookies de sessão
-        // estejam disponíveis quando o middleware interceptar /dashboard
-        window.location.href = '/dashboard'
+
+        // Aguarda a sessão ser confirmada antes de redirecionar
+        if (data.session) {
+          window.location.replace('/dashboard')
+        } else {
+          throw new Error('Sessão não iniciada. Tente novamente.')
+        }
       } else {
         const { error } = await supabase.auth.signUp({
           email: form.email,
           password: form.password,
-          options: { data: { full_name: form.name, company: form.company } },
+          options: {
+            data: { full_name: form.name, company: form.company },
+          },
         })
         if (error) throw error
         toast.success('Conta criada! Verifique seu e-mail para confirmar o cadastro.')
@@ -46,6 +54,7 @@ export default function LoginPage() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--surface-2)' }}>
+
       {/* Formulário */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 32px' }}>
         <div style={{ marginBottom: 40, textAlign: 'center' }}>
@@ -74,46 +83,20 @@ export default function LoginPage() {
             {mode === 'signup' && (
               <>
                 <FormField label="Seu nome">
-                  <input
-                    value={form.name}
-                    onChange={e => set('name', e.target.value)}
-                    placeholder="João Silva"
-                    required
-                  />
+                  <input value={form.name} onChange={e => set('name', e.target.value)} placeholder="João Silva" required />
                 </FormField>
                 <FormField label="Empresa / Agência">
-                  <input
-                    value={form.company}
-                    onChange={e => set('company', e.target.value)}
-                    placeholder="Minha Agência"
-                  />
+                  <input value={form.company} onChange={e => set('company', e.target.value)} placeholder="Minha Agência" />
                 </FormField>
               </>
             )}
             <FormField label="E-mail">
-              <input
-                type="email"
-                value={form.email}
-                onChange={e => set('email', e.target.value)}
-                placeholder="voce@empresa.com"
-                required
-              />
+              <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="voce@empresa.com" required />
             </FormField>
             <FormField label="Senha">
-              <input
-                type="password"
-                value={form.password}
-                onChange={e => set('password', e.target.value)}
-                placeholder="••••••••"
-                required
-                minLength={6}
-              />
+              <input type="password" value={form.password} onChange={e => set('password', e.target.value)} placeholder="••••••••" required minLength={6} />
             </FormField>
-            <Button
-              type="submit"
-              loading={loading}
-              style={{ width: '100%', padding: '12px', fontSize: 15, marginTop: 4 }}
-            >
+            <Button type="submit" loading={loading} style={{ width: '100%', padding: '12px', fontSize: 15, marginTop: 4 }}>
               {mode === 'login' ? 'Entrar' : 'Criar conta'}
             </Button>
           </form>
@@ -139,11 +122,7 @@ export default function LoginPage() {
           <p style={{ fontSize: 16, opacity: .85, lineHeight: 1.7, marginBottom: 36 }}>
             Envie, aprove e agende posts em um só lugar. Seus clientes aprovam com um clique — você publica no piloto automático.
           </p>
-          {[
-            '67% menos pedidos de refação',
-            '75% menos reuniões de aprovação',
-            '29% menos contratos perdidos',
-          ].map(stat => (
+          {['67% menos pedidos de refação', '75% menos reuniões de aprovação', '29% menos contratos perdidos'].map(stat => (
             <div key={stat} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
               <div style={{ width: 24, height: 24, background: 'rgba(255,255,255,.25)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <CheckSquare size={14} color="#fff" />
@@ -153,6 +132,7 @@ export default function LoginPage() {
           ))}
         </div>
       </div>
+
     </div>
   )
 }
