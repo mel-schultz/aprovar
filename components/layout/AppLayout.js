@@ -9,6 +9,7 @@ import {
   Puzzle,
 } from 'lucide-react'
 import { createClient } from '../../lib/supabase/client'
+import AuthListener from './AuthListener'
 import toast from 'react-hot-toast'
 
 const navItems = [
@@ -38,6 +39,7 @@ export default function AppLayout({ children, profile }) {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--surface-2)' }}>
+      <AuthListener />
       {/* Sidebar */}
       <aside style={{
         width: sidebarW, minHeight: '100vh', background: 'var(--surface)',
