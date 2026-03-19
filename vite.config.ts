@@ -68,84 +68,90 @@ function writeToLogFile(source: LogSource, entries: unknown[]) {
 }
 
 /**
- * Vite plugin to serve dist/public files in development
- * This ensures assets are served correctly even in dev mode
+ * Vite plugin to collect browser debug logs
+ * - POST /__manus__/logs: Browser sends logs, written directly to files
+ * - Files: browserConsole.log, networkRequests.log, sessionReplay.log
+ * - Auto-trimmed when exceeding 1MB (keeps newest entries)
  */
-function vitePluginServeDistPublic(): Plugin {
+function vitePluginManusDebugCollector(): Plugin {
   return {
-    name: "serve-dist-public",
-    configureServer(server: ViteDevServer) {
-      const distPublicPath = path.resolve(PROJECT_ROOT, "dist/public");
-      
-      return () => {
-        // Serve dist/public files with highest priority
-        server.middlewares.use((req, res, next) => {
-          if (req.method !== "GET") {
-            return next();
-          }
+    name: "manus-debug-collector",
 
-          const url = req.url || "";
-          
-          // Only handle asset and __manus__ requests
-          if (!url.startsWith("/assets/") && !url.startsWith("/__manus__/")) {
-            return next();
-          }
-
-          const filePath = path.join(distPublicPath, url);
-          
-          // Security: prevent directory traversal
-          if (!filePath.startsWith(distPublicPath)) {
-            return next();
-          }
-
-          // Check if file exists
-          if (!fs.existsSync(filePath)) {
-            return next();
-          }
-
-          const stat = fs.statSync(filePath);
-          if (!stat.isFile()) {
-            return next();
-          }
-
-          // Set correct MIME types
-          if (url.endsWith(".css")) {
-            res.setHeader("Content-Type", "text/css; charset=utf-8");
-          } else if (url.endsWith(".js")) {
-            res.setHeader("Content-Type", "application/javascript; charset=utf-8");
-          } else if (url.endsWith(".woff2")) {
-            res.setHeader("Content-Type", "font/woff2");
-          } else if (url.endsWith(".woff")) {
-            res.setHeader("Content-Type", "font/woff");
-          } else if (url.endsWith(".ttf")) {
-            res.setHeader("Content-Type", "font/ttf");
-          } else if (url.endsWith(".svg")) {
-            res.setHeader("Content-Type", "image/svg+xml");
-          } else if (url.endsWith(".png")) {
-            res.setHeader("Content-Type", "image/png");
-          } else if (url.endsWith(".jpg") || url.endsWith(".jpeg")) {
-            res.setHeader("Content-Type", "image/jpeg");
-          } else if (url.endsWith(".gif")) {
-            res.setHeader("Content-Type", "image/gif");
-          } else if (url.endsWith(".webp")) {
-            res.setHeader("Content-Type", "image/webp");
-          }
-
-          // Set cache headers
-          res.setHeader("Cache-Control", "public, max-age=3600");
-          
-          // Serve the file
-          res.end(fs.readFileSync(filePath));
-        });
+    transformIndexHtml(html) {
+      if (process.env.NODE_ENV === "production") {
+        return html;
+      }
+      return {
+        html,
+        tags: [
+          {
+            tag: "script",
+            attrs: {
+              src: "/__manus__/debug-collector.js",
+              defer: true,
+            },
+            injectTo: "head",
+          },
+        ],
       };
+    },
+
+    configureServer(server: ViteDevServer) {
+      // POST /__manus__/logs: Browser sends logs (written directly to files)
+      server.middlewares.use("/__manus__/logs", (req, res, next) => {
+        if (req.method !== "POST") {
+          return next();
+        }
+
+        const handlePayload = (payload: any) => {
+          // Write logs directly to files
+          if (payload.consoleLogs?.length > 0) {
+            writeToLogFile("browserConsole", payload.consoleLogs);
+          }
+          if (payload.networkRequests?.length > 0) {
+            writeToLogFile("networkRequests", payload.networkRequests);
+          }
+          if (payload.sessionEvents?.length > 0) {
+            writeToLogFile("sessionReplay", payload.sessionEvents);
+          }
+
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ success: true }));
+        };
+
+        const reqBody = (req as { body?: unknown }).body;
+        if (reqBody && typeof reqBody === "object") {
+          try {
+            handlePayload(reqBody);
+          } catch (e) {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ success: false, error: String(e) }));
+          }
+          return;
+        }
+
+        let body = "";
+        req.on("data", (chunk) => {
+          body += chunk.toString();
+        });
+
+        req.on("end", () => {
+          try {
+            const payload = JSON.parse(body);
+            handlePayload(payload);
+          } catch (e) {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ success: false, error: String(e) }));
+          }
+        });
+      });
     },
   };
 }
 
-const plugins = [react(), tailwindcss(), vitePluginServeDistPublic(), vitePluginManusRuntime()];
+const plugins = [react(), tailwindcss(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
 
 export default defineConfig({
-  appType: "spa",
   plugins,
   resolve: {
     alias: {
@@ -162,7 +168,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    strictPort: false,
+    strictPort: false, // Will find next available port if 3000 is busy
     host: true,
     allowedHosts: [
       ".manuspre.computer",
