@@ -200,7 +200,11 @@ CREATE POLICY "storage_read" ON storage.objects
   FOR SELECT USING (bucket_id = 'deliverables');
 
 -- ── 11. Forçar reload do schema cache ────────────────────────
+-- Método 1: NOTIFY direto
 NOTIFY pgrst, 'reload schema';
+
+-- Método 2: via pg_notify (mais confiável em alguns setups do Supabase)
+SELECT pg_notify('pgrst', 'reload schema');
 
 -- ── 12. Verificação final ─────────────────────────────────────
 -- Deve retornar 5 linhas: approvers, deliverables, approval_events,
