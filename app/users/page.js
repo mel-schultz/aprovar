@@ -4,7 +4,7 @@ import AppLayout from '../../components/layout/AppLayout'
 import UsersClient from './UsersClient'
 import { getOrCreateProfile } from '../../lib/supabase/getOrCreateProfile'
 
-export const metadata = { title: 'Usuários' }
+export const metadata = { title: 'Gerenciar Usuários' }
 
 export default async function UsersPage() {
   const supabase = createClient()
@@ -12,14 +12,12 @@ export default async function UsersPage() {
   if (!session) redirect('/login')
 
   const profile = await getOrCreateProfile(supabase, session.user)
-
-  // Guard duplo: middleware + server component
   if (profile?.role !== 'admin') redirect('/portal')
 
-  // Busca todos os usuários (a view já une com client_name)
   const [
-    { data: users,   error: usersErr },
-    { data: clients, error: clientsErr },
+    { data: systemUsers },
+    { data: clients },
+    { data: approvers },
   ] = await Promise.all([
     supabase
       .from('users_with_clients')
@@ -27,18 +25,20 @@ export default async function UsersPage() {
       .order('created_at', { ascending: false }),
     supabase
       .from('clients')
-      .select('id, name')
+      .select('*, approvers(count)')
+      .order('name'),
+    supabase
+      .from('approvers')
+      .select('*, clients(name)')
       .order('name'),
   ])
-
-  if (usersErr)   console.error('users error:', usersErr.message)
-  if (clientsErr) console.error('clients error:', clientsErr.message)
 
   return (
     <AppLayout profile={profile}>
       <UsersClient
-        initialUsers={users   || []}
-        clients={clients      || []}
+        initialSystemUsers={systemUsers || []}
+        initialClients={clients        || []}
+        initialApprovers={approvers    || []}
         currentUserId={session.user.id}
       />
     </AppLayout>
