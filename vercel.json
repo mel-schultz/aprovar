@@ -1,4 +1,18 @@
 {
-  "buildCommand": "pnpm build",
-  "framework": "vite"
+  "version": 2,
+  "builds": [
+    {
+      "src": "server/index.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["public/**"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/server/index.ts"
+    }
+  ]
 }
