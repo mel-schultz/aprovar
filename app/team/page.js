@@ -1,4 +1,5 @@
 import { createClient } from '../../lib/supabase/server'
+import { getOrCreateProfile } from '../../lib/supabase/getOrCreateProfile'
 import { redirect } from 'next/navigation'
 import AppLayout from '../../components/layout/AppLayout'
 import TeamClient from './TeamClient'
@@ -10,8 +11,8 @@ export default async function TeamPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: profile }, { data: members }] = await Promise.all([
-    supabase.from('profiles').select('*').eq('id', user.id).single(),
+  const [profile, { data: members }] = await Promise.all([
+    getOrCreateProfile(supabase, user),
     supabase.from('team_members').select('*').eq('profile_id', user.id).order('invited_at', { ascending: false }),
   ])
 

@@ -13,13 +13,10 @@ export async function middleware(request) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          // 1. grava na request (para o Server Component que vem a seguir)
           cookiesToSet.forEach(({ name, value, options }) =>
             request.cookies.set(name, value, options)
           )
-          // 2. recria a response com a request já actualizada
           supabaseResponse = NextResponse.next({ request })
-          // 3. propaga os Set-Cookie para o browser
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           )
@@ -28,33 +25,49 @@ export async function middleware(request) {
     }
   )
 
-  // IMPORTANTE: use getUser() — nunca getSession() no middleware.
-  // getUser() valida o token no servidor do Supabase e renova o
-  // refresh token automaticamente quando necessário.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // Sempre use getUser() — valida o token no servidor Supabase
+  // e renova o refresh token automaticamente quando necessário.
+  const { data: { user } } = await supabase.auth.getUser()
 
   const { pathname } = request.nextUrl
-  const publicPaths = ['/login', '/approve']
-  const isPublic = publicPaths.some((p) => pathname.startsWith(p))
 
-  // Rota protegida sem sessão → login
+  const publicPaths = ['/login', '/approve', '/api']
+  const isPublic = publicPaths.some(p => pathname.startsWith(p))
+
+  // Sem sessão em rota protegida → redireciona para login
   if (!user && !isPublic) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
+    const loginUrl = request.nextUrl.clone()
+    loginUrl.pathname = '/login'
+    // Usa redirect que preserva os cookies da response atual
+    const redirectResponse = NextResponse.redirect(loginUrl)
+    supabaseResponse.cookies.getAll().forEach(cookie => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
+    })
+    return redirectResponse
   }
 
-  // Já autenticado tentando acessar login ou raiz → dashboard
-  if (user && (pathname === '/login' || pathname === '/')) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
-    return NextResponse.redirect(url)
+  // Autenticado na raiz → dashboard
+  if (user && pathname === '/') {
+    const dashUrl = request.nextUrl.clone()
+    dashUrl.pathname = '/dashboard'
+    const redirectResponse = NextResponse.redirect(dashUrl)
+    supabaseResponse.cookies.getAll().forEach(cookie => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
+    })
+    return redirectResponse
   }
 
-  // CRÍTICO: sempre retorne supabaseResponse (nunca NextResponse.next() puro)
-  // para que os cookies Set-Cookie cheguem ao browser.
+  // Autenticado tentando acessar /login → dashboard
+  if (user && pathname === '/login') {
+    const dashUrl = request.nextUrl.clone()
+    dashUrl.pathname = '/dashboard'
+    const redirectResponse = NextResponse.redirect(dashUrl)
+    supabaseResponse.cookies.getAll().forEach(cookie => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
+    })
+    return redirectResponse
+  }
+
   return supabaseResponse
 }
 
