@@ -17,7 +17,6 @@ import {
   UserCog,
 } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
-import AppLayout from "./components/layout/AppLayout";
 import AuthListener from "./AuthListener";
 import toast from "react-hot-toast";
 
