@@ -28,8 +28,9 @@ export default function AppLayout({ children, profile }) {
   const [collapsed, setCollapsed] = useState(false)
   const supabase = createClient()
 
-  // Filtrar itens do menu baseado no role
+  // ✅ FILTRAR ITENS DO MENU BASEADO NO ROLE
   const filteredNavItems = navItems.filter(item => {
+    // Se for a aba "Usuários" e o user NÃO for admin, OCULTAR
     if (item.href === '/users' && profile?.role !== 'admin') {
       return false
     }
@@ -75,6 +76,7 @@ export default function AppLayout({ children, profile }) {
 
         {/* Nav */}
         <nav style={{ flex: 1, padding: '10px 8px', overflowY: 'auto' }}>
+          {/* ✅ USAR filteredNavItems EM VEZ DE navItems */}
           {filteredNavItems.map(({ href, label, icon: Icon }) => {
             const active = pathname === href || pathname.startsWith(href + '/')
             return (
