@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { CheckSquare, Clock, Users, TrendingUp, ArrowRight, AlertCircle } from 'lucide-react'
+import { CheckSquare, Clock, Users, TrendingUp, ArrowRight } from 'lucide-react'
 import { Card, StatusBadge } from '../../components/ui'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -12,7 +12,7 @@ function StatCard({ icon: Icon, label, value, color = 'var(--brand)' }) {
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div>
           <p style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 8 }}>{label}</p>
-          <p style={{ fontSize: 32, fontFamily: 'var(--font-display)', fontWeight: 700, color }}>{value}</p>
+          <p style={{ fontSize: 32, fontFamily: 'var(--font-display)', fontWeight: 700, color }}>{value ?? 0}</p>
         </div>
         <div style={{ width: 44, height: 44, borderRadius: 12, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Icon size={22} color={color} />
@@ -22,22 +22,12 @@ function StatCard({ icon: Icon, label, value, color = 'var(--brand)' }) {
   )
 }
 
-export default function DashboardClient({ profile, stats, recent }) {
-  // Validar dados
-  if (!stats || !recent) {
-    return (
-      <div style={{ padding: '40px 20px', textAlign: 'center' }}>
-        <AlertCircle size={48} style={{ margin: '0 auto', color: '#f59e0b' }} />
-        <p style={{ color: 'var(--text-2)', fontSize: 15, marginTop: 12 }}>Carregando dados...</p>
-      </div>
-    )
-  }
-
+export default function DashboardClient({ profile, stats = {}, recent = [] }) {
   return (
     <div className="page-enter">
       <div style={{ marginBottom: 28 }}>
         <h1 style={{ marginBottom: 4 }}>
-          Olá, {profile?.full_name?.split(' ')[0] || 'bem-vindo'}!
+          Olá, {profile?.full_name?.split(' ')[0] || profile?.nome?.split(' ')[0] || 'bem-vindo'}!
         </h1>
         <p style={{ color: 'var(--text-2)', fontSize: 15 }}>
           Aqui está o resumo das suas aprovações.
@@ -45,10 +35,10 @@ export default function DashboardClient({ profile, stats, recent }) {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 28 }}>
-        <StatCard icon={Users}       label="Clientes ativos"      value={stats.clients || 0}   />
-        <StatCard icon={Clock}       label="Aguardando aprovação" value={stats.pending || 0}   color="var(--accent)" />
-        <StatCard icon={CheckSquare} label="Aprovados"             value={stats.approved || 0}  color="var(--brand)" />
-        <StatCard icon={TrendingUp}  label="Agendados"             value={stats.scheduled || 0} color="#8b5cf6" />
+        <StatCard icon={Users}       label="Clientes ativos"      value={stats?.clients ?? 0}   />
+        <StatCard icon={Clock}       label="Aguardando aprovação" value={stats?.pending ?? 0}   color="var(--accent)" />
+        <StatCard icon={CheckSquare} label="Aprovados"             value={stats?.approved ?? 0}  color="var(--brand)" />
+        <StatCard icon={TrendingUp}  label="Agendados"             value={stats?.scheduled ?? 0} color="#8b5cf6" />
       </div>
 
       <Card>

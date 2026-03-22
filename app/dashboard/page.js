@@ -114,20 +114,20 @@ export default async function DashboardPage() {
 
     console.log('✅ Dashboard: Todos os dados obtidos com sucesso')
 
-    return (
-      <AppLayout profile={profile}>
-        <DashboardClient
-          profile={profile}
-          stats={{ 
-            clients: clientsCount, 
-            pending: pendingCount, 
-            approved: approvedCount, 
-            scheduled: scheduledCount 
-          }}
-          recent={recent}
-        />
-      </AppLayout>
-    )
+  return (
+    <AppLayout profile={profile}>
+      <DashboardClient
+        profile={profile}
+        stats={{ 
+          clients: clientsCount || 0, 
+          pending: pendingCount || 0, 
+          approved: approvedCount || 0, 
+          scheduled: scheduledCount || 0 
+        }}
+        recent={recent || []}
+      />
+    </AppLayout>
+  )
   } catch (error) {
     console.error('❌ Dashboard: Erro fatal:', error)
     // Não redirecionar, apenas logar o erro para debugging
