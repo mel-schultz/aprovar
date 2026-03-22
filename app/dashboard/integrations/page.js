@@ -1,26 +1,16 @@
-'use client'
+import { createClient } from '../../lib/supabase/server'
+import { getOrCreateProfile } from '../../lib/supabase/getOrCreateProfile'
+import { redirect } from 'next/navigation'
+import AppLayout from '../../components/layout/AppLayout'
+import IntegrationsClient from './IntegrationsClient'
 
-export default function IntegrationsPage() {
-  return (
-    <div>
-      <h1 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '8px' }}>
-        Integrações
-      </h1>
-      <p style={{ color: 'var(--text-2)', marginBottom: '32px' }}>
-        Configure integrações com outras plataformas
-      </p>
+export const metadata = { title: 'Integrações' }
 
-      <div style={{
-        background: '#fff',
-        borderRadius: '12px',
-        padding: '32px',
-        border: '1px solid var(--border)',
-        textAlign: 'center',
-      }}>
-        <p style={{ color: 'var(--text-2)' }}>
-          Nenhuma integração configurada.
-        </p>
-      </div>
-    </div>
-  )
+export default async function IntegrationsPage() {
+  const supabase = createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) redirect('/login')
+  const user = session.user
+  const profile = await getOrCreateProfile(supabase, user)
+  return <AppLayout profile={profile}><IntegrationsClient /></AppLayout>
 }
