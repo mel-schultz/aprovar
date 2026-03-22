@@ -32,7 +32,7 @@ export default async function SchedulePage() {
 
   return (
     <AppLayout profile={profile}>
-      <ScheduleClient initialScheduled={deliverables || []} userId={user.id} />
+      <ScheduleClient initialDeliverables={deliverables || []} userId={user.id} />
     </AppLayout>
   )
 }

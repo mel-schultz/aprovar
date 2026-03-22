@@ -1,310 +1,133 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { CheckSquare } from 'lucide-react'
 import { createClient } from '../../lib/supabase/client'
+import { Button, FormField } from '../../components/ui'
+import toast from 'react-hot-toast'
 
 export default function LoginPage() {
-  const router = useRouter()
-  const supabase = createClient()
-  const [isLoading, setIsLoading] = useState(true)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [mode, setMode] = useState('login')
   const [loading, setLoading] = useState(false)
+  const [form, setForm] = useState({ email: '', password: '', name: '', company: '' })
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession()
+  function set(k, v) { setForm(f => ({ ...f, [k]: v })) }
 
-        // Se está logado, redirecionar para dashboard
-        if (session?.user) {
-          router.push('/dashboard')
-          return
-        }
-
-        setIsLoading(false)
-      } catch (error) {
-        console.error('Erro ao verificar autenticação:', error)
-        setIsLoading(false)
-      }
-    }
-
-    checkAuth()
-  }, [router, supabase])
-
-  const handleLogin = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault()
-    setError('')
     setLoading(true)
 
+    const supabase = createClient()
+
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      if (mode === 'login') {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: form.email,
+          password: form.password,
+        })
+        if (error) throw error
+        if (!data.session) throw new Error('Sessão não iniciada. Tente novamente.')
 
-      if (signInError) {
-        setError(signInError.message)
+        // Verificar role para redirecionar para o destino correto
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role, is_active')
+          .eq('id', data.session.user.id)
+          .single()
+
+        if (profile?.is_active === false) {
+          await supabase.auth.signOut()
+          throw new Error('Sua conta está inativa. Entre em contato com o administrador.')
+        }
+
+        const dest = profile?.role === 'client' ? '/portal' : '/dashboard'
+        window.location.replace(dest)
+
+      } else {
+        const { error } = await supabase.auth.signUp({
+          email: form.email,
+          password: form.password,
+          options: { data: { full_name: form.name, company: form.company } },
+        })
+        if (error) throw error
+        toast.success('Conta criada! Verifique seu e-mail para confirmar o cadastro.')
+        setMode('login')
         setLoading(false)
-        return
       }
-
-      if (data?.user) {
-        router.push('/dashboard')
-      }
-    } catch (error) {
-      setError('Erro ao fazer login. Tente novamente.')
+    } catch (err) {
+      toast.error(err.message)
       setLoading(false)
     }
   }
 
-  if (isLoading) {
-    return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-      }}>
-        Carregando...
-      </div>
-    )
-  }
-
   return (
-    <div style={{
-      display: 'flex',
-      minHeight: '100vh',
-      background: '#fafafa',
-    }}>
-      {/* Lado esquerdo - Login */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px',
-      }}>
-        <div style={{
-          width: '100%',
-          maxWidth: '400px',
-        }}>
-          <div style={{ marginBottom: '40px' }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              marginBottom: '16px',
-            }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                background: '#0ea472',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#fff',
-                fontSize: '20px',
-              }}>
-                ✓
-              </div>
-              <h1 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                margin: 0,
-                color: '#0ea472',
-              }}>
-                Aprovar
-              </h1>
+    <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--surface-2)' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 32px' }}>
+        <div style={{ marginBottom: 40, textAlign: 'center' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+            <div style={{ width: 42, height: 42, background: 'var(--brand)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <CheckSquare size={22} color="#fff" />
             </div>
-            <p style={{
-              fontSize: '14px',
-              color: '#666',
-              margin: 0,
-            }}>
-              Plataforma de aprovações e agendamento de conteúdo
-            </p>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 28, color: 'var(--brand)' }}>Aprovar</span>
           </div>
+          <p style={{ color: 'var(--text-2)', fontSize: 14 }}>Plataforma de aprovações e agendamento de conteúdo</p>
+        </div>
 
-          <div style={{
-            background: '#fff',
-            borderRadius: '12px',
-            padding: '32px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-          }}>
-            <h2 style={{
-              fontSize: '20px',
-              fontWeight: '600',
-              marginBottom: '8px',
-              color: '#1a1a1a',
-            }}>
-              Entrar na conta
-            </h2>
-            <p style={{
-              fontSize: '14px',
-              color: '#666',
-              marginBottom: '24px',
-            }}>
-              Bem-vindo de volta!
-            </p>
+        <div style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', boxShadow: 'var(--shadow)', padding: 36, width: '100%', maxWidth: 420 }}>
+          <h2 style={{ fontSize: 22, marginBottom: 4 }}>
+            {mode === 'login' ? 'Entrar na conta' : 'Criar conta'}
+          </h2>
+          <p style={{ color: 'var(--text-2)', fontSize: 14, marginBottom: 28 }}>
+            {mode === 'login' ? 'Bem-vindo de volta!' : 'Preencha os dados para começar.'}
+          </p>
 
-            <form onSubmit={handleLogin}>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  marginBottom: '8px',
-                  color: '#1a1a1a',
-                }}>
-                  E-mail
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="voce@empresa.com"
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontFamily: 'inherit',
-                  }}
-                  required
-                />
-              </div>
+          <form onSubmit={handleSubmit}>
+            {mode === 'signup' && (
+              <>
+                <FormField label="Seu nome">
+                  <input value={form.name} onChange={e => set('name', e.target.value)} placeholder="João Silva" required />
+                </FormField>
+                <FormField label="Empresa / Agência">
+                  <input value={form.company} onChange={e => set('company', e.target.value)} placeholder="Minha Agência" />
+                </FormField>
+              </>
+            )}
+            <FormField label="E-mail">
+              <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="voce@empresa.com" required />
+            </FormField>
+            <FormField label="Senha">
+              <input type="password" value={form.password} onChange={e => set('password', e.target.value)} placeholder="••••••••" required minLength={6} />
+            </FormField>
+            <Button type="submit" loading={loading} style={{ width: '100%', padding: '12px', fontSize: 15, marginTop: 4 }}>
+              {mode === 'login' ? 'Entrar' : 'Criar conta'}
+            </Button>
+          </form>
 
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  marginBottom: '8px',
-                  color: '#1a1a1a',
-                }}>
-                  Senha
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontFamily: 'inherit',
-                  }}
-                  required
-                />
-              </div>
-
-              {error && (
-                <div style={{
-                  background: '#fee',
-                  color: '#c33',
-                  padding: '12px',
-                  borderRadius: '8px',
-                  marginBottom: '16px',
-                  fontSize: '14px',
-                }}>
-                  {error}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  background: '#0ea472',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  opacity: loading ? 0.6 : 1,
-                }}
-              >
-                {loading ? 'Entrando...' : 'Entrar'}
-              </button>
-            </form>
-
-            <p style={{
-              fontSize: '14px',
-              color: '#666',
-              marginTop: '16px',
-              textAlign: 'center',
-            }}>
-              Não tem conta?{' '}
-              <a
-                href="/signup"
-                style={{
-                  color: '#0ea472',
-                  textDecoration: 'none',
-                  fontWeight: '600',
-                }}
-              >
-                Criar agora
-              </a>
-            </p>
-          </div>
+          <p style={{ textAlign: 'center', marginTop: 20, fontSize: 14, color: 'var(--text-2)' }}>
+            {mode === 'login' ? 'Não tem conta? ' : 'Já tem conta? '}
+            <button onClick={() => setMode(m => m === 'login' ? 'signup' : 'login')} style={{ color: 'var(--brand)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>
+              {mode === 'login' ? 'Criar agora' : 'Entrar'}
+            </button>
+          </p>
         </div>
       </div>
 
-      {/* Lado direito - Banner */}
-      <div style={{
-        flex: 1,
-        background: '#0ea472',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '40px',
-        color: '#fff',
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <h2 style={{
-            fontSize: '40px',
-            fontWeight: '700',
-            marginBottom: '20px',
-            lineHeight: '1.2',
-          }}>
+      <div style={{ flex: 1, background: 'var(--brand)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 60 }}>
+        <div style={{ maxWidth: 420, color: '#fff' }}>
+          <h1 style={{ fontSize: 36, lineHeight: 1.15, marginBottom: 20, color: '#fff' }}>
             Chega de caos nas aprovações de conteúdo
-          </h2>
-          <p style={{
-            fontSize: '18px',
-            marginBottom: '40px',
-            opacity: 0.9,
-            lineHeight: '1.6',
-          }}>
+          </h1>
+          <p style={{ fontSize: 16, opacity: .85, lineHeight: 1.7, marginBottom: 36 }}>
             Envie, aprove e agende posts em um só lugar. Seus clientes aprovam com um clique.
           </p>
-          <div style={{
-            display: 'grid',
-            gap: '16px',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '20px' }}>✓</span>
-              <span>67% menos pedidos de refação</span>
+          {['67% menos pedidos de refação', '75% menos reuniões de aprovação', '29% menos contratos perdidos'].map(stat => (
+            <div key={stat} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+              <div style={{ width: 24, height: 24, background: 'rgba(255,255,255,.25)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <CheckSquare size={14} color="#fff" />
+              </div>
+              <span style={{ fontSize: 15, opacity: .9 }}>{stat}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '20px' }}>✓</span>
-              <span>75% menos reuniões de aprovação</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '20px' }}>✓</span>
-              <span>29% menos contratos perdidos</span>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

@@ -75,14 +75,12 @@ async function upsertDeliverable(supabase, method, payload, id = null) {
 export function useDeliverables(userId, filters = {}) {
   const supabase = createClient()
   const [deliverables, setDeliverables] = useState([])
-  // Garante que setDeliverables nunca recebe undefined
-  const safeSet = (val) => setDeliverables(Array.isArray(val) ? val : [])
   const [loading, setLoading]           = useState(true)
 
   const fetch = useCallback(async () => {
     if (!userId) return
     const data = await fetchDeliverablesWithClient(supabase, userId, filters)
-    safeSet(data)
+    setDeliverables(data)
     setLoading(false)
   }, [userId, filters.status, filters.clientId])
 

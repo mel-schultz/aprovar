@@ -1,155 +1,315 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, Users, CheckSquare, Calendar,
-  Settings, Bell, LogOut, ChevronLeft, ChevronRight,
-  Puzzle, UserCog,
-} from 'lucide-react'
-import { createClient } from '../../lib/supabase/client'
-import toast from 'react-hot-toast'
+  LayoutDashboard,
+  Users,
+  CheckSquare,
+  Calendar,
+  Settings,
+  Bell,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Puzzle,
+  UserCog,
+} from "lucide-react";
+import { createClient } from "../../lib/supabase/client";
+import AuthListener from "./AuthListener";
+import toast from "react-hot-toast";
 
 const navItems = [
-  { href: '/dashboard',    label: 'Início',        icon: LayoutDashboard },
-  { href: '/dashboard/clients',   label: 'Clientes',           icon: Users },
-  { href: '/dashboard/approvals', label: 'Aprovações',         icon: CheckSquare },
-  { href: '/dashboard/schedule',  label: 'Calendário',         icon: Calendar },
-  { href: '/dashboard/team',      label: 'Equipe',             icon: Users },
-  { href: '/dashboard/integrations', label: 'Integrações',     icon: Puzzle },
-  { href: '/dashboard/settings',  label: 'Configurações',      icon: Settings },
-]
+  { href: "/dashboard", label: "Início", icon: LayoutDashboard },
+  { href: "/users", label: "Usuários", icon: UserCog },
+  { href: "/clients", label: "Clientes", icon: Users },
+  { href: "/approvals", label: "Aprovações", icon: CheckSquare },
+  { href: "/schedule", label: "Calendário", icon: Calendar },
+  { href: "/team", label: "Equipe", icon: Users },
+  { href: "/integrations", label: "Integrações", icon: Puzzle },
+  { href: "/settings", label: "Configurações", icon: Settings },
+];
 
 export default function AppLayout({ children, profile }) {
-  const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
-  const supabase = createClient()
-
-  // Filtrar itens do menu: adicionar "Gerenciar Usuários" apenas para super admin
-  const filteredNavItems = profile?.is_super_admin || profile?.role === 'super_admin'
-    ? [
-        { href: '/dashboard',    label: 'Início',        icon: LayoutDashboard },
-        { href: '/dashboard/users',     label: 'Gerenciar Usuários', icon: UserCog },
-        { href: '/dashboard/clients',   label: 'Clientes',           icon: Users },
-        { href: '/dashboard/approvals', label: 'Aprovações',         icon: CheckSquare },
-        { href: '/dashboard/schedule',  label: 'Calendário',         icon: Calendar },
-        { href: '/dashboard/team',      label: 'Equipe',             icon: Users },
-        { href: '/dashboard/integrations', label: 'Integrações',     icon: Puzzle },
-        { href: '/dashboard/settings',  label: 'Configurações',      icon: Settings },
-      ]
-    : navItems
+  const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
+  const supabase = createClient();
 
   async function handleSignOut() {
-    try {
-      await supabase.auth.signOut()
-      toast.success('Até logo!')
-      window.location.replace('/login')
-    } catch (error) {
-      console.error('Erro ao fazer logout:', error)
-      toast.error('Erro ao fazer logout')
-    }
+    await supabase.auth.signOut();
+    toast.success("Até logo!");
+    window.location.replace("/login");
   }
 
-  const sidebarW = collapsed ? 64 : 240
+  const sidebarW = collapsed ? 64 : 240;
+  const topbarH = 60;
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--surface-2)' }}>
-      {/* Sidebar */}
-      <aside style={{
-        width: sidebarW, minHeight: '100vh', background: 'var(--surface)',
-        borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column',
-        position: 'fixed', top: 0, left: 0, zIndex: 100, transition: 'width .2s ease',
-      }}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "var(--surface-2)",
+      }}
+    >
+      <AuthListener />
+
+      {/* Sidebar - FIXED COM Z-INDEX CORRETO */}
+      <aside
+        style={{
+          width: sidebarW,
+          minHeight: "100vh",
+          background: "var(--surface)",
+          borderRight: "1px solid var(--border)",
+          display: "flex",
+          flexDirection: "column",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          zIndex: 100, // Fica atrás da topbar
+          transition: "width .2s ease",
+          overflowY: "auto",
+        }}
+      >
         {/* Logo */}
-        <div style={{ padding: collapsed ? '20px 0' : '22px 18px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'space-between' }}>
+        <div
+          style={{
+            padding: collapsed ? "20px 0" : "22px 18px",
+            borderBottom: "1px solid var(--border)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: collapsed ? "center" : "space-between",
+            flexShrink: 0,
+          }}
+        >
           {!collapsed && (
-            <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 30, height: 30, background: 'var(--brand)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Link
+              href="/dashboard"
+              style={{ display: "flex", alignItems: "center", gap: 8 }}
+            >
+              <div
+                style={{
+                  width: 30,
+                  height: 30,
+                  background: "var(--brand)",
+                  borderRadius: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 <CheckSquare size={16} color="#fff" />
               </div>
-              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17, color: 'var(--brand)' }}>
+              <span
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: 17,
+                  color: "var(--brand)",
+                }}
+              >
                 Aprovar
               </span>
             </Link>
           )}
           <button
-            onClick={() => setCollapsed(c => !c)}
-            style={{ background: 'var(--surface-3)', border: 'none', borderRadius: 8, padding: 6, cursor: 'pointer', display: 'flex' }}
+            onClick={() => setCollapsed((c) => !c)}
+            style={{
+              background: "var(--surface-3)",
+              border: "none",
+              borderRadius: 8,
+              padding: 6,
+              cursor: "pointer",
+              display: "flex",
+            }}
           >
             {collapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
           </button>
         </div>
 
         {/* Nav */}
-        <nav style={{ flex: 1, padding: '10px 8px', overflowY: 'auto' }}>
-          {filteredNavItems.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href || pathname.startsWith(href + '/')
+        <nav
+          style={{
+            flex: 1,
+            padding: "10px 8px",
+            overflowY: "auto",
+          }}
+        >
+          {navItems.map(({ href, label, icon: Icon }) => {
+            const active = pathname === href || pathname.startsWith(href + "/");
             return (
               <Link
                 key={href}
                 href={href}
                 title={collapsed ? label : undefined}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  padding: collapsed ? '10px' : '10px 12px',
-                  borderRadius: 10, marginBottom: 2, fontSize: 14, fontWeight: 500,
-                  color: active ? 'var(--brand)' : 'var(--text-2)',
-                  background: active ? 'var(--brand-light)' : 'transparent',
-                  justifyContent: collapsed ? 'center' : 'flex-start',
-                  transition: 'all .15s',
-                  textDecoration: 'none',
-                  cursor: 'pointer',
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: collapsed ? "10px" : "10px 12px",
+                  borderRadius: 10,
+                  marginBottom: 2,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: active ? "var(--brand)" : "var(--text-2)",
+                  background: active ? "var(--brand-light)" : "transparent",
+                  justifyContent: collapsed ? "center" : "flex-start",
+                  transition: "all .15s",
+                  textDecoration: "none",
                 }}
               >
                 <Icon size={18} />
                 {!collapsed && label}
               </Link>
-            )
+            );
           })}
         </nav>
 
         {/* User */}
-        <div style={{ padding: '10px 8px', borderTop: '1px solid var(--border)' }}>
+        <div
+          style={{
+            padding: "10px 8px",
+            borderTop: "1px solid var(--border)",
+            flexShrink: 0,
+          }}
+        >
           {!collapsed && profile && (
-            <div style={{ padding: '8px 12px', marginBottom: 4, borderRadius: 10, background: 'var(--surface-3)' }}>
+            <div
+              style={{
+                padding: "8px 12px",
+                marginBottom: 4,
+                borderRadius: 10,
+                background: "var(--surface-3)",
+              }}
+            >
               <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 2 }}>
-                {profile.company || profile.full_name || 'Minha conta'}
+                {profile.company || profile.full_name || "Minha conta"}
               </p>
-              <span style={{ fontSize: 11, color: 'var(--text-3)', textTransform: 'capitalize' }}>
-                {profile.is_super_admin || profile.role === 'super_admin' ? '👑 Super Admin' : profile.role}
+              <span
+                style={{
+                  fontSize: 11,
+                  color: "var(--text-3)",
+                  textTransform: "capitalize",
+                }}
+              >
+                Conta ativa
               </span>
             </div>
           )}
           <button
             onClick={handleSignOut}
-            style={{ display: 'flex', alignItems: 'center', gap: 10, padding: collapsed ? '10px' : '10px 12px', borderRadius: 10, width: '100%', color: 'var(--text-2)', fontSize: 14, fontWeight: 500, justifyContent: collapsed ? 'center' : 'flex-start', background: 'transparent', border: 'none', cursor: 'pointer' }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: collapsed ? "10px" : "10px 12px",
+              borderRadius: 10,
+              width: "100%",
+              color: "var(--text-2)",
+              fontSize: 14,
+              fontWeight: 500,
+              justifyContent: collapsed ? "center" : "flex-start",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+            }}
           >
             <LogOut size={18} />
-            {!collapsed && 'Sair'}
+            {!collapsed && "Sair"}
           </button>
         </div>
       </aside>
 
-      {/* Main */}
-      <div style={{ flex: 1, marginLeft: sidebarW, transition: 'margin-left .2s ease', display: 'flex', flexDirection: 'column' }}>
-        {/* Topbar */}
-        <header style={{ height: 60, background: 'var(--surface)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0 24px', position: 'sticky', top: 0, zIndex: 50 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button style={{ background: 'var(--surface-3)', border: 'none', borderRadius: 8, padding: 8, cursor: 'pointer', display: 'flex' }}>
+      {/* Main Container */}
+      <div
+        style={{
+          flex: 1,
+          marginLeft: sidebarW,
+          transition: "margin-left .2s ease",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+        }}
+      >
+        {/* Topbar - STICKY SEM SOBREPOSIÇÃO */}
+        <header
+          style={{
+            height: topbarH,
+            background: "var(--surface)",
+            borderBottom: "1px solid var(--border)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            padding: "0 24px",
+            position: "sticky",
+            top: 0,
+            zIndex: 99, // Fica na frente de outras coisas mas atrás de modals
+            flexShrink: 0, // Não permite encolher
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <button
+              style={{
+                background: "var(--surface-3)",
+                border: "none",
+                borderRadius: 8,
+                padding: 8,
+                cursor: "pointer",
+                display: "flex",
+                transition: "background .2s",
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background = "var(--surface-2)")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.background = "var(--surface-3)")
+              }
+            >
               <Bell size={18} color="var(--text-2)" />
             </button>
-            <div style={{ width: 34, height: 34, borderRadius: 10, background: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14 }}>
-              {(profile?.company || profile?.full_name || 'A').charAt(0).toUpperCase()}
+            <div
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 10,
+                background: "var(--brand)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#fff",
+                fontFamily: "var(--font-display)",
+                fontWeight: 700,
+                fontSize: 14,
+              }}
+            >
+              {(profile?.company || profile?.full_name || "A")
+                .charAt(0)
+                .toUpperCase()}
             </div>
           </div>
         </header>
 
-        {/* Content */}
-        <main style={{ flex: 1, padding: 28, maxWidth: 1200, width: '100%' }}>
+        {/* Content - COM PADDING CORRETO */}
+        <main
+          style={{
+            flex: 1,
+            padding: "28px",
+            maxWidth: "100%", // IMPORTANTE: 100% para responsivo
+            width: "100%",
+            overflowY: "auto", // Permite scroll se conteúdo for maior
+            boxSizing: "border-box", // Inclui padding no cálculo de width
+          }}
+        >
           {children}
         </main>
       </div>
     </div>
-  )
+  );
 }

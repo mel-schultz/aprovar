@@ -2,16 +2,12 @@ import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 const SUPER_ADMIN = 'mel.schultz@yahoo.com'
-const VALID_ROLES = ['super_admin', 'atendimento', 'cliente']
+const VALID_ROLES = ['super_admin', 'admin', 'atendimento', 'cliente']
 
 async function checkSuperAdmin() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  
-  if (!user || user.email !== SUPER_ADMIN) {
-    return false
-  }
-  return true
+  return user?.email === SUPER_ADMIN
 }
 
 // GET /api/admin/usuarios/[id] - Obter usuário específico
@@ -70,14 +66,24 @@ export async function PATCH(request, { params }) {
     }
 
     const supabase = createClient()
-    const adminClient = require('@/lib/supabase/admin').createAdminClient()
 
     // Atualizar senha se fornecida
     if (senha) {
-      const { error: pwdError } = await adminClient.auth.admin.updateUserById(id, {
-        password: senha
-      })
-      if (pwdError) throw pwdError
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users/${id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+          },
+          body: JSON.stringify({ password: senha })
+        }
+      )
+      
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar senha')
+      }
     }
 
     // Atualizar dados do usuário
@@ -129,17 +135,26 @@ export async function DELETE(request, { params }) {
       .eq('id', id)
       .single()
 
-    if (usuario?.role === 'super_admin') {
+    if (usuario?.email === SUPER_ADMIN || usuario?.role === 'super_admin') {
       return NextResponse.json({ 
-        error: 'Não é possível deletar super admin' 
+        error: 'Não é possível deletar o Super Admin' 
       }, { status: 403 })
     }
 
-    const adminClient = require('@/lib/supabase/admin').createAdminClient()
-
     // Deletar do Auth
-    const { error: authError } = await adminClient.auth.admin.deleteUser(id)
-    if (authError) throw authError
+    const authResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users/${id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        }
+      }
+    )
+
+    if (!authResponse.ok) {
+      throw new Error('Erro ao deletar usuário do Auth')
+    }
 
     // Deletar da tabela usuarios
     const { error: dbError } = await supabase
