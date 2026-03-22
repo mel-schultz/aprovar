@@ -28,6 +28,14 @@ export default function AppLayout({ children, profile }) {
   const [collapsed, setCollapsed] = useState(false)
   const supabase = createClient()
 
+  // Filtrar itens do menu baseado no role
+  const filteredNavItems = navItems.filter(item => {
+    if (item.href === '/users' && profile?.role !== 'admin') {
+      return false
+    }
+    return true
+  })
+
   async function handleSignOut() {
     await supabase.auth.signOut()
     toast.success('Até logo!')
@@ -67,7 +75,7 @@ export default function AppLayout({ children, profile }) {
 
         {/* Nav */}
         <nav style={{ flex: 1, padding: '10px 8px', overflowY: 'auto' }}>
-          {navItems.map(({ href, label, icon: Icon }) => {
+          {filteredNavItems.map(({ href, label, icon: Icon }) => {
             const active = pathname === href || pathname.startsWith(href + '/')
             return (
               <Link

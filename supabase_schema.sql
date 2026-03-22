@@ -15,7 +15,7 @@ create table if not exists public.profiles (
   logo_url         text,
   avatar_url       text,
   brand_color      text        default '#0ea472',
-  role             text        not null default 'admin' check (role in ('admin','client')),
+  role             text        not null default 'cliente' check (role in ('admin','atendimento','cliente')),
   linked_client_id uuid,       -- preenchido depois (FK adicionada abaixo)
   is_active        boolean     not null default true,
   created_by       uuid,       -- FK adicionada abaixo
@@ -99,7 +99,7 @@ create table if not exists public.approval_events (
 create table if not exists public.user_invites (
   id         uuid        primary key default uuid_generate_v4(),
   email      text        not null,
-  role       text        not null default 'client' check (role in ('admin','client')),
+  role       text        not null default 'cliente' check (role in ('admin','atendimento','cliente')),
   invited_by uuid        references public.profiles(id) on delete cascade,
   client_id  uuid        references public.clients(id) on delete set null,
   token      uuid        default uuid_generate_v4() unique,
@@ -117,10 +117,10 @@ alter table public.deliverables    enable row level security;
 alter table public.approval_events enable row level security;
 alter table public.user_invites    enable row level security;
 
--- Profiles: admin vê todos, user vê só o próprio
+-- Profiles: admin vê todos, atendimento vê todos, cliente vê só o próprio
 create policy "profiles_access" on public.profiles for all using (
   auth.uid() = id
-  or exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+  or exists (select 1 from public.profiles p where p.id = auth.uid() and p.role in ('admin','atendimento'))
 );
 
 create policy "team_own"       on public.team_members    for all using (profile_id = auth.uid());
@@ -166,8 +166,10 @@ create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer as $$
 declare v_role text := 'admin';
 begin
-  if new.raw_user_meta_data->>'role' = 'client' then
-    v_role := 'client';
+  if new.raw_user_meta_data->>'role' = 'atendimento' then
+    v_role := 'atendimento';
+  elsif new.raw_user_meta_data->>'role' = 'cliente' then
+    v_role := 'cliente';
   end if;
   insert into public.profiles (id, full_name, email, company, role, is_active)
   values (

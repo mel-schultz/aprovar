@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import {
   Plus, Users, Trash2, Edit2, Shield, User,
   Eye, EyeOff, Search, ToggleLeft, ToggleRight,
-  Building2, UserCheck, ChevronRight,
+  Building2, UserCheck, ChevronRight, Mail, Key,
 } from 'lucide-react'
 import { createClient } from '../../lib/supabase/client'
 import { Button, Modal, FormField, EmptyState } from '../../components/ui'
@@ -16,8 +16,9 @@ import toast from 'react-hot-toast'
 
 /* ── helpers ──────────────────────────────────────────────────── */
 const ROLE_CFG = {
-  admin:  { label: 'Administrador', color: 'var(--brand)', bg: 'var(--brand-light)', Icon: Shield },
-  client: { label: 'Cliente',       color: '#8b5cf6',      bg: '#ede9fe',            Icon: User   },
+  admin:       { label: 'Administrador',  color: 'var(--brand)',  bg: 'var(--brand-light)',  Icon: Shield },
+  atendimento: { label: 'Atendimento',    color: '#06b6d4',      bg: '#cffafe',             Icon: Users   },
+  cliente:     { label: 'Cliente',        color: '#8b5cf6',      bg: '#ede9fe',             Icon: User   },
 }
 function RoleBadge({ role }) {
   const cfg = ROLE_CFG[role] || ROLE_CFG.client
@@ -63,11 +64,11 @@ function SystemUserForm({ initial = {}, clients, onSave, onCancel, isEdit = fals
     <form onSubmit={submit}>
       {/* Role selector */}
       <FormField label="Nível de acesso *">
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10 }}>
           {Object.entries(ROLE_CFG).map(([val, cfg]) => (
             <button key={val} type="button" onClick={() => set('role', val)} style={{
-              display:'flex', alignItems:'center', gap:10, padding:'12px 14px',
-              borderRadius:'var(--radius-sm)', cursor:'pointer', textAlign:'left',
+              display:'flex', flexDirection:'column', alignItems:'flex-start', gap:8, padding:'12px 14px',
+              borderRadius:'var(--radius-sm)', cursor:'pointer',
               border:`2px solid ${form.role === val ? cfg.color : 'var(--border)'}`,
               background: form.role === val ? cfg.bg : 'var(--surface-3)', transition:'all .15s',
             }}>
@@ -76,7 +77,9 @@ function SystemUserForm({ initial = {}, clients, onSave, onCancel, isEdit = fals
               </div>
               <div>
                 <p style={{ fontWeight:600, fontSize:13, color: form.role === val ? cfg.color : 'var(--text)', marginBottom:2 }}>{cfg.label}</p>
-                <p style={{ fontSize:11, color:'var(--text-3)' }}>{val === 'admin' ? 'Acesso total' : 'Portal de aprovação'}</p>
+                <p style={{ fontSize:11, color:'var(--text-3)', lineHeight:1.3 }}>
+                  {val === 'admin' ? 'Acesso total + gerencia usuários' : val === 'atendimento' ? 'Gerencia aprovações' : 'Visualiza aprovações'}
+                </p>
               </div>
             </button>
           ))}
@@ -103,12 +106,12 @@ function SystemUserForm({ initial = {}, clients, onSave, onCancel, isEdit = fals
         </div>
       </FormField>
 
-      {form.role === 'admin' && (
+      {(form.role === 'admin' || form.role === 'atendimento') && (
         <FormField label="Empresa">
           <input value={form.company} onChange={e => set('company', e.target.value)} placeholder="Agência XYZ" />
         </FormField>
       )}
-      {form.role === 'client' && (
+      {form.role === 'cliente' && (
         <FormField label="Cliente vinculado">
           <select value={form.linked_client_id} onChange={e => set('linked_client_id', e.target.value)}>
             <option value="">— Nenhum cliente —</option>
@@ -276,6 +279,17 @@ function SystemUsersTab({ users, setUsers, clients, currentUserId }) {
     setUsers(u => u.filter(usr => usr.id !== user.id)); toast.success('Usuário excluído.')
   }
 
+  async function handleSendResetEmail(user) {
+    const res = await fetch('/api/users/send-reset-email', { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify({ email: user.email }) 
+    })
+    const json = await res.json()
+    if (!res.ok) { toast.error(json.error || 'Erro ao enviar email'); return }
+    toast.success(`Email de recuperação enviado para ${user.email}`)
+  }
+
   return (
     <div>
       {/* Filtros */}
@@ -285,9 +299,9 @@ function SystemUsersTab({ users, setUsers, clients, currentUserId }) {
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar por nome, e-mail ou cliente..." style={{ paddingLeft:34 }} />
         </div>
         <div style={{ display:'flex', gap:6 }}>
-          {['all','admin','client'].map(r => (
+          {['all','admin','atendimento','cliente'].map(r => (
             <button key={r} onClick={() => setRoleFilter(r)} style={{ padding:'7px 14px', borderRadius:99, fontSize:12, fontWeight:500, cursor:'pointer', background: roleFilter === r ? 'var(--brand)' : 'var(--surface)', color: roleFilter === r ? '#fff' : 'var(--text-2)', border:`1px solid ${roleFilter === r ? 'var(--brand)' : 'var(--border)'}`, transition:'all .15s' }}>
-              {{ all:'Todos', admin:'Admins', client:'Clientes' }[r]}
+              {{ all:'Todos', admin:'Admins', atendimento:'Atendimento', cliente:'Clientes' }[r]}
             </button>
           ))}
         </div>
@@ -322,6 +336,7 @@ function SystemUsersTab({ users, setUsers, clients, currentUserId }) {
               <StatusDot active={user.is_active} />
               <span style={{ fontSize:12, color:'var(--text-3)' }}>{user.created_at ? formatDistanceToNow(new Date(user.created_at), { locale:ptBR, addSuffix:true }) : '—'}</span>
               <div style={{ display:'flex', gap:5, justifyContent:'flex-end' }}>
+                <button onClick={() => handleSendResetEmail(user)} title="Enviar email de recuperação" style={{ background:'var(--surface-3)', border:'none', borderRadius:6, padding:6, cursor:'pointer', display:'flex' }}><Mail size={14} color="var(--text-2)" /></button>
                 <button onClick={() => setModal({ edit: user })} title="Editar" style={{ background:'var(--surface-3)', border:'none', borderRadius:6, padding:6, cursor:'pointer', display:'flex' }}><Edit2 size={14} color="var(--text-2)" /></button>
                 <button onClick={() => handleToggle(user)} title={user.is_active ? 'Desativar' : 'Ativar'} disabled={user.id === currentUserId} style={{ background:'var(--surface-3)', border:'none', borderRadius:6, padding:6, cursor: user.id === currentUserId ? 'not-allowed' : 'pointer', display:'flex', opacity: user.id === currentUserId ? .35 : 1 }}>
                   {user.is_active ? <ToggleRight size={14} color="var(--brand)" /> : <ToggleLeft size={14} color="var(--text-3)" />}
@@ -494,7 +509,8 @@ export default function UsersClient({ initialSystemUsers, initialClients, initia
   const stats = [
     { label: 'Usuários do sistema',    value: systemUsers.length,  color: 'var(--brand)' },
     { label: 'Administradores',        value: systemUsers.filter(u => u.role === 'admin').length,  color: 'var(--brand)' },
-    { label: 'Clientes (usuários)',    value: systemUsers.filter(u => u.role === 'client').length, color: '#8b5cf6' },
+    { label: 'Atendimento',            value: systemUsers.filter(u => u.role === 'atendimento').length, color: '#06b6d4' },
+    { label: 'Clientes (usuários)',    value: systemUsers.filter(u => u.role === 'cliente').length, color: '#8b5cf6' },
     { label: 'Clientes da plataforma', value: clients.length,      color: '#f59e0b' },
     { label: 'Aprovadores cadastrados',value: approvers.length,    color: '#0ea5e9' },
   ]
