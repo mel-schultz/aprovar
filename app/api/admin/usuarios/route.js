@@ -2,13 +2,16 @@ import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 const SUPER_ADMIN = 'mel.schultz@yahoo.com'
-const VALID_ROLES = ['super_admin', 'admin', 'atendimento', 'cliente']
+const VALID_ROLES = ['super_admin', 'atendimento', 'cliente']
 
-async function checkSuperAdmin() {
+async function checkSuperAdmin(userId) {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   
-  return user?.email === SUPER_ADMIN
+  if (!user || user.email !== SUPER_ADMIN) {
+    return false
+  }
+  return true
 }
 
 // GET /api/admin/usuarios - Listar todos os usuários
@@ -47,7 +50,6 @@ export async function GET(request) {
       stats: {
         total: data?.length || 0,
         super_admin: data?.filter(u => u.role === 'super_admin').length || 0,
-        admin: data?.filter(u => u.role === 'admin').length || 0,
         atendimento: data?.filter(u => u.role === 'atendimento').length || 0,
         cliente: data?.filter(u => u.role === 'cliente').length || 0,
         ativos: data?.filter(u => u.ativo === true).length || 0,
@@ -96,28 +98,19 @@ export async function POST(request) {
     }
 
     const supabase = createClient()
+    const adminClient = require('@/lib/supabase/admin').createAdminClient()
 
-    // Criar usuário no Auth usando Admin Client
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
-      },
-      body: JSON.stringify({
-        email,
-        password: senha,
-        email_confirm: true,
-        user_metadata: { nome, role }
-      })
+    // Criar usuário no Auth
+    const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
+      email,
+      password: senha,
+      email_confirm: true,
+      user_metadata: { nome, role }
     })
 
-    if (!response.ok) {
-      const error = await response.json()
-      return NextResponse.json({ error: error.message || 'Erro ao criar usuário' }, { status: 400 })
+    if (authError) {
+      return NextResponse.json({ error: authError.message }, { status: 400 })
     }
-
-    const authData = await response.json()
 
     // Criar registro na tabela usuarios
     const { data: usuario, error: dbError } = await supabase
@@ -137,6 +130,8 @@ export async function POST(request) {
       .single()
 
     if (dbError) {
+      // Deletar usuário do auth se falhar
+      await adminClient.auth.admin.deleteUser(authData.user.id)
       return NextResponse.json({ error: dbError.message }, { status: 500 })
     }
 
