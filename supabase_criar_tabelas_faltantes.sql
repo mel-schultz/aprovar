@@ -214,3 +214,17 @@ FROM information_schema.tables
 WHERE table_schema = 'public'
   AND table_name IN ('approvers','deliverables','approval_events','team_members','user_invites')
 ORDER BY table_name;
+
+-- ── Bucket de logos (separado do bucket de deliverables) ──────
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('logos', 'logos', true)
+ON CONFLICT DO NOTHING;
+
+DROP POLICY IF EXISTS "logos_upload" ON storage.objects;
+DROP POLICY IF EXISTS "logos_read"   ON storage.objects;
+CREATE POLICY "logos_upload" ON storage.objects
+  FOR INSERT WITH CHECK (bucket_id = 'logos' AND auth.role() = 'authenticated');
+CREATE POLICY "logos_update" ON storage.objects
+  FOR UPDATE USING (bucket_id = 'logos' AND auth.role() = 'authenticated');
+CREATE POLICY "logos_read" ON storage.objects
+  FOR SELECT USING (bucket_id = 'logos');
