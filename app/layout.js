@@ -1,26 +1,63 @@
 import './globals.css'
-import { Toaster } from 'react-hot-toast'
 
 export const metadata = {
-  title: { default: 'Aprovar', template: '%s | Aprovar' },
-  description: 'Plataforma de aprovações e agendamento de postagens para agências e criadores de conteúdo.',
-  icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230ea472'/><polyline points='25,55 42,72 75,35' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>",
-  },
+  title: 'Aprovar',
+  description: 'Sistema de aprovação de documentos',
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+          {`
+            :root {
+              --brand: #0ea472;
+              --brand-light: #dcf8ed;
+              --surface: #ffffff;
+              --surface-2: #fafafa;
+              --surface-3: #f0f0f0;
+              --text-1: #1a1a1a;
+              --text-2: #666666;
+              --text-3: #999999;
+              --border: #e0e0e0;
+              --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            }
+
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+
+            html, body {
+              height: 100%;
+              font-family: var(--font-display);
+              background: var(--surface-2);
+              color: var(--text-1);
+            }
+
+            body {
+              line-height: 1.5;
+              -webkit-font-smoothing: antialiased;
+            }
+
+            button, input, textarea, select {
+              font-family: inherit;
+              font-size: inherit;
+            }
+
+            a {
+              color: inherit;
+              text-decoration: none;
+            }
+          `}
+        </style>
+      </head>
       <body>
         {children}
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: { fontFamily: 'var(--font-body)', fontSize: 14, borderRadius: 10, boxShadow: 'var(--shadow)' },
-            success: { iconTheme: { primary: '#0ea472', secondary: '#fff' } },
-          }}
-        />
       </body>
     </html>
   )
