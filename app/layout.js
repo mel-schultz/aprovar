@@ -7,7 +7,6 @@ import AppLayout from "../components/layout/AppLayout";
 
 export default function RootLayout({ children }) {
   const [profile, setProfile] = useState(null);
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -15,50 +14,35 @@ export default function RootLayout({ children }) {
 
   useEffect(() => {
     let mounted = true;
+    let authListener = null;
 
-    async function getSession() {
+    async function loadProfile(userId) {
       try {
-        // Pegar usuário autenticado
-        const {
-          data: { user: authUser },
-          error: authError,
-        } = await supabase.auth.getUser();
+        console.log("📥 Buscando profile para user:", userId);
 
-        console.log("🔐 Auth User:", authUser?.email);
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", userId)
+          .single();
 
-        if (authError || !authUser) {
-          console.log("❌ Usuário não autenticado");
+        if (profileError) {
+          console.error("❌ Erro ao buscar profile:", profileError);
           if (mounted) {
-            setUser(null);
             setProfile(null);
-            setLoading(false);
           }
           return;
         }
 
-        if (mounted) {
-          setUser(authUser);
-        }
-
-        // Pegar profile do banco
-        const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", authUser.id)
-          .single();
-
-        console.log("👤 Profile DB:", profileData);
-        console.log("⚠️ Profile Error:", profileError);
-
-        if (profileData && !profileError) {
+        if (profileData) {
+          console.log("✅ Profile carregado:", profileData);
           if (mounted) {
             setProfile(profileData);
-            console.log("✅ Profile carregado com sucesso:", profileData);
           }
         } else {
+          console.log("⚠️ Profile não encontrado");
           if (mounted) {
             setProfile(null);
-            console.log("⚠️ Profile não encontrado no banco");
           }
         }
       } catch (error) {
@@ -66,18 +50,74 @@ export default function RootLayout({ children }) {
         if (mounted) {
           setProfile(null);
         }
-      } finally {
+      }
+    }
+
+    async function checkAuth() {
+      try {
+        // Verificar sessão atual
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+
+        console.log("🔐 Sessão:", session?.user?.email || "Nenhuma sessão");
+
+        if (error) {
+          console.error("❌ Erro ao obter sessão:", error);
+          if (mounted) {
+            setLoading(false);
+          }
+          return;
+        }
+
+        if (session?.user?.id) {
+          console.log("✅ Usuário autenticado:", session.user.email);
+          await loadProfile(session.user.id);
+        } else {
+          console.log("⚠️ Sessão não encontrada");
+          if (mounted) {
+            setProfile(null);
+          }
+        }
+
+        if (mounted) {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("🔴 Erro em checkAuth:", error);
         if (mounted) {
           setLoading(false);
         }
       }
     }
 
-    getSession();
+    // Verificar autenticação na primeira vez
+    checkAuth();
+
+    // Monitorar mudanças de autenticação em tempo real
+    authListener = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("🔄 Auth state changed:", event, session?.user?.email);
+
+      if (session?.user?.id) {
+        await loadProfile(session.user.id);
+      } else {
+        if (mounted) {
+          setProfile(null);
+        }
+      }
+
+      if (mounted) {
+        setLoading(false);
+      }
+    });
 
     // Cleanup
     return () => {
       mounted = false;
+      if (authListener?.data?.subscription) {
+        authListener.data.subscription.unsubscribe();
+      }
     };
   }, [supabase]);
 
@@ -85,20 +125,9 @@ export default function RootLayout({ children }) {
   if (loading) {
     return (
       <html>
-        <body style={{ margin: 0, padding: 20 }}>
-          <div style={{ textAlign: "center" }}>Carregando...</div>
-        </body>
-      </html>
-    );
-  }
-
-  // Se não está autenticado, redirecionar para login
-  if (!user) {
-    return (
-      <html>
-        <body style={{ margin: 0, padding: 20 }}>
-          <div style={{ textAlign: "center" }}>
-            Redirecionando para login...
+        <body style={{ margin: 0, padding: 20, fontFamily: "system-ui" }}>
+          <div style={{ textAlign: "center", paddingTop: 50 }}>
+            <div style={{ fontSize: 18, color: "#666" }}>Carregando...</div>
           </div>
         </body>
       </html>
