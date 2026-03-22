@@ -27,8 +27,7 @@ export default async function DashboardPage() {
     supabase.from('clients').select('*', { count: 'exact', head: true }).eq('profile_id', session.user.id),
     supabase.from('deliverables').select('*', { count: 'exact', head: true }).eq('profile_id', session.user.id).eq('status', 'pending'),
     supabase.from('deliverables').select('*', { count: 'exact', head: true }).eq('profile_id', session.user.id).eq('status', 'approved'),
-    // Agendados = entregáveis com data agendada mas NÃO aprovados ainda
-    supabase.from('deliverables').select('*', { count: 'exact', head: true }).eq('profile_id', session.user.id).not('scheduled_at', 'is', null).neq('status', 'approved'),
+    supabase.from('deliverables').select('*', { count: 'exact', head: true }).eq('profile_id', session.user.id).not('scheduled_at', 'is', null),
     getDeliverablesWithClientName(supabase, { profileId: session.user.id, fields: 'id,title,status,created_at,client_id', orderBy: { column: 'created_at', ascending: false }, limit: 6 }),
   ])
 
