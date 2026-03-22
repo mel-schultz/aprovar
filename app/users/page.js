@@ -13,11 +13,7 @@ export default async function UsersPage() {
   if (!session) redirect('/login')
 
   const profile = await getOrCreateProfile(supabase, session.user)
-  
-  // Apenas admin pode acessar esta página
-  if (profile?.role !== 'admin') {
-    redirect('/dashboard')
-  }
+  if (profile?.role !== 'admin') redirect('/portal')
 
   const [
     { data: systemUsers },

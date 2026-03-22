@@ -57,8 +57,24 @@ export default function RootLayout({ children }) {
         </style>
       </head>
       <body>
-        {children}
+        <AppLayoutWrapper>
+          {children}
+        </AppLayoutWrapper>
       </body>
     </html>
+  )
+}
+
+// Componente separado para autenticação (Client Component)
+import { Suspense } from 'react'
+import AppLayoutClient from '../components/layout/AppLayoutClient'
+
+function AppLayoutWrapper({ children }) {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <AppLayoutClient>
+        {children}
+      </AppLayoutClient>
+    </Suspense>
   )
 }

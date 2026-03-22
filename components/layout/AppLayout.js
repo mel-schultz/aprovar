@@ -13,7 +13,6 @@ import toast from 'react-hot-toast'
 
 const navItems = [
   { href: '/dashboard',    label: 'Início',        icon: LayoutDashboard },
-  { href: '/dashboard/users',     label: 'Gerenciar Usuários', icon: UserCog, requiresSuperAdmin: true },
   { href: '/dashboard/clients',   label: 'Clientes',           icon: Users },
   { href: '/dashboard/approvals', label: 'Aprovações',         icon: CheckSquare },
   { href: '/dashboard/schedule',  label: 'Calendário',         icon: Calendar },
@@ -27,14 +26,19 @@ export default function AppLayout({ children, profile }) {
   const [collapsed, setCollapsed] = useState(false)
   const supabase = createClient()
 
-  // Filtrar itens do menu baseado em permissões
-  const filteredNavItems = navItems.filter(item => {
-    // Se requer super admin, apenas mostrar para super admin
-    if (item.requiresSuperAdmin) {
-      return profile?.is_super_admin || profile?.role === 'super_admin'
-    }
-    return true
-  })
+  // Filtrar itens do menu: adicionar "Gerenciar Usuários" apenas para super admin
+  const filteredNavItems = profile?.is_super_admin || profile?.role === 'super_admin'
+    ? [
+        { href: '/dashboard',    label: 'Início',        icon: LayoutDashboard },
+        { href: '/dashboard/users',     label: 'Gerenciar Usuários', icon: UserCog },
+        { href: '/dashboard/clients',   label: 'Clientes',           icon: Users },
+        { href: '/dashboard/approvals', label: 'Aprovações',         icon: CheckSquare },
+        { href: '/dashboard/schedule',  label: 'Calendário',         icon: Calendar },
+        { href: '/dashboard/team',      label: 'Equipe',             icon: Users },
+        { href: '/dashboard/integrations', label: 'Integrações',     icon: Puzzle },
+        { href: '/dashboard/settings',  label: 'Configurações',      icon: Settings },
+      ]
+    : navItems
 
   async function handleSignOut() {
     try {
