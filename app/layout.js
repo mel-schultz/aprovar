@@ -1,145 +1,99 @@
-"use client";
+import './globals.css'
+import { createClient } from '../lib/supabase/server'
+import AppLayout from '../components/layout/AppLayout'
+import { cookies } from 'next/headers'
 
-import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { createClient } from "../lib/supabase/client";
-import AppLayout from "../components/layout/AppLayout";
+export const metadata = {
+  title: 'Aprovar',
+  description: 'Sistema de aprovação de documentos',
+}
 
-export default function RootLayout({ children }) {
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const pathname = usePathname();
-  const supabase = createClient();
+async function getProfile() {
+  try {
+    const cookieStore = await cookies()
+    const supabase = createClient(cookieStore)
 
-  useEffect(() => {
-    let mounted = true;
-    let authListener = null;
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-    async function loadProfile(userId) {
-      try {
-        console.log("📥 Buscando profile para user:", userId);
-
-        const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", userId)
-          .single();
-
-        if (profileError) {
-          console.error("❌ Erro ao buscar profile:", profileError);
-          if (mounted) {
-            setProfile(null);
-          }
-          return;
-        }
-
-        if (profileData) {
-          console.log("✅ Profile carregado:", profileData);
-          if (mounted) {
-            setProfile(profileData);
-          }
-        } else {
-          console.log("⚠️ Profile não encontrado");
-          if (mounted) {
-            setProfile(null);
-          }
-        }
-      } catch (error) {
-        console.error("🔴 Erro ao buscar profile:", error);
-        if (mounted) {
-          setProfile(null);
-        }
-      }
+    if (authError || !user) {
+      return null
     }
 
-    async function checkAuth() {
-      try {
-        // Verificar sessão atual
-        const {
-          data: { session },
-          error,
-        } = await supabase.auth.getSession();
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single()
 
-        console.log("🔐 Sessão:", session?.user?.email || "Nenhuma sessão");
-
-        if (error) {
-          console.error("❌ Erro ao obter sessão:", error);
-          if (mounted) {
-            setLoading(false);
-          }
-          return;
-        }
-
-        if (session?.user?.id) {
-          console.log("✅ Usuário autenticado:", session.user.email);
-          await loadProfile(session.user.id);
-        } else {
-          console.log("⚠️ Sessão não encontrada");
-          if (mounted) {
-            setProfile(null);
-          }
-        }
-
-        if (mounted) {
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("🔴 Erro em checkAuth:", error);
-        if (mounted) {
-          setLoading(false);
-        }
-      }
+    if (profileError || !profile) {
+      return null
     }
 
-    // Verificar autenticação na primeira vez
-    checkAuth();
-
-    // Monitorar mudanças de autenticação em tempo real
-    authListener = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("🔄 Auth state changed:", event, session?.user?.email);
-
-      if (session?.user?.id) {
-        await loadProfile(session.user.id);
-      } else {
-        if (mounted) {
-          setProfile(null);
-        }
-      }
-
-      if (mounted) {
-        setLoading(false);
-      }
-    });
-
-    // Cleanup
-    return () => {
-      mounted = false;
-      if (authListener?.data?.subscription) {
-        authListener.data.subscription.unsubscribe();
-      }
-    };
-  }, [supabase]);
-
-  // Se está carregando, mostrar tela de carregamento
-  if (loading) {
-    return (
-      <html>
-        <body style={{ margin: 0, padding: 20, fontFamily: "system-ui" }}>
-          <div style={{ textAlign: "center", paddingTop: 50 }}>
-            <div style={{ fontSize: 18, color: "#666" }}>Carregando...</div>
-          </div>
-        </body>
-      </html>
-    );
+    return profile
+  } catch (error) {
+    console.error('Erro ao buscar profile:', error)
+    return null
   }
+}
 
-  // Renderizar com AppLayout
+export default async function RootLayout({ children }) {
+  const profile = await getProfile()
+
   return (
-    <html>
-      <body style={{ margin: 0, padding: 0 }}>
-        <AppLayout profile={profile}>{children}</AppLayout>
+    <html lang="pt-BR">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+          {`
+            :root {
+              --brand: #0ea472;
+              --brand-light: #dcf8ed;
+              --surface: #ffffff;
+              --surface-2: #fafafa;
+              --surface-3: #f0f0f0;
+              --text-1: #1a1a1a;
+              --text-2: #666666;
+              --text-3: #999999;
+              --border: #e0e0e0;
+              --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            }
+
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+
+            html, body {
+              height: 100%;
+              font-family: var(--font-display);
+              background: var(--surface-2);
+              color: var(--text-1);
+            }
+
+            body {
+              line-height: 1.5;
+              -webkit-font-smoothing: antialiased;
+            }
+
+            button, input, textarea, select {
+              font-family: inherit;
+              font-size: inherit;
+            }
+
+            a {
+              color: inherit;
+              text-decoration: none;
+            }
+          `}
+        </style>
+      </head>
+      <body>
+        <AppLayout profile={profile}>
+          {children}
+        </AppLayout>
       </body>
     </html>
-  );
+  )
 }
