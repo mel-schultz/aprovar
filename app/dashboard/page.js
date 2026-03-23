@@ -56,8 +56,13 @@ export default function Dashboard() {
           <p>Olá, {user?.email || 'Usuário'}! 👋</p>
         </div>
 
-        {/* STATS GRID */}
-        <div className="grid" style={{ marginBottom: '40px' }}>
+        {/* STATS GRID - 4 COLUNAS */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: '20px',
+          marginBottom: '40px',
+        }}>
           <StatCard title="📋 Clientes" count="--" color="linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)" />
           <StatCard title="📦 Entregáveis" count="--" color="linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)" />
           <StatCard title="✅ Aprovados" count="--" color="linear-gradient(135deg, #10b981 0%, #059669 100%)" />
@@ -67,7 +72,12 @@ export default function Dashboard() {
         {/* QUICK ACTIONS */}
         <div>
           <h2>Atalhos Rápidos</h2>
-          <div className="grid-2" style={{ marginTop: '20px' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '20px',
+            marginTop: '20px',
+          }}>
             <QuickAction href="/clientes" title="Novo Cliente" icon="➕" desc="Adicione um novo cliente" />
             <QuickAction href="/entregaveis" title="Novo Entregável" icon="📄" desc="Crie um novo entregável" />
             <QuickAction href="/calendario" title="Ver Calendário" icon="📅" desc="Visualize eventos" />
@@ -164,12 +174,14 @@ function QuickAction({ href, title, icon, desc }) {
   return (
     <Link href={href} className="card" style={{
       display: 'flex',
+      flexDirection: 'column',
       alignItems: 'center',
-      gap: '20px',
+      gap: '16px',
       padding: '24px',
       cursor: 'pointer',
       textDecoration: 'none',
       color: 'inherit',
+      textAlign: 'center',
     }}>
       <div style={{
         fontSize: '40px',
@@ -184,8 +196,8 @@ function QuickAction({ href, title, icon, desc }) {
         {icon}
       </div>
       <div>
-        <h3 style={{ margin: '0 0 4px 0', fontSize: '16px' }}>{title}</h3>
-        <p style={{ margin: '0', fontSize: '13px', color: '#64748b' }}>{desc}</p>
+        <h3 style={{ margin: '0 0 4px 0', fontSize: '15px' }}>{title}</h3>
+        <p style={{ margin: '0', fontSize: '12px', color: '#64748b' }}>{desc}</p>
       </div>
     </Link>
   )

@@ -467,3 +467,52 @@ p {
     font-size: 20px;
   }
 }
+
+/* =====================================================
+   DASHBOARD GRID - RESPONSIVIDADE
+   ===================================================== */
+
+/* 4 colunas em desktop (1200px+) */
+@media (min-width: 1200px) {
+  .dashboard-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
+/* 3 colunas em tablets grandes (900px - 1199px) */
+@media (min-width: 900px) and (max-width: 1199px) {
+  .dashboard-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+/* 2 colunas em tablets (600px - 899px) */
+@media (min-width: 600px) and (max-width: 899px) {
+  .dashboard-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* 1 coluna em mobile (menos de 600px) */
+@media (max-width: 599px) {
+  .dashboard-grid-4 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+  
+  .sidebar {
+    display: none;
+  }
+}
