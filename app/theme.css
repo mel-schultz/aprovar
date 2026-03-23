@@ -8,170 +8,157 @@
 /* =====================================================
    TEMA ESCURO — ajustes de componentes
    ===================================================== */
+:root,
+[data-theme='dark'] {
+  /* Botão primário no escuro usa verde do Primer */
+  .btn-primary {
+    background-color: #238636;
+    border-color: rgba(240, 246, 252, 0.1);
+    color: #ffffff;
+  }
 
-/* Botão primário no escuro usa verde do Primer */
-:root .btn-primary,
-[data-theme='dark'] .btn-primary {
-  background-color: #238636;
-  border-color: rgba(240, 246, 252, 0.1);
-  color: #ffffff;
+  .btn-primary:hover:not(:disabled) {
+    background-color: #2ea043;
+  }
+
+  /* Inputs no escuro */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: #0d1117;
+    border-color: #30363d;
+    color: #e6edf3;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: #58a6ff;
+    box-shadow: inset 0 0 0 1px #58a6ff;
+    background: #0d1117;
+  }
+
+  /* Card no escuro */
+  .card {
+    background: #161b22;
+    border-color: #30363d;
+  }
+
+  .card:hover {
+    border-color: #8b949e;
+  }
+
+  /* Sidebar no escuro */
+  .sidebar {
+    background: #161b22;
+    border-right-color: #30363d;
+  }
+
+  /* Tabela no escuro */
+  .table {
+    background: #161b22;
+    border-color: #30363d;
+  }
+
+  .table th {
+    background: #161b22;
+    border-bottom-color: #30363d;
+    color: #8b949e;
+  }
+
+  .table td {
+    border-bottom-color: #21262d;
+    color: #e6edf3;
+  }
+
+  .table tbody tr:hover {
+    background: rgba(177, 186, 196, 0.04);
+  }
 }
-
-:root .btn-primary:hover:not(:disabled),
-[data-theme='dark'] .btn-primary:hover:not(:disabled) {
-  background-color: #2ea043;
-}
-
-/* Inputs no escuro */
-:root .form-group input,
-:root .form-group select,
-:root .form-group textarea,
-[data-theme='dark'] .form-group input,
-[data-theme='dark'] .form-group select,
-[data-theme='dark'] .form-group textarea {
-  background: #0d1117;
-  border-color: #30363d;
-  color: #e6edf3;
-}
-
-:root .form-group input:focus,
-:root .form-group select:focus,
-:root .form-group textarea:focus,
-[data-theme='dark'] .form-group input:focus,
-[data-theme='dark'] .form-group select:focus,
-[data-theme='dark'] .form-group textarea:focus {
-  border-color: #58a6ff;
-  box-shadow: inset 0 0 0 1px #58a6ff;
-  background: #0d1117;
-}
-
-/* Card no escuro */
-:root .card,
-[data-theme='dark'] .card {
-  background: #161b22;
-  border-color: #30363d;
-}
-
-:root .card:hover,
-[data-theme='dark'] .card:hover {
-  border-color: #8b949e;
-}
-
-/* Sidebar no escuro */
-:root .sidebar,
-[data-theme='dark'] .sidebar {
-  background: #161b22;
-  border-right-color: #30363d;
-}
-
-/* Tabela no escuro */
-:root .table,
-[data-theme='dark'] .table {
-  background: #161b22;
-  border-color: #30363d;
-}
-
-:root .table th,
-[data-theme='dark'] .table th {
-  background: #161b22;
-  border-bottom-color: #30363d;
-  color: #8b949e;
-}
-
-:root .table td,
-[data-theme='dark'] .table td {
-  border-bottom-color: #21262d;
-  color: #e6edf3;
-}
-
-:root .table tbody tr:hover,
-[data-theme='dark'] .table tbody tr:hover {
-  background: rgba(177, 186, 196, 0.04);
-}
-
 
 /* =====================================================
    TEMA CLARO — ajustes de componentes
    ===================================================== */
+[data-theme='light'] {
+  /* Botão primário no claro */
+  .btn-primary {
+    background-color: #1f883d;
+    border-color: rgba(31, 35, 40, 0.15);
+    color: #ffffff;
+    box-shadow: 0 1px 0 rgba(31, 35, 40, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
 
-/* Botão primário no claro */
-[data-theme='light'] .btn-primary {
-  background-color: #1f883d;
-  border-color: rgba(31, 35, 40, 0.15);
-  color: #ffffff;
-  box-shadow: 0 1px 0 rgba(31, 35, 40, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.03);
-}
+  .btn-primary:hover:not(:disabled) {
+    background-color: #1a7f37;
+  }
 
-[data-theme='light'] .btn-primary:hover:not(:disabled) {
-  background-color: #1a7f37;
-}
+  /* Inputs no claro */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: #ffffff;
+    border-color: #d0d7de;
+    color: #1f2328;
+    box-shadow: inset 0 1px 0 rgba(208, 215, 222, 0.2);
+  }
 
-/* Inputs no claro */
-[data-theme='light'] .form-group input,
-[data-theme='light'] .form-group select,
-[data-theme='light'] .form-group textarea {
-  background: #ffffff;
-  border-color: #d0d7de;
-  color: #1f2328;
-  box-shadow: inset 0 1px 0 rgba(208, 215, 222, 0.2);
-}
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: #0969da;
+    box-shadow: inset 0 0 0 1px #0969da;
+    background: #ffffff;
+  }
 
-[data-theme='light'] .form-group input:focus,
-[data-theme='light'] .form-group select:focus,
-[data-theme='light'] .form-group textarea:focus {
-  border-color: #0969da;
-  box-shadow: inset 0 0 0 1px #0969da;
-  background: #ffffff;
-}
+  /* Card no claro */
+  .card {
+    background: #ffffff;
+    border-color: #d0d7de;
+    box-shadow: 0 1px 0 rgba(31, 35, 40, 0.04);
+  }
 
-/* Card no claro */
-[data-theme='light'] .card {
-  background: #ffffff;
-  border-color: #d0d7de;
-  box-shadow: 0 1px 0 rgba(31, 35, 40, 0.04);
-}
+  .card:hover {
+    border-color: #8c959f;
+    box-shadow: 0 3px 6px rgba(140, 149, 159, 0.15);
+  }
 
-[data-theme='light'] .card:hover {
-  border-color: #8c959f;
-  box-shadow: 0 3px 6px rgba(140, 149, 159, 0.15);
-}
+  /* Sidebar no claro */
+  .sidebar {
+    background: #f6f8fa;
+    border-right-color: #d0d7de;
+  }
 
-/* Sidebar no claro */
-[data-theme='light'] .sidebar {
-  background: #f6f8fa;
-  border-right-color: #d0d7de;
-}
+  /* Tabela no claro */
+  .table {
+    background: #ffffff;
+    border-color: #d0d7de;
+  }
 
-/* Tabela no claro */
-[data-theme='light'] .table {
-  background: #ffffff;
-  border-color: #d0d7de;
-}
+  .table th {
+    background: #f6f8fa;
+    border-bottom-color: #d0d7de;
+    color: #636c76;
+  }
 
-[data-theme='light'] .table th {
-  background: #f6f8fa;
-  border-bottom-color: #d0d7de;
-  color: #636c76;
-}
+  .table td {
+    border-bottom-color: #eaeef2;
+    color: #1f2328;
+  }
 
-[data-theme='light'] .table td {
-  border-bottom-color: #eaeef2;
-  color: #1f2328;
-}
+  .table tbody tr:hover {
+    background: rgba(208, 215, 222, 0.16);
+  }
 
-[data-theme='light'] .table tbody tr:hover {
-  background: rgba(208, 215, 222, 0.16);
-}
+  /* Botão secundário no claro */
+  .btn-secondary {
+    background-color: #f6f8fa;
+    border-color: rgba(31, 35, 40, 0.15);
+    color: #24292f;
+    box-shadow: 0 1px 0 rgba(31, 35, 40, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
 
-/* Botão secundário no claro */
-[data-theme='light'] .btn-secondary {
-  background-color: #f6f8fa;
-  border-color: rgba(31, 35, 40, 0.15);
-  color: #24292f;
-  box-shadow: 0 1px 0 rgba(31, 35, 40, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-}
-
-[data-theme='light'] .btn-secondary:hover:not(:disabled) {
-  background-color: #f3f4f6;
-  border-color: rgba(31, 35, 40, 0.15);
+  .btn-secondary:hover:not(:disabled) {
+    background-color: #f3f4f6;
+    border-color: rgba(31, 35, 40, 0.15);
+  }
 }
