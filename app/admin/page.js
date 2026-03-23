@@ -15,6 +15,11 @@ export default function Admin() {
     { id: 1, nome: 'Admin Master', email: 'admin@aprovar.com', role: 'admin', status: 'ativo', criadoEm: '2024-01-15' },
     { id: 2, nome: 'João Silva', email: 'joao@aprovar.com', role: 'atendimento', status: 'ativo', criadoEm: '2024-02-10' },
     { id: 3, nome: 'Maria Santos', email: 'maria@empresa.com', role: 'cliente', status: 'ativo', criadoEm: '2024-03-01' },
+    { id: 4, nome: 'Pedro Oliveira', email: 'pedro@empresa.com', role: 'cliente', status: 'ativo', criadoEm: '2024-03-05' },
+    { id: 5, nome: 'Ana Costa', email: 'ana@empresa.com', role: 'atendimento', status: 'ativo', criadoEm: '2024-03-10' },
+    { id: 6, nome: 'Carlos Mendes', email: 'carlos@empresa.com', role: 'cliente', status: 'inativo', criadoEm: '2024-03-12' },
+    { id: 7, nome: 'Lucia Ferreira', email: 'lucia@empresa.com', role: 'cliente', status: 'ativo', criadoEm: '2024-03-15' },
+    { id: 8, nome: 'Bruno Alves', email: 'bruno@empresa.com', role: 'atendimento', status: 'ativo', criadoEm: '2024-03-18' },
   ])
   const [showModal, setShowModal] = useState(false)
   const [selectedUsuario, setSelectedUsuario] = useState(null)
@@ -23,7 +28,6 @@ export default function Admin() {
   const [filterStatus, setFilterStatus] = useState('all')
   const [formData, setFormData] = useState({ nome: '', email: '', role: 'cliente', status: 'ativo' })
 
-  // Filtrar usuários
   const filteredUsuarios = useMemo(() => {
     return usuarios.filter(u => {
       const matchSearch = u.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -34,21 +38,18 @@ export default function Admin() {
     })
   }, [usuarios, searchTerm, filterRole, filterStatus])
 
-  // Abrir modal para novo usuário
   const handleNewUsuario = () => {
     setSelectedUsuario(null)
     setFormData({ nome: '', email: '', role: 'cliente', status: 'ativo' })
     setShowModal(true)
   }
 
-  // Abrir modal para editar usuário
   const handleEditUsuario = (usuario) => {
     setSelectedUsuario(usuario)
     setFormData(usuario)
     setShowModal(true)
   }
 
-  // Salvar usuário
   const handleSaveUsuario = (e) => {
     e.preventDefault()
     if (!formData.nome.trim() || !formData.email.trim()) return
@@ -64,7 +65,6 @@ export default function Admin() {
     setFormData({ nome: '', email: '', role: 'cliente', status: 'ativo' })
   }
 
-  // Deletar usuário
   const handleDeleteUsuario = (usuarioId) => {
     if (confirm('Tem certeza que deseja remover este usuário?')) {
       setUsuarios(usuarios.filter(u => u.id !== usuarioId))
@@ -130,82 +130,73 @@ export default function Admin() {
           </select>
         </div>
 
-        {/* TABLE */}
-        <div className="card">
-          <div className="table-wrapper">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Usuário</th>
-                  <th>Email</th>
-                  <th>Função</th>
-                  <th>Status</th>
-                  <th>Criado em</th>
-                  <th style={{ textAlign: 'right' }}>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredUsuarios.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--color-fg-muted)' }}>
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.5, margin: '0 auto 12px' }}>
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                      </svg>
-                      <p>Nenhum usuário encontrado</p>
-                    </td>
-                  </tr>
-                ) : (
-                  filteredUsuarios.map(usuario => (
-                    <tr key={usuario.id}>
-                      <td>
-                        <div className="user-cell">
-                          <span className="user-avatar">{usuario.nome.charAt(0).toUpperCase()}</span>
-                          <span className="user-name">{usuario.nome}</span>
-                        </div>
-                      </td>
-                      <td><code className="code-text">{usuario.email}</code></td>
-                      <td>
-                        <span
-                          className="role-badge"
-                          style={{
-                            background: ROLE_CONFIG[usuario.role]?.color,
-                            color: ROLE_CONFIG[usuario.role]?.textColor,
-                          }}
-                        >
-                          {ROLE_CONFIG[usuario.role]?.icon} {ROLE_CONFIG[usuario.role]?.label}
-                        </span>
-                      </td>
-                      <td>
-                        <span className={`status-badge ${usuario.status}`}>
-                          {usuario.status === 'ativo' ? 'Ativo' : 'Inativo'}
-                        </span>
-                      </td>
-                      <td>{new Date(usuario.criadoEm).toLocaleDateString('pt-BR')}</td>
-                      <td style={{ textAlign: 'right' }}>
-                        <button
-                          onClick={() => handleEditUsuario(usuario)}
-                          className="btn-icon-small"
-                          title="Editar"
-                        >
-                          ✏️
-                        </button>
-                        <button
-                          onClick={() => handleDeleteUsuario(usuario.id)}
-                          className="btn-icon-small btn-icon-danger"
-                          title="Deletar"
-                        >
-                          🗑️
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="table-footer">
-            <span className="table-info">{filteredUsuarios.length} usuário(s) encontrado(s)</span>
-          </div>
+        {/* USERS GRID - 4 COLUNAS */}
+        <div className="grid-4col">
+          {filteredUsuarios.length === 0 ? (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 20px', color: 'var(--color-fg-muted)' }}>
+              <p>Nenhum usuário encontrado</p>
+            </div>
+          ) : (
+            filteredUsuarios.map(usuario => (
+              <div
+                key={usuario.id}
+                className="user-card"
+                onClick={() => handleEditUsuario(usuario)}
+              >
+                <div className="user-header">
+                  <span className="user-avatar">{usuario.nome.charAt(0).toUpperCase()}</span>
+                  <span className={`status-badge ${usuario.status}`}>
+                    {usuario.status === 'ativo' ? 'Ativo' : 'Inativo'}
+                  </span>
+                </div>
+                <h3 className="user-name">{usuario.nome}</h3>
+                <div className="user-meta">
+                  <div className="meta-item">
+                    <span className="meta-label">Email:</span>
+                    <span className="meta-value">{usuario.email}</span>
+                  </div>
+                  <div className="meta-item">
+                    <span className="meta-label">Função:</span>
+                    <span
+                      className="role-badge"
+                      style={{
+                        background: ROLE_CONFIG[usuario.role]?.color,
+                        color: ROLE_CONFIG[usuario.role]?.textColor,
+                      }}
+                    >
+                      {ROLE_CONFIG[usuario.role]?.label}
+                    </span>
+                  </div>
+                  <div className="meta-item">
+                    <span className="meta-label">Criado:</span>
+                    <span className="meta-value">{new Date(usuario.criadoEm).toLocaleDateString('pt-BR')}</span>
+                  </div>
+                </div>
+                <div className="user-actions">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleEditUsuario(usuario)
+                    }}
+                    className="btn-icon-small"
+                    title="Editar"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDeleteUsuario(usuario.id)
+                    }}
+                    className="btn-icon-small btn-icon-danger"
+                    title="Deletar"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         {/* MODAL */}
@@ -302,7 +293,16 @@ export default function Admin() {
 
       <style>{`
         .app-shell { display: flex; min-height: 100vh; }
+        .main-content { flex: 1; padding: 24px; overflow-y: auto; background: var(--color-canvas-default); }
         .required { color: var(--color-danger-fg); }
+
+        /* Grid Layout - 4 Colunas */
+        .grid-4col {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+          margin-bottom: 32px;
+        }
 
         /* Filters Bar */
         .filters-bar {
@@ -349,95 +349,41 @@ export default function Admin() {
           cursor: pointer;
         }
 
-        /* Table */
-        .card {
+        /* User Card */
+        .user-card {
           background: var(--color-canvas-default);
           border: 1px solid var(--color-border-default);
           border-radius: 8px;
-          overflow: hidden;
+          padding: 16px;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
         }
 
-        .table-wrapper {
-          overflow-x: auto;
+        .user-card:hover {
+          border-color: var(--color-accent-fg);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
-        .data-table {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 13px;
-        }
-
-        .data-table thead {
-          background: var(--color-canvas-subtle);
-          border-bottom: 1px solid var(--color-border-muted);
-        }
-
-        .data-table th {
-          padding: 12px 16px;
-          text-align: left;
-          font-weight: 600;
-          color: var(--color-fg-muted);
-          text-transform: uppercase;
-          font-size: 11px;
-          letter-spacing: 0.04em;
-        }
-
-        .data-table td {
-          padding: 12px 16px;
-          border-bottom: 1px solid var(--color-border-muted);
-          color: var(--color-fg-default);
-        }
-
-        .data-table tbody tr:hover {
-          background: var(--hover-bg);
-        }
-
-        .data-table tbody tr:last-child td {
-          border-bottom: none;
-        }
-
-        .user-cell {
+        .user-header {
           display: flex;
           align-items: center;
-          gap: 8px;
+          justify-content: space-between;
         }
 
         .user-avatar {
           font-weight: 600;
-          width: 32px;
-          height: 32px;
+          width: 48px;
+          height: 48px;
           display: flex;
           align-items: center;
           justify-content: center;
           background: var(--color-accent-subtle);
           border-radius: 6px;
           color: var(--color-accent-fg);
-          font-size: 13px;
-        }
-
-        .user-name {
-          font-weight: 500;
-          color: var(--color-fg-default);
-        }
-
-        .code-text {
-          background: var(--color-canvas-subtle);
-          padding: 2px 6px;
-          border-radius: 3px;
-          font-family: monospace;
-          font-size: 12px;
-          color: var(--color-fg-muted);
-        }
-
-        .role-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          padding: 4px 8px;
-          border-radius: 4px;
-          font-size: 11px;
-          font-weight: 600;
-          white-space: nowrap;
+          font-size: 18px;
         }
 
         .status-badge {
@@ -460,16 +406,58 @@ export default function Admin() {
           color: #991b1b;
         }
 
-        .table-footer {
-          padding: 12px 16px;
-          background: var(--color-canvas-subtle);
-          border-top: 1px solid var(--color-border-muted);
-          font-size: 12px;
-          color: var(--color-fg-muted);
+        .user-name {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--color-fg-default);
+          margin: 0;
         }
 
-        .table-info {
+        .user-meta {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          padding: 8px 0;
+          border-top: 1px solid var(--color-border-muted);
+          border-bottom: 1px solid var(--color-border-muted);
+        }
+
+        .meta-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 12px;
+          gap: 8px;
+        }
+
+        .meta-label {
+          color: var(--color-fg-muted);
           font-weight: 500;
+        }
+
+        .meta-value {
+          color: var(--color-fg-default);
+          font-weight: 500;
+          text-align: right;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .role-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          padding: 2px 6px;
+          border-radius: 3px;
+          font-size: 10px;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+
+        .user-actions {
+          display: flex;
+          gap: 4px;
+          justify-content: flex-end;
         }
 
         .btn-icon-small {
@@ -480,7 +468,6 @@ export default function Admin() {
           padding: 4px 8px;
           border-radius: 4px;
           transition: background-color 0.15s ease;
-          margin: 0 2px;
         }
 
         .btn-icon-small:hover {
@@ -597,7 +584,24 @@ export default function Admin() {
           border-top: 1px solid var(--color-border-muted);
         }
 
-        @media (max-width: 768px) {
+        /* Responsividade */
+        @media (max-width: 1400px) {
+          .grid-4col {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+
+        @media (max-width: 1024px) {
+          .grid-4col {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
+        @media (max-width: 640px) {
+          .grid-4col {
+            grid-template-columns: 1fr;
+          }
+
           .filters-bar {
             flex-direction: column;
           }
@@ -609,15 +613,6 @@ export default function Admin() {
 
           .form-row {
             grid-template-columns: 1fr;
-          }
-
-          .data-table {
-            font-size: 12px;
-          }
-
-          .data-table th,
-          .data-table td {
-            padding: 8px 12px;
           }
         }
       `}</style>

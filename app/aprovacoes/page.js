@@ -16,6 +16,10 @@ export default function Aprovacoes() {
     { id: 2, titulo: 'Website Homepage', cliente: 'Empresa Y', dataEnvio: '2024-03-19', status: 'pendente', descricao: 'Design responsivo da homepage' },
     { id: 3, titulo: 'Mobile App Design', cliente: 'Empresa Z', dataEnvio: '2024-03-18', status: 'aprovado', descricao: 'Prototipagem mobile' },
     { id: 4, titulo: 'Branding Guide', cliente: 'Empresa X', dataEnvio: '2024-03-17', status: 'rejeitado', descricao: 'Guia de marca completo' },
+    { id: 5, titulo: 'UI Components', cliente: 'Tech Corp', dataEnvio: '2024-03-21', status: 'pendente', descricao: 'Biblioteca de componentes UI' },
+    { id: 6, titulo: 'Landing Page', cliente: 'Startup ABC', dataEnvio: '2024-03-16', status: 'aprovado', descricao: 'Design da página de destino' },
+    { id: 7, titulo: 'Email Templates', cliente: 'Marketing Inc', dataEnvio: '2024-03-15', status: 'rejeitado', descricao: 'Templates de email marketing' },
+    { id: 8, titulo: 'Dashboard Mockup', cliente: 'Analytics Pro', dataEnvio: '2024-03-22', status: 'pendente', descricao: 'Mockup do painel de controle' },
   ])
   const [filterStatus, setFilterStatus] = useState('todos')
   const [searchTerm, setSearchTerm] = useState('')
@@ -23,7 +27,6 @@ export default function Aprovacoes() {
   const [selectedAprovacao, setSelectedAprovacao] = useState(null)
   const [rejectReason, setRejectReason] = useState('')
 
-  // Filtrar aprovações
   const filteredAprovacoes = useMemo(() => {
     return aprovacoes.filter(a => {
       const matchSearch = a.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -33,7 +36,6 @@ export default function Aprovacoes() {
     })
   }, [aprovacoes, searchTerm, filterStatus])
 
-  // Contar por status
   const statusCounts = useMemo(() => {
     const counts = { todos: aprovacoes.length, pendente: 0, aprovado: 0, rejeitado: 0 }
     aprovacoes.forEach(a => {
@@ -42,26 +44,21 @@ export default function Aprovacoes() {
     return counts
   }, [aprovacoes])
 
-  // Aprovar
   const handleApprove = (id) => {
     setAprovacoes(aprovacoes.map(a => a.id === id ? { ...a, status: 'aprovado' } : a))
     setShowModal(false)
     setSelectedAprovacao(null)
+    setRejectReason('')
   }
 
-  // Rejeitar
-  const handleReject = (id) => {
-    if (!rejectReason.trim()) {
-      alert('Por favor, forneça um motivo para a rejeição')
-      return
-    }
+  const handleReject = (id, reason) => {
+    if (!reason.trim()) return
     setAprovacoes(aprovacoes.map(a => a.id === id ? { ...a, status: 'rejeitado' } : a))
     setShowModal(false)
     setSelectedAprovacao(null)
     setRejectReason('')
   }
 
-  // Abrir modal
   const handleOpenModal = (aprovacao) => {
     setSelectedAprovacao(aprovacao)
     setRejectReason('')
@@ -77,30 +74,23 @@ export default function Aprovacoes() {
         <div className="page-header">
           <div>
             <h1>Aprovações</h1>
-            <p>Revise e aprove os entregáveis enviados pelos clientes</p>
+            <p>Revise e aprove os entregáveis dos projetos</p>
           </div>
         </div>
 
-        {/* STATUS CARDS */}
-        <div className="status-cards-grid">
+        {/* STATUS TABS */}
+        <div className="status-tabs">
           {['todos', 'pendente', 'aprovado', 'rejeitado'].map(status => (
-            <div
+            <button
               key={status}
-              className={`status-card${filterStatus === status ? ' active' : ''}`}
+              className={`tab ${filterStatus === status ? 'active' : ''}`}
               onClick={() => setFilterStatus(status)}
-              style={{
-                cursor: 'pointer',
-                background: filterStatus === status ? 'var(--color-accent-subtle)' : 'var(--color-canvas-default)',
-                borderColor: filterStatus === status ? 'var(--color-accent-fg)' : 'var(--color-border-default)',
-              }}
             >
-              <div className="status-card-label">
-                {status === 'todos' ? 'Todos' : APPROVAL_STATUS[status]?.label}
-              </div>
-              <div className="status-card-count">
-                {statusCounts[status]}
-              </div>
-            </div>
+              {status === 'todos' && `Todos (${statusCounts.todos})`}
+              {status === 'pendente' && `Pendentes (${statusCounts.pendente})`}
+              {status === 'aprovado' && `Aprovados (${statusCounts.aprovado})`}
+              {status === 'rejeitado' && `Rejeitados (${statusCounts.rejeitado})`}
+            </button>
           ))}
         </div>
 
@@ -120,13 +110,10 @@ export default function Aprovacoes() {
           </div>
         </div>
 
-        {/* APPROVALS LIST */}
-        <div className="approvals-list">
+        {/* APPROVALS GRID - 4 COLUNAS */}
+        <div className="grid-4col">
           {filteredAprovacoes.length === 0 ? (
-            <div className="empty-state">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.5 }}>
-                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 20px', color: 'var(--color-fg-muted)' }}>
               <p>Nenhuma aprovação encontrada</p>
             </div>
           ) : (
@@ -134,25 +121,10 @@ export default function Aprovacoes() {
               <div
                 key={aprovacao.id}
                 className="approval-card"
-                style={{
-                  borderLeftColor: APPROVAL_STATUS[aprovacao.status]?.textColor,
-                }}
+                onClick={() => handleOpenModal(aprovacao)}
               >
+                <div className="approval-status-bar" style={{ background: APPROVAL_STATUS[aprovacao.status]?.color }} />
                 <div className="approval-header">
-                  <div className="approval-info">
-                    <h3 className="approval-title">{aprovacao.titulo}</h3>
-                    <p className="approval-desc">{aprovacao.descricao}</p>
-                    <div className="approval-meta">
-                      <span className="meta-item">
-                        <span className="meta-label">Cliente:</span>
-                        <span className="meta-value">{aprovacao.cliente}</span>
-                      </span>
-                      <span className="meta-item">
-                        <span className="meta-label">Enviado:</span>
-                        <span className="meta-value">{new Date(aprovacao.dataEnvio).toLocaleDateString('pt-BR')}</span>
-                      </span>
-                    </div>
-                  </div>
                   <span
                     className="status-badge"
                     style={{
@@ -163,17 +135,39 @@ export default function Aprovacoes() {
                     {APPROVAL_STATUS[aprovacao.status]?.icon} {APPROVAL_STATUS[aprovacao.status]?.label}
                   </span>
                 </div>
-
+                <h3 className="approval-title">{aprovacao.titulo}</h3>
+                <p className="approval-description">{aprovacao.descricao}</p>
+                <div className="approval-meta">
+                  <div className="meta-item">
+                    <span className="meta-label">Cliente:</span>
+                    <span className="meta-value">{aprovacao.cliente}</span>
+                  </div>
+                  <div className="meta-item">
+                    <span className="meta-label">Enviado:</span>
+                    <span className="meta-value">{new Date(aprovacao.dataEnvio).toLocaleDateString('pt-BR')}</span>
+                  </div>
+                </div>
                 {aprovacao.status === 'pendente' && (
                   <div className="approval-actions">
                     <button
-                      onClick={() => handleOpenModal(aprovacao)}
-                      className="btn btn-primary btn-sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleApprove(aprovacao.id)
+                      }}
+                      className="btn-action btn-approve"
+                      title="Aprovar"
                     >
-                      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                        <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z" />
-                      </svg>
-                      Revisar
+                      ✓ Aprovar
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleOpenModal(aprovacao)
+                      }}
+                      className="btn-action btn-reject"
+                      title="Rejeitar"
+                    >
+                      ✕ Rejeitar
                     </button>
                   </div>
                 )}
@@ -197,58 +191,72 @@ export default function Aprovacoes() {
                 </button>
               </div>
 
-              <div className="modal-body">
-                <div className="approval-details">
-                  <div className="detail-item">
-                    <span className="detail-label">Título</span>
-                    <span className="detail-value">{selectedAprovacao.titulo}</span>
-                  </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Cliente</span>
-                    <span className="detail-value">{selectedAprovacao.cliente}</span>
-                  </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Descrição</span>
-                    <span className="detail-value">{selectedAprovacao.descricao}</span>
-                  </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Data de Envio</span>
-                    <span className="detail-value">{new Date(selectedAprovacao.dataEnvio).toLocaleDateString('pt-BR')}</span>
-                  </div>
+              <div className="approval-details">
+                <div className="detail-item">
+                  <span className="detail-label">Título:</span>
+                  <span className="detail-value">{selectedAprovacao.titulo}</span>
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="reject-reason">Motivo da Rejeição (se aplicável)</label>
-                  <textarea
-                    id="reject-reason"
-                    placeholder="Descreva o motivo da rejeição..."
-                    value={rejectReason}
-                    onChange={(e) => setRejectReason(e.target.value)}
-                    rows={3}
-                  />
+                <div className="detail-item">
+                  <span className="detail-label">Cliente:</span>
+                  <span className="detail-value">{selectedAprovacao.cliente}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">Descrição:</span>
+                  <span className="detail-value">{selectedAprovacao.descricao}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">Data de Envio:</span>
+                  <span className="detail-value">{new Date(selectedAprovacao.dataEnvio).toLocaleDateString('pt-BR')}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">Status Atual:</span>
+                  <span
+                    className="status-badge"
+                    style={{
+                      background: APPROVAL_STATUS[selectedAprovacao.status]?.color,
+                      color: APPROVAL_STATUS[selectedAprovacao.status]?.textColor,
+                    }}
+                  >
+                    {APPROVAL_STATUS[selectedAprovacao.status]?.label}
+                  </span>
                 </div>
               </div>
 
-              <div className="modal-actions">
-                <button
-                  onClick={() => handleReject(selectedAprovacao.id)}
-                  className="btn btn-danger"
-                >
-                  Rejeitar
+              {selectedAprovacao.status === 'pendente' && (
+                <div className="form-group">
+                  <label htmlFor="rejectReason">Motivo da Rejeição (se aplicável)</label>
+                  <textarea
+                    id="rejectReason"
+                    placeholder="Explique por que está rejeitando este item..."
+                    value={rejectReason}
+                    onChange={(e) => setRejectReason(e.target.value)}
+                    rows="4"
+                  />
+                </div>
+              )}
+
+              <div className="form-actions">
+                <button type="button" onClick={() => setShowModal(false)} className="btn btn-secondary">
+                  Fechar
                 </button>
-                <div style={{ flex: 1 }} />
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="btn btn-secondary"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={() => handleApprove(selectedAprovacao.id)}
-                  className="btn btn-primary"
-                >
-                  Aprovar
-                </button>
+                {selectedAprovacao.status === 'pendente' && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => handleReject(selectedAprovacao.id, rejectReason)}
+                      className="btn btn-danger"
+                    >
+                      Rejeitar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleApprove(selectedAprovacao.id)}
+                      className="btn btn-success"
+                    >
+                      Aprovar
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -257,57 +265,58 @@ export default function Aprovacoes() {
 
       <style>{`
         .app-shell { display: flex; min-height: 100vh; }
+        .main-content { flex: 1; padding: 24px; overflow-y: auto; background: var(--color-canvas-default); }
 
-        /* Status Cards */
-        .status-cards-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-          gap: 12px;
-          margin-bottom: 24px;
+        /* Status Tabs */
+        .status-tabs {
+          display: flex;
+          gap: 8px;
+          margin-bottom: 20px;
+          border-bottom: 1px solid var(--color-border-muted);
+          overflow-x: auto;
         }
 
-        .status-card {
-          background: var(--color-canvas-default);
-          border: 1px solid var(--color-border-default);
-          border-radius: 8px;
-          padding: 16px;
-          text-align: center;
+        .tab {
+          padding: 12px 16px;
+          background: transparent;
+          border: none;
+          border-bottom: 2px solid transparent;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--color-fg-muted);
           cursor: pointer;
           transition: all 0.15s ease;
+          white-space: nowrap;
         }
 
-        .status-card:hover {
-          border-color: var(--color-border-muted);
-        }
-
-        .status-card.active {
-          background: var(--color-accent-subtle);
-          border-color: var(--color-accent-fg);
-        }
-
-        .status-card-label {
-          font-size: 12px;
-          font-weight: 500;
-          color: var(--color-fg-muted);
-          text-transform: uppercase;
-          margin-bottom: 8px;
-        }
-
-        .status-card-count {
-          font-size: 24px;
-          font-weight: 700;
+        .tab:hover {
           color: var(--color-fg-default);
         }
 
-        /* Filters */
+        .tab.active {
+          color: var(--color-accent-fg);
+          border-bottom-color: var(--color-accent-fg);
+        }
+
+        /* Grid Layout - 4 Colunas */
+        .grid-4col {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+          margin-bottom: 32px;
+        }
+
+        /* Filters Bar */
         .filters-bar {
           display: flex;
           gap: 12px;
           margin-bottom: 20px;
+          flex-wrap: wrap;
         }
 
         .search-box {
           flex: 1;
+          min-width: 200px;
           display: flex;
           align-items: center;
           gap: 8px;
@@ -332,118 +341,128 @@ export default function Aprovacoes() {
           color: var(--color-fg-muted);
         }
 
-        /* Approvals List */
-        .approvals-list {
+        /* Approval Card */
+        .approval-card {
+          background: var(--color-canvas-default);
+          border: 1px solid var(--color-border-default);
+          border-radius: 8px;
+          overflow: hidden;
+          cursor: pointer;
+          transition: all 0.15s ease;
           display: flex;
           flex-direction: column;
           gap: 12px;
         }
 
-        .empty-state {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 60px 20px;
-          color: var(--color-fg-muted);
-          text-align: center;
-        }
-
-        .empty-state p {
-          margin-top: 12px;
-          font-size: 14px;
-        }
-
-        .approval-card {
-          background: var(--color-canvas-default);
-          border: 1px solid var(--color-border-default);
-          border-left: 4px solid;
-          border-radius: 8px;
-          padding: 16px;
-          transition: all 0.15s ease;
-        }
-
         .approval-card:hover {
-          border-color: var(--color-border-muted);
+          border-color: var(--color-accent-fg);
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
+        .approval-status-bar {
+          height: 4px;
+          width: 100%;
+        }
+
         .approval-header {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: 16px;
-          margin-bottom: 12px;
-        }
-
-        .approval-info {
-          flex: 1;
-          min-width: 0;
-        }
-
-        .approval-title {
-          font-size: 14px;
-          font-weight: 600;
-          color: var(--color-fg-default);
-          margin: 0 0 4px;
-        }
-
-        .approval-desc {
-          font-size: 12px;
-          color: var(--color-fg-muted);
-          margin: 0 0 8px;
-          line-height: 1.4;
-        }
-
-        .approval-meta {
-          display: flex;
-          gap: 16px;
-          flex-wrap: wrap;
-        }
-
-        .meta-item {
+          padding: 0 16px;
+          padding-top: 12px;
           display: flex;
           align-items: center;
-          gap: 4px;
-          font-size: 12px;
-        }
-
-        .meta-label {
-          color: var(--color-fg-muted);
-          font-weight: 500;
-        }
-
-        .meta-value {
-          color: var(--color-fg-default);
-          font-weight: 500;
+          justify-content: space-between;
         }
 
         .status-badge {
           display: inline-flex;
           align-items: center;
           gap: 4px;
-          padding: 6px 12px;
+          padding: 4px 8px;
           border-radius: 4px;
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 600;
           white-space: nowrap;
-          flex-shrink: 0;
+        }
+
+        .approval-title {
+          padding: 0 16px;
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--color-fg-default);
+          margin: 0;
+        }
+
+        .approval-description {
+          padding: 0 16px;
+          font-size: 12px;
+          color: var(--color-fg-muted);
+          margin: 0;
+          line-height: 1.4;
+        }
+
+        .approval-meta {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          padding: 0 16px;
+          padding-bottom: 8px;
+          border-top: 1px solid var(--color-border-muted);
+          border-bottom: 1px solid var(--color-border-muted);
+        }
+
+        .meta-item {
+          display: flex;
+          justify-content: space-between;
+          font-size: 11px;
+          gap: 8px;
+        }
+
+        .meta-label {
+          color: var(--color-fg-muted);
+          font-weight: 600;
+          text-transform: uppercase;
+        }
+
+        .meta-value {
+          color: var(--color-fg-default);
+          font-weight: 500;
+          text-align: right;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .approval-actions {
           display: flex;
-          gap: 8px;
-          padding-top: 12px;
-          border-top: 1px solid var(--color-border-muted);
+          gap: 6px;
+          padding: 0 16px 12px;
         }
 
-        .btn-sm {
-          padding: 6px 12px;
-          font-size: 13px;
-          line-height: 20px;
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
+        .btn-action {
+          flex: 1;
+          padding: 6px 8px;
+          font-size: 11px;
+          font-weight: 600;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .btn-approve {
+          background: #d1fae5;
+          color: #065f46;
+        }
+
+        .btn-approve:hover {
+          background: #a7f3d0;
+        }
+
+        .btn-reject {
+          background: #fee2e2;
+          color: #991b1b;
+        }
+
+        .btn-reject:hover {
+          background: #fecaca;
         }
 
         /* Modal */
@@ -506,41 +525,41 @@ export default function Aprovacoes() {
           background: var(--hover-bg);
         }
 
-        .modal-body {
-          margin-bottom: 20px;
-          padding-bottom: 20px;
-          border-bottom: 1px solid var(--color-border-muted);
-        }
-
         .approval-details {
           display: flex;
           flex-direction: column;
           gap: 12px;
-          margin-bottom: 16px;
+          margin-bottom: 20px;
+          padding: 16px;
+          background: var(--color-canvas-subtle);
+          border-radius: 6px;
         }
 
         .detail-item {
           display: flex;
-          flex-direction: column;
-          gap: 4px;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 12px;
+          font-size: 13px;
         }
 
         .detail-label {
-          font-size: 12px;
           font-weight: 600;
           color: var(--color-fg-muted);
-          text-transform: uppercase;
+          min-width: 100px;
         }
 
         .detail-value {
-          font-size: 13px;
           color: var(--color-fg-default);
+          text-align: right;
+          flex: 1;
         }
 
         .form-group {
           display: flex;
           flex-direction: column;
           gap: 6px;
+          margin-bottom: 16px;
         }
 
         .form-group label {
@@ -566,19 +585,44 @@ export default function Aprovacoes() {
           box-shadow: 0 0 0 3px var(--color-accent-subtle);
         }
 
-        .modal-actions {
+        .form-actions {
           display: flex;
           gap: 8px;
           align-items: center;
+          margin-top: 20px;
+          padding-top: 16px;
+          border-top: 1px solid var(--color-border-muted);
         }
 
-        @media (max-width: 768px) {
-          .approval-header {
+        /* Responsividade */
+        @media (max-width: 1400px) {
+          .grid-4col {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+
+        @media (max-width: 1024px) {
+          .grid-4col {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
+        @media (max-width: 640px) {
+          .grid-4col {
+            grid-template-columns: 1fr;
+          }
+
+          .status-tabs {
+            flex-wrap: wrap;
+          }
+
+          .filters-bar {
             flex-direction: column;
           }
 
-          .status-cards-grid {
-            grid-template-columns: repeat(2, 1fr);
+          .search-box {
+            flex: 1;
+            min-width: auto;
           }
         }
       `}</style>

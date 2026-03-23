@@ -8,6 +8,12 @@ export default function Clientes() {
   const [clientes, setClientes] = useState([
     { id: 1, nome: 'Empresa ABC', email: 'contato@abc.com', cnpj: '12.345.678/0001-90', telefone: '(11) 3000-0000', status: 'ativo', avatar: '🏢' },
     { id: 2, nome: 'Tech Solutions', email: 'info@techsol.com', cnpj: '98.765.432/0001-10', telefone: '(21) 3000-0000', status: 'ativo', avatar: '💻' },
+    { id: 3, nome: 'Design Studio', email: 'hello@design.com', cnpj: '55.123.456/0001-78', telefone: '(31) 3000-0000', status: 'ativo', avatar: '🎨' },
+    { id: 4, nome: 'Marketing Pro', email: 'contact@marketing.com', cnpj: '77.654.321/0001-45', telefone: '(41) 3000-0000', status: 'ativo', avatar: '📊' },
+    { id: 5, nome: 'Web Agency', email: 'info@webagency.com', cnpj: '33.987.654/0001-12', telefone: '(51) 3000-0000', status: 'inativo', avatar: '🌐' },
+    { id: 6, nome: 'Consultoria XYZ', email: 'contact@consultoria.com', cnpj: '44.321.987/0001-56', telefone: '(61) 3000-0000', status: 'ativo', avatar: '💼' },
+    { id: 7, nome: 'Startup Inovação', email: 'hello@startup.com', cnpj: '66.456.789/0001-23', telefone: '(71) 3000-0000', status: 'ativo', avatar: '🚀' },
+    { id: 8, nome: 'E-commerce Plus', email: 'sales@ecommerce.com', cnpj: '88.789.012/0001-34', telefone: '(81) 3000-0000', status: 'ativo', avatar: '🛒' },
   ])
   const [showModal, setShowModal] = useState(false)
   const [selectedCliente, setSelectedCliente] = useState(null)
@@ -15,7 +21,6 @@ export default function Clientes() {
   const [filterStatus, setFilterStatus] = useState('all')
   const [formData, setFormData] = useState({ nome: '', email: '', cnpj: '', telefone: '', endereco: '', status: 'ativo' })
 
-  // Filtrar clientes
   const filteredClientes = useMemo(() => {
     return clientes.filter(c => {
       const matchSearch = c.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -26,39 +31,33 @@ export default function Clientes() {
     })
   }, [clientes, searchTerm, filterStatus])
 
-  // Abrir modal para novo cliente
   const handleNewCliente = () => {
     setSelectedCliente(null)
     setFormData({ nome: '', email: '', cnpj: '', telefone: '', endereco: '', status: 'ativo' })
     setShowModal(true)
   }
 
-  // Abrir modal para editar cliente
   const handleEditCliente = (cliente) => {
     setSelectedCliente(cliente)
     setFormData(cliente)
     setShowModal(true)
   }
 
-  // Salvar cliente
   const handleSaveCliente = (e) => {
     e.preventDefault()
     if (!formData.nome.trim()) return
 
     if (selectedCliente) {
-      // Editar cliente existente
       setClientes(clientes.map(c =>
         c.id === selectedCliente.id ? { ...c, ...formData } : c
       ))
     } else {
-      // Criar novo cliente
       setClientes([...clientes, { ...formData, id: Date.now(), avatar: '🏢' }])
     }
     setShowModal(false)
     setFormData({ nome: '', email: '', cnpj: '', telefone: '', endereco: '', status: 'ativo' })
   }
 
-  // Deletar cliente
   const handleDeleteCliente = (clienteId) => {
     if (confirm('Tem certeza que deseja remover este cliente?')) {
       setClientes(clientes.filter(c => c.id !== clienteId))
@@ -113,73 +112,65 @@ export default function Clientes() {
           </select>
         </div>
 
-        {/* TABLE */}
-        <div className="card">
-          <div className="table-wrapper">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Cliente</th>
-                  <th>Email</th>
-                  <th>CNPJ</th>
-                  <th>Telefone</th>
-                  <th>Status</th>
-                  <th style={{ textAlign: 'right' }}>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredClientes.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--color-fg-muted)' }}>
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.5, margin: '0 auto 12px' }}>
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M8 12h8M12 8v8" />
-                      </svg>
-                      <p>Nenhum cliente encontrado</p>
-                    </td>
-                  </tr>
-                ) : (
-                  filteredClientes.map(cliente => (
-                    <tr key={cliente.id}>
-                      <td>
-                        <div className="client-cell">
-                          <span className="client-avatar">{cliente.avatar}</span>
-                          <span className="client-name">{cliente.nome}</span>
-                        </div>
-                      </td>
-                      <td>{cliente.email}</td>
-                      <td><code className="code-text">{cliente.cnpj}</code></td>
-                      <td>{cliente.telefone}</td>
-                      <td>
-                        <span className={`status-badge ${cliente.status}`}>
-                          {cliente.status === 'ativo' ? 'Ativo' : 'Inativo'}
-                        </span>
-                      </td>
-                      <td style={{ textAlign: 'right' }}>
-                        <button
-                          onClick={() => handleEditCliente(cliente)}
-                          className="btn-icon-small"
-                          title="Editar"
-                        >
-                          ✏️
-                        </button>
-                        <button
-                          onClick={() => handleDeleteCliente(cliente.id)}
-                          className="btn-icon-small btn-icon-danger"
-                          title="Deletar"
-                        >
-                          🗑️
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="table-footer">
-            <span className="table-info">{filteredClientes.length} cliente(s) encontrado(s)</span>
-          </div>
+        {/* CLIENTS GRID - 4 COLUNAS */}
+        <div className="grid-4col">
+          {filteredClientes.length === 0 ? (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 20px', color: 'var(--color-fg-muted)' }}>
+              <p>Nenhum cliente encontrado</p>
+            </div>
+          ) : (
+            filteredClientes.map(cliente => (
+              <div
+                key={cliente.id}
+                className="client-card"
+                onClick={() => handleEditCliente(cliente)}
+              >
+                <div className="client-header">
+                  <span className="client-avatar">{cliente.avatar}</span>
+                  <span className={`status-badge ${cliente.status}`}>
+                    {cliente.status === 'ativo' ? 'Ativo' : 'Inativo'}
+                  </span>
+                </div>
+                <h3 className="client-name">{cliente.nome}</h3>
+                <div className="client-meta">
+                  <div className="meta-item">
+                    <span className="meta-label">Email:</span>
+                    <span className="meta-value">{cliente.email}</span>
+                  </div>
+                  <div className="meta-item">
+                    <span className="meta-label">CNPJ:</span>
+                    <span className="meta-value code">{cliente.cnpj}</span>
+                  </div>
+                  <div className="meta-item">
+                    <span className="meta-label">Telefone:</span>
+                    <span className="meta-value">{cliente.telefone}</span>
+                  </div>
+                </div>
+                <div className="client-actions">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleEditCliente(cliente)
+                    }}
+                    className="btn-icon-small"
+                    title="Editar"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDeleteCliente(cliente.id)
+                    }}
+                    className="btn-icon-small btn-icon-danger"
+                    title="Deletar"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         {/* MODAL */}
@@ -296,7 +287,16 @@ export default function Clientes() {
 
       <style>{`
         .app-shell { display: flex; min-height: 100vh; }
+        .main-content { flex: 1; padding: 24px; overflow-y: auto; background: var(--color-canvas-default); }
         .required { color: var(--color-danger-fg); }
+
+        /* Grid Layout - 4 Colunas */
+        .grid-4col {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+          margin-bottom: 32px;
+        }
 
         /* Filters Bar */
         .filters-bar {
@@ -343,82 +343,39 @@ export default function Clientes() {
           cursor: pointer;
         }
 
-        /* Table */
-        .card {
+        /* Client Card */
+        .client-card {
           background: var(--color-canvas-default);
           border: 1px solid var(--color-border-default);
           border-radius: 8px;
-          overflow: hidden;
+          padding: 16px;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
         }
 
-        .table-wrapper {
-          overflow-x: auto;
+        .client-card:hover {
+          border-color: var(--color-accent-fg);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
-        .data-table {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 13px;
-        }
-
-        .data-table thead {
-          background: var(--color-canvas-subtle);
-          border-bottom: 1px solid var(--color-border-muted);
-        }
-
-        .data-table th {
-          padding: 12px 16px;
-          text-align: left;
-          font-weight: 600;
-          color: var(--color-fg-muted);
-          text-transform: uppercase;
-          font-size: 11px;
-          letter-spacing: 0.04em;
-        }
-
-        .data-table td {
-          padding: 12px 16px;
-          border-bottom: 1px solid var(--color-border-muted);
-          color: var(--color-fg-default);
-        }
-
-        .data-table tbody tr:hover {
-          background: var(--hover-bg);
-        }
-
-        .data-table tbody tr:last-child td {
-          border-bottom: none;
-        }
-
-        .client-cell {
+        .client-header {
           display: flex;
           align-items: center;
-          gap: 8px;
+          justify-content: space-between;
         }
 
         .client-avatar {
-          font-size: 18px;
-          width: 32px;
-          height: 32px;
+          font-size: 32px;
+          width: 48px;
+          height: 48px;
           display: flex;
           align-items: center;
           justify-content: center;
           background: var(--color-accent-subtle);
           border-radius: 6px;
-        }
-
-        .client-name {
-          font-weight: 500;
-          color: var(--color-fg-default);
-        }
-
-        .code-text {
-          background: var(--color-canvas-subtle);
-          padding: 2px 6px;
-          border-radius: 3px;
-          font-family: monospace;
-          font-size: 12px;
-          color: var(--color-fg-muted);
         }
 
         .status-badge {
@@ -441,16 +398,50 @@ export default function Clientes() {
           color: #991b1b;
         }
 
-        .table-footer {
-          padding: 12px 16px;
-          background: var(--color-canvas-subtle);
-          border-top: 1px solid var(--color-border-muted);
-          font-size: 12px;
-          color: var(--color-fg-muted);
+        .client-name {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--color-fg-default);
+          margin: 0;
         }
 
-        .table-info {
+        .client-meta {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          padding: 8px 0;
+          border-top: 1px solid var(--color-border-muted);
+          border-bottom: 1px solid var(--color-border-muted);
+        }
+
+        .meta-item {
+          display: flex;
+          justify-content: space-between;
+          font-size: 12px;
+        }
+
+        .meta-label {
+          color: var(--color-fg-muted);
           font-weight: 500;
+        }
+
+        .meta-value {
+          color: var(--color-fg-default);
+          font-weight: 500;
+          text-align: right;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .meta-value.code {
+          font-family: monospace;
+          font-size: 11px;
+        }
+
+        .client-actions {
+          display: flex;
+          gap: 4px;
+          justify-content: flex-end;
         }
 
         .btn-icon-small {
@@ -461,7 +452,6 @@ export default function Clientes() {
           padding: 4px 8px;
           border-radius: 4px;
           transition: background-color 0.15s ease;
-          margin: 0 2px;
         }
 
         .btn-icon-small:hover {
@@ -578,7 +568,24 @@ export default function Clientes() {
           border-top: 1px solid var(--color-border-muted);
         }
 
-        @media (max-width: 768px) {
+        /* Responsividade */
+        @media (max-width: 1400px) {
+          .grid-4col {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+
+        @media (max-width: 1024px) {
+          .grid-4col {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
+        @media (max-width: 640px) {
+          .grid-4col {
+            grid-template-columns: 1fr;
+          }
+
           .filters-bar {
             flex-direction: column;
           }
@@ -590,15 +597,6 @@ export default function Clientes() {
 
           .form-row {
             grid-template-columns: 1fr;
-          }
-
-          .data-table {
-            font-size: 12px;
-          }
-
-          .data-table th,
-          .data-table td {
-            padding: 8px 12px;
           }
         }
       `}</style>
