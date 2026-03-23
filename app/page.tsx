@@ -1,65 +1,45 @@
 /**
- * Página inicial do AprovaAí
- * Emojis substituídos por ícones Phosphor Icons
+ * Página inicial — AprovaAí
  *
- * ATENÇÃO: Este arquivo substitui o seu app/page.tsx (ou pages/index.tsx)
- * Adapte a estrutura ao seu arquivo original mantendo apenas os ícones.
+ * ATENÇÃO: Este arquivo é um EXEMPLO de como substituir os emojis da sua
+ * página inicial por ícones Phosphor. Adapte conforme o seu app/page.tsx real.
+ *
+ * Como a página usa ícones de forma interativa, marcamos como "use client".
+ * Para Server Components, basta importar de "@phosphor-icons/react/dist/ssr"
+ * caso sua versão instalada suporte (v2.1+).
  */
 
-// Importação para Server Component (Next.js App Router)
-import {
-  UsersIcon,
-  BuildingsIcon,
-  PackageIcon,
-  CalendarIcon,
-  CheckCircleIcon,
-  LightningIcon,
-  SparkleIcon,
-  RocketLaunchIcon,
-  NotePencilIcon,
-} from "@phosphor-icons/react/ssr";
+"use client";
 
-// Features da landing page com ícones Phosphor
+import {
+  Users,
+  Buildings,
+  Package,
+  Calendar,
+  CheckCircle,
+  Lightning,
+  Sparkle,
+  RocketLaunch,
+  NotePencil,
+  Heart,
+} from "@phosphor-icons/react";
+
 const features = [
-  {
-    Icon: UsersIcon,
-    title: "Usuários",
-    description: "Admin, Atendimento, Cliente",
-  },
-  {
-    Icon: BuildingsIcon,
-    title: "Clientes",
-    description: "White label completo",
-  },
-  {
-    Icon: PackageIcon,
-    title: "Entregáveis",
-    description: "Upload e gerenciamento",
-  },
-  {
-    Icon: CalendarIcon,
-    title: "Calendário",
-    description: "Tipo Google Agenda",
-  },
-  {
-    Icon: CheckCircleIcon,
-    title: "Aprovações",
-    description: "Workflow completo",
-  },
-  {
-    Icon: LightningIcon,
-    title: "Moderno",
-    description: "Design responsivo",
-  },
+  { Icon: Users,       title: "Usuários",     description: "Admin, Atendimento, Cliente" },
+  { Icon: Buildings,   title: "Clientes",     description: "White label completo" },
+  { Icon: Package,     title: "Entregáveis",  description: "Upload e gerenciamento" },
+  { Icon: Calendar,    title: "Calendário",   description: "Tipo Google Agenda" },
+  { Icon: CheckCircle, title: "Aprovações",   description: "Workflow completo" },
+  { Icon: Lightning,   title: "Moderno",      description: "Design responsivo" },
 ];
 
 export default function HomePage() {
   return (
     <main>
-      {/* Hero */}
+      {/* ── Hero ── */}
       <section>
         <div>
-          <SparkleIcon size={20} weight="fill" />
+          <Sparkle size={20} weight="fill" />
           <span>Bem-vindo ao AprovaAí</span>
         </div>
 
@@ -71,17 +51,17 @@ export default function HomePage() {
 
         <div>
           <a href="/login">
-            <RocketLaunchIcon size={18} weight="fill" />
+            <RocketLaunch size={18} weight="fill" />
             Começar Agora
           </a>
           <a href="/login?tab=signup">
-            <NotePencilIcon size={18} />
+            <NotePencil size={18} />
             Criar Conta
           </a>
         </div>
       </section>
 
-      {/* Features Grid */}
+      {/* ── Features Grid ── */}
       <section>
         {features.map(({ Icon, title, description }) => (
           <div key={title}>
@@ -92,15 +72,13 @@ export default function HomePage() {
         ))}
       </section>
 
+      {/* ── Footer ── */}
       <footer>
         <p>
           © 2024 AprovaAí. Desenvolvido com{" "}
-          <HeartIcon size={14} weight="fill" />
+          <Heart size={14} weight="fill" color="#e11d48" />
         </p>
       </footer>
     </main>
   );
 }
-
-// Importação extra para o footer (pode ser feita junto com as demais acima)
-import { HeartIcon } from "@phosphor-icons/react/ssr";

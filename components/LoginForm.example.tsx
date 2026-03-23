@@ -1,43 +1,26 @@
 /**
- * Exemplo: Formulário de login com ícones Phosphor
- * Mostra uso de Eye/EyeSlash para toggle de senha
+ * Exemplo: Formulário de login com toggle de senha usando ícones Phosphor
  */
 
 "use client";
 
 import { useState } from "react";
-import {
-  Envelope as IconEmail,
-  Lock as IconLock,
-  Eye as IconEye,
-  EyeSlash as IconEyeSlash,
-  SignIn as IconLogin,
-} from "@phosphor-icons/react";
+import { Envelope, Lock, Eye, EyeSlash, SignIn } from "@phosphor-icons/react";
 
 export function LoginFormExample() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <form>
-      {/* Campo Email */}
+      {/* Email */}
       <div style={{ position: "relative" }}>
-        <IconEmail
-          size={18}
-          style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
-        />
-        <input
-          type="email"
-          placeholder="seu@email.com"
-          style={{ paddingLeft: 40 }}
-        />
+        <Envelope size={18} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
+        <input type="email" placeholder="seu@email.com" style={{ paddingLeft: 40 }} />
       </div>
 
-      {/* Campo Senha com toggle */}
+      {/* Senha */}
       <div style={{ position: "relative" }}>
-        <IconLock
-          size={18}
-          style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
-        />
+        <Lock size={18} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
         <input
           type={showPassword ? "text" : "password"}
           placeholder="Sua senha"
@@ -46,15 +29,15 @@ export function LoginFormExample() {
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)" }}
+          style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer" }}
         >
-          {showPassword ? <IconEyeSlash size={18} /> : <IconEye size={18} />}
+          {showPassword ? <EyeSlash size={18} /> : <Eye size={18} />}
         </button>
       </div>
 
-      {/* Botão submit */}
-      <button type="submit">
-        <IconLogin size={18} weight="bold" />
+      {/* Submit */}
+      <button type="submit" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+        <SignIn size={18} weight="bold" />
         Entrar
       </button>
     </form>

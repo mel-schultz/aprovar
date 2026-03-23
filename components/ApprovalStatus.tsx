@@ -1,15 +1,14 @@
 /**
- * Exemplo: Componente de status de aprovação usando Phosphor Icons
- * Demonstra uso em Client Component com diferentes pesos de ícone
+ * Exemplo: Badge de status de aprovação com ícones Phosphor
  */
 
 "use client";
 
 import {
-  CheckCircle as IconApproved,
-  XCircle as IconRejected,
-  Clock as IconPending,
-  WarningCircle as IconWarning,
+  CheckCircle,
+  XCircle,
+  Clock,
+  WarningCircle,
 } from "@phosphor-icons/react";
 
 type Status = "approved" | "rejected" | "pending" | "review";
@@ -19,35 +18,15 @@ interface ApprovalStatusProps {
   label?: string;
 }
 
-const statusConfig: Record<
-  Status,
-  { Icon: React.ElementType; color: string; defaultLabel: string }
-> = {
-  approved: {
-    Icon: IconApproved,
-    color: "#22c55e",
-    defaultLabel: "Aprovado",
-  },
-  rejected: {
-    Icon: IconRejected,
-    color: "#ef4444",
-    defaultLabel: "Reprovado",
-  },
-  pending: {
-    Icon: IconPending,
-    color: "#f59e0b",
-    defaultLabel: "Pendente",
-  },
-  review: {
-    Icon: IconWarning,
-    color: "#3b82f6",
-    defaultLabel: "Em revisão",
-  },
+const config: Record<Status, { Icon: React.ElementType; color: string; label: string }> = {
+  approved: { Icon: CheckCircle,    color: "#22c55e", label: "Aprovado"  },
+  rejected: { Icon: XCircle,        color: "#ef4444", label: "Reprovado" },
+  pending:  { Icon: Clock,          color: "#f59e0b", label: "Pendente"  },
+  review:   { Icon: WarningCircle,  color: "#3b82f6", label: "Em revisão"},
 };
 
 export function ApprovalStatus({ status, label }: ApprovalStatusProps) {
-  const { Icon, color, defaultLabel } = statusConfig[status];
-
+  const { Icon, color, label: defaultLabel } = config[status];
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
       <Icon size={18} color={color} weight="fill" />
