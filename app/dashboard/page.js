@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase-client'
+import { supabase } from '../../lib/supabase-client'
 import Link from 'next/link'
-import ThemeToggle from '@/components/ThemeToggle'
+import ThemeToggle from '../../components/ThemeToggle'
 
 export default function Dashboard() {
   const [user, setUser] = useState(null)

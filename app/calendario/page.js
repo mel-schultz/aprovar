@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, getDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import ThemeToggle from '@/components/ThemeToggle'
+import ThemeToggle from '../../components/ThemeToggle'
 
 export default function Calendario() {
   const [currentDate, setCurrentDate] = useState(new Date())
