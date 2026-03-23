@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Admin() {
   const [usuarios, setUsuarios] = useState([
@@ -93,10 +94,10 @@ export default function Admin() {
                     style={{
                       width: '100%',
                       padding: '12px 16px',
-                      background: 'rgba(15, 23, 42, 0.5)',
-                      border: '1px solid rgba(99, 102, 241, 0.2)',
+                      background: 'var(--input-bg)',
+                      border: '1px solid var(--input-border)',
                       borderRadius: '12px',
-                      color: '#f1f5f9',
+                      color: 'var(--text-primary)',
                       fontFamily: 'inherit',
                       fontSize: '14px',
                       cursor: 'pointer',
@@ -121,7 +122,7 @@ export default function Admin() {
         )}
 
         <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
-          <div style={{ padding: '24px', borderBottom: '1px solid rgba(99, 102, 241, 0.1)' }}>
+          <div style={{ padding: '24px', borderBottom: '1px solid var(--border)' }}>
             <h2 style={{ margin: '0' }}>Usuários Cadastrados ({usuarios.length})</h2>
           </div>
           <div style={{ overflowX: 'auto' }}>
@@ -157,11 +158,11 @@ export default function Admin() {
                         </span>
                       </td>
                       <td>
-                        <span style={{ color: '#10b981', fontWeight: '600' }}>
+                        <span style={{ color: 'var(--success)', fontWeight: '600' }}>
                           ✅ {u.status}
                         </span>
                       </td>
-                      <td style={{ fontSize: '13px', color: '#cbd5e1' }}>{u.criadoEm}</td>
+                      <td style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{u.criadoEm}</td>
                       <td style={{ display: 'flex', gap: '8px' }}>
                         <button className="btn btn-secondary" style={{ fontSize: '12px', padding: '6px 12px' }}>
                           ✏️ Editar
@@ -200,7 +201,7 @@ function SettingCard({ title, desc }) {
         {title.split(' ')[0]}
       </div>
       <h3 style={{ margin: '0 0 6px 0', fontSize: '15px' }}>{title}</h3>
-      <p style={{ margin: '0', fontSize: '12px', color: '#64748b' }}>{desc}</p>
+      <p style={{ margin: '0', fontSize: '12px', color: 'var(--text-secondary)' }}>{desc}</p>
     </div>
   )
 }
@@ -217,9 +218,12 @@ function Sidebar() {
         <NavLink href="/aprovacoes" label="Aprovações" icon="✅" />
         <NavLink href="/admin" label="Administração" icon="⚙️" active />
       </nav>
-      <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
-        🚪 Sair
-      </Link>
+      <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
+        <ThemeToggle />
+        <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+          🚪 Sair
+        </Link>
+      </div>
     </div>
   )
 }

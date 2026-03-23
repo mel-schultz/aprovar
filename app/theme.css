@@ -1,0 +1,329 @@
+/* =====================================================
+   TEMA ESCURO (PADRÃO)
+   ===================================================== */
+:root,
+[data-theme='dark'] {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #818cf8;
+  --secondary: #8b5cf6;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --bg: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border: #475569;
+  
+  /* Cores adicionais para componentes */
+  --card-bg: rgba(30, 41, 59, 0.5);
+  --card-border: rgba(99, 102, 241, 0.1);
+  --input-bg: rgba(15, 23, 42, 0.5);
+  --input-border: rgba(99, 102, 241, 0.2);
+  --sidebar-bg: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  --sidebar-border: rgba(99, 102, 241, 0.1);
+  --hover-bg: rgba(99, 102, 241, 0.05);
+  --active-bg: rgba(99, 102, 241, 0.2);
+  --table-header-bg: rgba(99, 102, 241, 0.1);
+  --table-hover-bg: rgba(99, 102, 241, 0.05);
+  --scrollbar-track: #1e293b;
+  --scrollbar-thumb: #6366f1;
+}
+
+/* =====================================================
+   TEMA CLARO
+   ===================================================== */
+[data-theme='light'] {
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+  --primary-light: #6366f1;
+  --secondary: #7c3aed;
+  --success: #059669;
+  --danger: #dc2626;
+  --warning: #d97706;
+  --bg: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --border: #cbd5e1;
+  
+  /* Cores adicionais para componentes */
+  --card-bg: rgba(248, 250, 252, 0.8);
+  --card-border: rgba(79, 70, 229, 0.15);
+  --input-bg: rgba(248, 250, 252, 0.9);
+  --input-border: rgba(79, 70, 229, 0.25);
+  --sidebar-bg: linear-gradient(180deg, #f1f5f9 0%, #f8fafc 100%);
+  --sidebar-border: rgba(79, 70, 229, 0.15);
+  --hover-bg: rgba(79, 70, 229, 0.08);
+  --active-bg: rgba(79, 70, 229, 0.15);
+  --table-header-bg: rgba(79, 70, 229, 0.12);
+  --table-hover-bg: rgba(79, 70, 229, 0.06);
+  --scrollbar-track: #e2e8f0;
+  --scrollbar-thumb: #4f46e5;
+}
+
+/* =====================================================
+   APLICAR VARIÁVEIS AO BODY
+   ===================================================== */
+body {
+  background: linear-gradient(135deg, var(--bg) 0%, #1a1f3a 100%);
+  color: var(--text-primary);
+}
+
+[data-theme='light'] body {
+  background: linear-gradient(135deg, var(--bg) 0%, #f0f4f8 100%);
+}
+
+/* =====================================================
+   ATUALIZAR SCROLLBAR
+   ===================================================== */
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-light);
+}
+
+/* =====================================================
+   ATUALIZAR CARD
+   ===================================================== */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='light'] .card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.card:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 12px 48px rgba(99, 102, 241, 0.15);
+}
+
+[data-theme='light'] .card:hover {
+  border-color: rgba(79, 70, 229, 0.25);
+  box-shadow: 0 12px 48px rgba(79, 70, 229, 0.1);
+}
+
+/* =====================================================
+   ATUALIZAR FORMULÁRIOS
+   ===================================================== */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-primary);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--primary);
+  background: rgba(79, 70, 229, 0.08);
+}
+
+[data-theme='light'] .form-group input:focus,
+[data-theme='light'] .form-group select:focus,
+[data-theme='light'] .form-group textarea:focus {
+  background: rgba(79, 70, 229, 0.05);
+}
+
+/* =====================================================
+   ATUALIZAR SIDEBAR
+   ===================================================== */
+.sidebar {
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+}
+
+.nav-item:hover {
+  background: var(--hover-bg);
+  color: var(--primary-light);
+}
+
+.nav-item.active {
+  background: var(--active-bg);
+  border-left: 3px solid var(--primary);
+  color: var(--primary);
+}
+
+/* =====================================================
+   ATUALIZAR TABELAS
+   ===================================================== */
+.table {
+  background: rgba(30, 41, 59, 0.3);
+  border: 1px solid var(--card-border);
+}
+
+[data-theme='light'] .table {
+  background: rgba(248, 250, 252, 0.5);
+  border: 1px solid var(--card-border);
+}
+
+.table th {
+  background: var(--table-header-bg);
+  color: var(--primary-light);
+}
+
+[data-theme='light'] .table th {
+  color: var(--primary);
+}
+
+.table tr:hover {
+  background: var(--table-hover-bg);
+}
+
+.table th,
+.table td {
+  border-bottom: 1px solid var(--card-border);
+}
+
+/* =====================================================
+   ATUALIZAR BADGES DE STATUS
+   ===================================================== */
+.status-pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+[data-theme='light'] .status-pending {
+  background: rgba(217, 119, 6, 0.12);
+  color: #b45309;
+  border: 1px solid rgba(217, 119, 6, 0.25);
+}
+
+.status-approved {
+  background: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+[data-theme='light'] .status-approved {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+  border: 1px solid rgba(5, 150, 105, 0.25);
+}
+
+.status-rejected {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+[data-theme='light'] .status-rejected {
+  background: rgba(220, 38, 38, 0.12);
+  color: #991b1b;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+/* =====================================================
+   ATUALIZAR ALERTAS
+   ===================================================== */
+.alert-error {
+  background: rgba(239, 68, 68, 0.1);
+  border-left-color: #ef4444;
+  color: #fca5a5;
+}
+
+[data-theme='light'] .alert-error {
+  background: rgba(220, 38, 38, 0.1);
+  border-left-color: #dc2626;
+  color: #991b1b;
+}
+
+.alert-success {
+  background: rgba(16, 185, 129, 0.1);
+  border-left-color: #10b981;
+  color: #6ee7b7;
+}
+
+[data-theme='light'] .alert-success {
+  background: rgba(5, 150, 105, 0.1);
+  border-left-color: #059669;
+  color: #047857;
+}
+
+.alert-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-left-color: #f59e0b;
+  color: #fbbf24;
+}
+
+[data-theme='light'] .alert-warning {
+  background: rgba(217, 119, 6, 0.1);
+  border-left-color: #d97706;
+  color: #b45309;
+}
+
+.alert-info {
+  background: rgba(99, 102, 241, 0.1);
+  border-left-color: var(--primary);
+  color: var(--primary-light);
+}
+
+[data-theme='light'] .alert-info {
+  background: rgba(79, 70, 229, 0.1);
+  border-left-color: var(--primary);
+  color: var(--primary);
+}
+
+/* =====================================================
+   ATUALIZAR BOTÕES
+   ===================================================== */
+.btn-secondary {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary-light);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+[data-theme='light'] .btn-secondary {
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(79, 70, 229, 0.3);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: var(--primary);
+}
+
+[data-theme='light'] .btn-secondary:hover:not(:disabled) {
+  background: rgba(79, 70, 229, 0.15);
+  border-color: var(--primary);
+}
+
+/* =====================================================
+   ATUALIZAR LINKS
+   ===================================================== */
+a {
+  color: var(--primary-light);
+}
+
+[data-theme='light'] a {
+  color: var(--primary);
+}
+
+a:hover {
+  color: var(--primary);
+}
+
+[data-theme='light'] a:hover {
+  color: var(--primary-dark);
+}

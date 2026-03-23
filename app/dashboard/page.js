@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase-client'
 import Link from 'next/link'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Dashboard() {
   const [user, setUser] = useState(null)
@@ -103,19 +104,22 @@ function Sidebar({ onLogout }) {
         <NavLink href="/admin" label="Administração" icon="⚙️" />
       </nav>
 
-      <button
-        onClick={onLogout}
-        className="btn btn-danger"
-        style={{
-          width: '100%',
-          justifyContent: 'center',
-          background: 'rgba(239, 68, 68, 0.1)',
-          color: '#fca5a5',
-          border: '1px solid rgba(239, 68, 68, 0.3)',
-        }}
-      >
-        🚪 Sair
-      </button>
+      <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
+        <ThemeToggle />
+        <button
+          onClick={onLogout}
+          className="btn btn-danger"
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            background: 'rgba(239, 68, 68, 0.1)',
+            color: '#fca5a5',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+          }}
+        >
+          🚪 Sair
+        </button>
+      </div>
     </div>
   )
 }

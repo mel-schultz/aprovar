@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Clientes() {
   const [clientes, setClientes] = useState([])
@@ -113,7 +114,7 @@ export default function Clientes() {
           <div className="card" style={{ textAlign: 'center', padding: '60px 20px' }}>
             <div style={{ fontSize: '48px', marginBottom: '20px' }}>🏢</div>
             <h3>Nenhum cliente cadastrado</h3>
-            <p style={{ color: '#cbd5e1', marginBottom: '20px' }}>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '20px' }}>
               Clique no botão "➕ Novo Cliente" para adicionar o primeiro cliente
             </p>
             <button onClick={() => setShowForm(true)} className="btn btn-primary">
@@ -177,10 +178,12 @@ function Sidebar() {
         <NavLink href="/aprovacoes" label="Aprovações" icon="✅" />
         <NavLink href="/admin" label="Administração" icon="⚙️" />
       </nav>
-
-      <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
-        🚪 Sair
-      </Link>
+      <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
+        <ThemeToggle />
+        <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+          🚪 Sair
+        </Link>
+      </div>
     </div>
   )
 }

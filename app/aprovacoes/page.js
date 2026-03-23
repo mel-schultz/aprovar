@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Aprovacoes() {
   const [aprovacoes, setAprovacoes] = useState([
@@ -74,7 +75,7 @@ export default function Aprovacoes() {
           <div className="card" style={{ textAlign: 'center', padding: '60px 20px' }}>
             <div style={{ fontSize: '48px', marginBottom: '20px' }}>✅</div>
             <h3>Nenhuma aprovação {filterStatus !== 'todos' ? `${filterStatus}` : ''}</h3>
-            <p style={{ color: '#cbd5e1' }}>Tudo está em dia!</p>
+            <p style={{ color: 'var(--text-secondary)' }}>Tudo está em dia!</p>
           </div>
         ) : (
           <div style={{ display: 'grid', gap: '20px' }}>
@@ -95,7 +96,7 @@ export default function Aprovacoes() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '16px' }}>
                   <div>
                     <h3 style={{ margin: '0 0 8px 0' }}>{apr.titulo}</h3>
-                    <p style={{ margin: '0', fontSize: '14px', color: '#cbd5e1' }}>
+                    <p style={{ margin: '0', fontSize: '14px', color: 'var(--text-secondary)' }}>
                       👤 <strong>{apr.cliente}</strong> • 📅 {apr.dataEnvio}
                     </p>
                   </div>
@@ -127,7 +128,7 @@ export default function Aprovacoes() {
                 )}
 
                 {apr.status !== 'pendente' && (
-                  <p style={{ margin: '12px 0 0 0', fontSize: '13px', color: '#cbd5e1' }}>
+                  <p style={{ margin: '12px 0 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
                     {apr.status === 'aprovado' ? '✅ Aprovado com sucesso' : '❌ Rejeitado pelo revisor'}
                   </p>
                 )}
@@ -152,9 +153,12 @@ function Sidebar() {
         <NavLink href="/aprovacoes" label="Aprovações" icon="✅" active />
         <NavLink href="/admin" label="Administração" icon="⚙️" />
       </nav>
-      <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
-        🚪 Sair
-      </Link>
+      <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
+        <ThemeToggle />
+        <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+          🚪 Sair
+        </Link>
+      </div>
     </div>
   )
 }
