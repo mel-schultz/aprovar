@@ -148,7 +148,7 @@ export default function Clientes() {
                         <button 
                           onClick={() => handleDeleteCliente(c.id)}
                           className="btn btn-danger"
-                          style={{ fontSize: '12px', padding: '5px 10px', background: 'var(--md-sys-color-error-container)', color: 'var(--md-sys-color-on-error-container)', border: 'none' }}
+                          style={{ fontSize: '12px', padding: '5px 10px', background: 'rgba(239, 68, 68, 0.1)', color: '#fca5a5', border: '1px solid rgba(239, 68, 68, 0.3)' }}
                         >
                           🗑️ Deletar
                         </button>

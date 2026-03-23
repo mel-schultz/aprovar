@@ -37,9 +37,9 @@ export default function Admin() {
 
   const getRoleColor = (role) => {
     switch(role) {
-      case 'admin': return { bg: 'var(--md-sys-color-secondary-container)', color: 'var(--md-sys-color-on-secondary-container)', label: '👑 Admin' }
-      case 'atendimento': return { bg: 'var(--md-sys-color-primary-container)', color: 'var(--md-sys-color-on-primary-container)', label: '💬 Atendimento' }
-      default: return { bg: 'var(--md-sys-color-tertiary-container)', color: 'var(--md-sys-color-on-tertiary-container)', label: '👤 Cliente' }
+      case 'admin': return { bg: 'rgba(139, 92, 246, 0.1)', color: '#a78bfa', label: '👑 Admin' }
+      case 'atendimento': return { bg: 'rgba(99, 102, 241, 0.1)', color: '#818cf8', label: '💬 Atendimento' }
+      default: return { bg: 'rgba(107, 114, 128, 0.1)', color: '#9ca3af', label: '👤 Cliente' }
     }
   }
 
@@ -94,10 +94,10 @@ export default function Admin() {
                     style={{
                       width: '100%',
                       padding: '12px 16px',
-                      background: 'var(--md-sys-color-surface-container-highest)',
-                      border: '1px solid var(--md-sys-color-outline)',
-                      borderRadius: '8px',
-                      color: 'var(--md-sys-color-on-surface)',
+                      background: 'var(--input-bg)',
+                      border: '1px solid var(--input-border)',
+                      borderRadius: '12px',
+                      color: 'var(--text-primary)',
                       fontFamily: 'inherit',
                       fontSize: '14px',
                       cursor: 'pointer',
@@ -122,7 +122,7 @@ export default function Admin() {
         )}
 
         <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
-          <div style={{ padding: '24px', borderBottom: '1px solid var(--md-sys-color-outline-variant)' }}>
+          <div style={{ padding: '24px', borderBottom: '1px solid var(--border)' }}>
             <h2 style={{ margin: '0' }}>Usuários Cadastrados ({usuarios.length})</h2>
           </div>
           <div style={{ overflowX: 'auto' }}>
@@ -158,11 +158,11 @@ export default function Admin() {
                         </span>
                       </td>
                       <td>
-                        <span style={{ color: 'var(--md-sys-color-success)', fontWeight: '600' }}>
+                        <span style={{ color: 'var(--success)', fontWeight: '600' }}>
                           ✅ {u.status}
                         </span>
                       </td>
-                      <td style={{ fontSize: '13px', color: 'var(--md-sys-color-on-surface-variant)' }}>{u.criadoEm}</td>
+                      <td style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{u.criadoEm}</td>
                       <td style={{ display: 'flex', gap: '8px' }}>
                         <button className="btn btn-secondary" style={{ fontSize: '12px', padding: '6px 12px' }}>
                           ✏️ Editar
@@ -170,7 +170,7 @@ export default function Admin() {
                         <button 
                           onClick={() => handleDeleteUser(u.id)}
                           className="btn btn-danger"
-                          style={{ fontSize: '12px', padding: '6px 12px', background: 'var(--md-sys-color-error-container)', color: 'var(--md-sys-color-on-error-container)', border: 'none' }}
+                          style={{ fontSize: '12px', padding: '6px 12px', background: 'rgba(239, 68, 68, 0.1)', color: '#fca5a5', border: '1px solid rgba(239, 68, 68, 0.3)' }}
                         >
                           🗑️ Remover
                         </button>
@@ -201,7 +201,7 @@ function SettingCard({ title, desc }) {
         {title.split(' ')[0]}
       </div>
       <h3 style={{ margin: '0 0 6px 0', fontSize: '15px' }}>{title}</h3>
-      <p style={{ margin: '0', fontSize: '12px', color: 'var(--md-sys-color-on-surface-variant)' }}>{desc}</p>
+      <p style={{ margin: '0', fontSize: '12px', color: 'var(--text-secondary)' }}>{desc}</p>
     </div>
   )
 }
@@ -218,7 +218,7 @@ function Sidebar() {
         <NavLink href="/aprovacoes" label="Aprovações" icon="✅" />
         <NavLink href="/admin" label="Administração" icon="⚙️" active />
       </nav>
-      <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--md-sys-color-outline-variant)' }}>
+      <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
         <ThemeToggle />
         <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
           🚪 Sair
