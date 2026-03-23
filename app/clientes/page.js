@@ -2,18 +2,34 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import {
+  Search,
+  Plus,
+  Edit2,
+  Trash2,
+  X,
+  Building2,
+  Mail,
+  Phone,
+  Settings,
+  LogOut,
+  LayoutDashboard,
+  Package,
+  Calendar,
+  CheckSquare,
+} from 'lucide-react'
 import ThemeToggle from '../../components/ThemeToggle'
 
 export default function Clientes() {
   const [clientes, setClientes] = useState([
-    { id: 1, nome: 'Empresa ABC', email: 'contato@abc.com', cnpj: '12.345.678/0001-90', telefone: '(11) 3000-0000', status: 'ativo', avatar: '🏢' },
-    { id: 2, nome: 'Tech Solutions', email: 'info@techsol.com', cnpj: '98.765.432/0001-10', telefone: '(21) 3000-0000', status: 'ativo', avatar: '💻' },
-    { id: 3, nome: 'Design Studio', email: 'hello@design.com', cnpj: '55.123.456/0001-78', telefone: '(31) 3000-0000', status: 'ativo', avatar: '🎨' },
-    { id: 4, nome: 'Marketing Pro', email: 'contact@marketing.com', cnpj: '77.654.321/0001-45', telefone: '(41) 3000-0000', status: 'ativo', avatar: '📊' },
-    { id: 5, nome: 'Web Agency', email: 'info@webagency.com', cnpj: '33.987.654/0001-12', telefone: '(51) 3000-0000', status: 'inativo', avatar: '🌐' },
-    { id: 6, nome: 'Consultoria XYZ', email: 'contact@consultoria.com', cnpj: '44.321.987/0001-56', telefone: '(61) 3000-0000', status: 'ativo', avatar: '💼' },
-    { id: 7, nome: 'Startup Inovação', email: 'hello@startup.com', cnpj: '66.456.789/0001-23', telefone: '(71) 3000-0000', status: 'ativo', avatar: '🚀' },
-    { id: 8, nome: 'E-commerce Plus', email: 'sales@ecommerce.com', cnpj: '88.789.012/0001-34', telefone: '(81) 3000-0000', status: 'ativo', avatar: '🛒' },
+    { id: 1, nome: 'Empresa ABC', email: 'contato@abc.com', cnpj: '12.345.678/0001-90', telefone: '(11) 3000-0000', status: 'ativo' },
+    { id: 2, nome: 'Tech Solutions', email: 'info@techsol.com', cnpj: '98.765.432/0001-10', telefone: '(21) 3000-0000', status: 'ativo' },
+    { id: 3, nome: 'Design Studio', email: 'hello@design.com', cnpj: '55.123.456/0001-78', telefone: '(31) 3000-0000', status: 'ativo' },
+    { id: 4, nome: 'Marketing Pro', email: 'contact@marketing.com', cnpj: '77.654.321/0001-45', telefone: '(41) 3000-0000', status: 'ativo' },
+    { id: 5, nome: 'Web Agency', email: 'info@webagency.com', cnpj: '33.987.654/0001-12', telefone: '(51) 3000-0000', status: 'inativo' },
+    { id: 6, nome: 'Consultoria XYZ', email: 'contact@consultoria.com', cnpj: '44.321.987/0001-56', telefone: '(61) 3000-0000', status: 'ativo' },
+    { id: 7, nome: 'Startup Inovação', email: 'hello@startup.com', cnpj: '66.456.789/0001-23', telefone: '(71) 3000-0000', status: 'ativo' },
+    { id: 8, nome: 'E-commerce Plus', email: 'sales@ecommerce.com', cnpj: '88.789.012/0001-34', telefone: '(81) 3000-0000', status: 'ativo' },
   ])
   const [showModal, setShowModal] = useState(false)
   const [selectedCliente, setSelectedCliente] = useState(null)
@@ -52,7 +68,7 @@ export default function Clientes() {
         c.id === selectedCliente.id ? { ...c, ...formData } : c
       ))
     } else {
-      setClientes([...clientes, { ...formData, id: Date.now(), avatar: '🏢' }])
+      setClientes([...clientes, { ...formData, id: Date.now() }])
     }
     setShowModal(false)
     setFormData({ nome: '', email: '', cnpj: '', telefone: '', endereco: '', status: 'ativo' })
@@ -78,9 +94,7 @@ export default function Clientes() {
               <p>Gerenciamento completo de clientes white label</p>
             </div>
             <button onClick={handleNewCliente} className="btn btn-primary">
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2Z" />
-              </svg>
+              <Plus size={14} />
               Novo cliente
             </button>
           </div>
@@ -89,9 +103,7 @@ export default function Clientes() {
         {/* FILTERS */}
         <div className="filters-bar">
           <div className="search-box">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path d="M6.5 1a5.5 5.5 0 014.384 8.823l5.147 5.147a.75.75 0 01-1.06 1.06l-5.147-5.147A5.5 5.5 0 116.5 1zm0 1.5a4 4 0 100 8 4 4 0 000-8z" />
-            </svg>
+            <Search size={14} />
             <input
               type="text"
               placeholder="Buscar por nome, email ou CNPJ..."
@@ -126,7 +138,9 @@ export default function Clientes() {
                 onClick={() => handleEditCliente(cliente)}
               >
                 <div className="client-header">
-                  <span className="client-avatar">{cliente.avatar}</span>
+                  <div className="client-avatar">
+                    <Building2 size={20} />
+                  </div>
                   <span className={`status-badge ${cliente.status}`}>
                     {cliente.status === 'ativo' ? 'Ativo' : 'Inativo'}
                   </span>
@@ -134,7 +148,7 @@ export default function Clientes() {
                 <h3 className="client-name">{cliente.nome}</h3>
                 <div className="client-meta">
                   <div className="meta-item">
-                    <span className="meta-label">Email:</span>
+                    <Mail size={12} />
                     <span className="meta-value">{cliente.email}</span>
                   </div>
                   <div className="meta-item">
@@ -142,7 +156,7 @@ export default function Clientes() {
                     <span className="meta-value code">{cliente.cnpj}</span>
                   </div>
                   <div className="meta-item">
-                    <span className="meta-label">Telefone:</span>
+                    <Phone size={12} />
                     <span className="meta-value">{cliente.telefone}</span>
                   </div>
                 </div>
@@ -155,7 +169,7 @@ export default function Clientes() {
                     className="btn-icon-small"
                     title="Editar"
                   >
-                    ✏️
+                    <Edit2 size={14} />
                   </button>
                   <button
                     onClick={(e) => {
@@ -165,7 +179,7 @@ export default function Clientes() {
                     className="btn-icon-small btn-icon-danger"
                     title="Deletar"
                   >
-                    🗑️
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
@@ -184,7 +198,7 @@ export default function Clientes() {
                   className="modal-close"
                   aria-label="Fechar"
                 >
-                  ✕
+                  <X size={20} />
                 </button>
               </div>
 
@@ -287,8 +301,32 @@ export default function Clientes() {
 
       <style>{`
         .app-shell { display: flex; min-height: 100vh; }
-        .main-content { flex: 1; padding: 24px; overflow-y: auto; background: var(--color-canvas-default); }
+        .main-content { flex: 1; padding: 24px; overflow-y: auto; background: var(--color-canvas-default); margin-left: 20px; }
         .required { color: var(--color-danger-fg); }
+
+        .page-header {
+          margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+          font-size: 28px;
+          font-weight: 700;
+          color: var(--color-fg-default);
+          margin: 0 0 8px;
+        }
+
+        .page-header p {
+          font-size: 14px;
+          color: var(--color-fg-muted);
+          margin: 0;
+        }
+
+        .page-header-row {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 16px;
+        }
 
         /* Grid Layout - 4 Colunas */
         .grid-4col {
@@ -345,7 +383,7 @@ export default function Clientes() {
 
         /* Client Card */
         .client-card {
-          background: var(--color-canvas-default);
+          background: var(--color-canvas-subtle);
           border: 1px solid var(--color-border-default);
           border-radius: 8px;
           padding: 16px;
@@ -368,19 +406,17 @@ export default function Clientes() {
         }
 
         .client-avatar {
-          font-size: 32px;
-          width: 48px;
-          height: 48px;
+          width: 40px;
+          height: 40px;
+          background: var(--color-accent-subtle);
+          border-radius: 6px;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--color-accent-subtle);
-          border-radius: 6px;
+          color: var(--color-accent-fg);
         }
 
         .status-badge {
-          display: inline-flex;
-          align-items: center;
           padding: 4px 8px;
           border-radius: 4px;
           font-size: 11px;
@@ -416,26 +452,25 @@ export default function Clientes() {
 
         .meta-item {
           display: flex;
-          justify-content: space-between;
-          font-size: 12px;
+          align-items: center;
+          gap: 6px;
+          font-size: 11px;
+          color: var(--color-fg-muted);
         }
 
         .meta-label {
-          color: var(--color-fg-muted);
-          font-weight: 500;
+          font-weight: 600;
+          text-transform: uppercase;
         }
 
         .meta-value {
           color: var(--color-fg-default);
-          font-weight: 500;
-          text-align: right;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          font-size: 11px;
         }
 
         .meta-value.code {
           font-family: monospace;
-          font-size: 11px;
+          font-size: 10px;
         }
 
         .client-actions {
@@ -448,18 +483,23 @@ export default function Clientes() {
           background: transparent;
           border: none;
           cursor: pointer;
-          font-size: 14px;
           padding: 4px 8px;
           border-radius: 4px;
-          transition: background-color 0.15s ease;
+          color: var(--color-fg-muted);
+          transition: all 0.15s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .btn-icon-small:hover {
-          background: var(--hover-bg);
+          background: var(--color-accent-subtle);
+          color: var(--color-accent-fg);
         }
 
         .btn-icon-danger:hover {
           background: var(--color-danger-subtle);
+          color: var(--color-danger-fg);
         }
 
         /* Modal */
@@ -505,8 +545,6 @@ export default function Clientes() {
         .modal-close {
           background: transparent;
           border: none;
-          font-size: 24px;
-          color: var(--color-fg-muted);
           cursor: pointer;
           padding: 0;
           width: 32px;
@@ -515,11 +553,12 @@ export default function Clientes() {
           align-items: center;
           justify-content: center;
           border-radius: 6px;
+          color: var(--color-fg-muted);
           transition: background-color 0.15s ease;
         }
 
         .modal-close:hover {
-          background: var(--hover-bg);
+          background: var(--color-canvas-subtle);
         }
 
         .form-row {
@@ -568,6 +607,50 @@ export default function Clientes() {
           border-top: 1px solid var(--color-border-muted);
         }
 
+        /* Buttons */
+        .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          padding: 8px 16px;
+          border: none;
+          border-radius: 6px;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .btn-primary {
+          background: var(--color-accent-fg);
+          color: white;
+        }
+
+        .btn-primary:hover {
+          background: var(--color-accent-emphasis);
+        }
+
+        .btn-secondary {
+          background: var(--color-canvas-subtle);
+          color: var(--color-fg-default);
+          border: 1px solid var(--color-border-default);
+        }
+
+        .btn-secondary:hover {
+          background: var(--color-border-default);
+        }
+
+        .btn-danger {
+          background: var(--color-danger-subtle);
+          color: var(--color-danger-fg);
+        }
+
+        .btn-danger:hover {
+          background: var(--color-danger-fg);
+          color: white;
+        }
+
         /* Responsividade */
         @media (max-width: 1400px) {
           .grid-4col {
@@ -586,17 +669,12 @@ export default function Clientes() {
             grid-template-columns: 1fr;
           }
 
-          .filters-bar {
-            flex-direction: column;
-          }
-
-          .search-box {
-            flex: 1;
-            min-width: auto;
-          }
-
           .form-row {
             grid-template-columns: 1fr;
+          }
+
+          .page-header-row {
+            flex-direction: column;
           }
         }
       `}</style>
@@ -609,29 +687,24 @@ function AppSidebar({ activePath }) {
     <aside className="sidebar">
       <div className="sidebar-header">
         <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--color-fg-default)', textDecoration: 'none', padding: '8px 16px 12px' }}>
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" fill="none" />
-            <path d="M6 10l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <CheckSquare size={18} />
           AprovaAí
         </Link>
       </div>
       <nav>
-        <NavLink href="/dashboard" label="Dashboard" icon="dashboard" active={activePath === '/dashboard'} />
-        <NavLink href="/clientes" label="Clientes" icon="building" active={activePath === '/clientes'} />
-        <NavLink href="/entregaveis" label="Entregáveis" icon="package" active={activePath === '/entregaveis'} />
-        <NavLink href="/calendario" label="Calendário" icon="calendar" active={activePath === '/calendario'} />
-        <NavLink href="/aprovacoes" label="Aprovações" icon="check" active={activePath === '/aprovacoes'} />
-        <NavLink href="/admin" label="Administração" icon="gear" active={activePath === '/admin'} />
+        <NavLink href="/dashboard" label="Dashboard" icon={LayoutDashboard} active={activePath === '/dashboard'} />
+        <NavLink href="/clientes" label="Clientes" icon={Building2} active={activePath === '/clientes'} />
+        <NavLink href="/entregaveis" label="Entregáveis" icon={Package} active={activePath === '/entregaveis'} />
+        <NavLink href="/calendario" label="Calendário" icon={Calendar} active={activePath === '/calendario'} />
+        <NavLink href="/aprovacoes" label="Aprovações" icon={CheckSquare} active={activePath === '/aprovacoes'} />
+        <NavLink href="/admin" label="Administração" icon={Settings} active={activePath === '/admin'} />
       </nav>
       <div className="sidebar-footer">
         <ThemeToggle />
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 8px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', color: 'var(--color-danger-fg)', textDecoration: 'none', marginTop: '4px', transition: 'background-color 0.15s ease' }}
           onMouseEnter={e => e.currentTarget.style.background = 'var(--color-danger-subtle)'}
           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M2 2.75C2 1.784 2.784 1 3.75 1h2.5a.75.75 0 0 1 0 1.5h-2.5a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 2 13.25Zm10.44 4.5-1.97-1.97a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.97-1.97H6.75a.75.75 0 0 1 0-1.5Z" />
-          </svg>
+          <LogOut size={14} />
           Sair
         </Link>
       </div>
@@ -684,7 +757,7 @@ function AppSidebar({ activePath }) {
         }
 
         .nav-item:hover {
-          background: var(--hover-bg);
+          background: var(--color-canvas-default);
           color: var(--color-fg-default);
         }
 
@@ -711,44 +784,11 @@ function AppSidebar({ activePath }) {
   )
 }
 
-function NavLink({ href, label, icon, active }) {
+function NavLink({ href, label, icon: Icon, active }) {
   return (
     <Link href={href} className={`nav-item${active ? ' active' : ''}`}>
       <span className="nav-icon">
-        {icon === 'dashboard' && (
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M1.75 1a.75.75 0 0 0-.75.75v12.5c0 .414.336.75.75.75h12.5a.75.75 0 0 0 .75-.75V1.75a.75.75 0 0 0-.75-.75H1.75zM2.5 4h3V2.5h-3V4zm0 3h3V5.5h-3V7zm0 3h3v-1.5h-3V10zm4-6h3V2.5h-3V4zm0 3h3V5.5h-3V7zm0 3h3v-1.5h-3V10zm4-6h3V2.5h-3V4zm0 3h3V5.5h-3V7zm0 3h3v-1.5h-3V10z" />
-          </svg>
-        )}
-        {icon === 'building' && (
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M1.75 1a.75.75 0 0 0-.75.75v12.5c0 .414.336.75.75.75h12.5a.75.75 0 0 0 .75-.75V1.75a.75.75 0 0 0-.75-.75H1.75zM2.5 4h2V2.5h-2V4zm3 0h2V2.5h-2V4zm3 0h2V2.5h-2V4zm3 0h2V2.5h-2V4zM2.5 7h2V5.5h-2V7zm3 0h2V5.5h-2V7zm3 0h2V5.5h-2V7zm3 0h2V5.5h-2V7zM2.5 10h2V8.5h-2V10zm3 0h2V8.5h-2V10zm3 0h2V8.5h-2V10zm3 0h2V8.5h-2V10z" />
-          </svg>
-        )}
-        {icon === 'package' && (
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M8 1.5a.75.75 0 0 1 .75.75v1.5h3.5a1.75 1.75 0 0 1 1.75 1.75v7.5a1.75 1.75 0 0 1-1.75 1.75h-9.5A1.75 1.75 0 0 1 1 14v-7.5A1.75 1.75 0 0 1 2.75 4.5h3.5V2.25a.75.75 0 0 1 .75-.75zM2.5 5.5v8.5a.25.25 0 0 0 .25.25h9.5a.25.25 0 0 0 .25-.25V5.5z" />
-          </svg>
-        )}
-        {icon === 'calendar' && (
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M4.75 0a.75.75 0 0 1 .75.75V2h5V.75a.75.75 0 0 1 1.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 13.25 16H2.75A1.75 1.75 0 0 1 1 14.25V3.75C1 2.784 1.784 2 2.75 2H4V.75A.75.75 0 0 1 4.75 0z" />
-          </svg>
-        )}
-        {icon === 'check' && (
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z" />
-          </svg>
-        )}
-        {icon === 'gear' && (
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zM7 8a1 1 0 1 0 2 0 1 1 0 0 0-2 0z" />
-            <path d="M8.5 1.5a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0z" />
-            <path d="M8.5 14.5a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0z" />
-            <path d="M1.5 8.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-            <path d="M14.5 8.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-          </svg>
-        )}
+        <Icon size={16} />
       </span>
       {label}
     </Link>
