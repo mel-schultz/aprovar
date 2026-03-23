@@ -5,8 +5,7 @@ import Link from 'next/link'
 
 export default function Admin() {
   const [usuarios, setUsuarios] = useState([
-    { id: 1, nome: 'Mel Schultz', email: 'mel@empresa.com', role: 'admin', status: 'ativo' },
-    { id: 2, nome: 'João Silva', email: 'joao@empresa.com', role: 'atendimento', status: 'ativo' },
+    { id: 1, nome: 'Seu Nome', email: 'seu@email.com', role: 'admin', status: 'ativo', criadoEm: '2024-03-20' },
   ])
 
   const [showForm, setShowForm] = useState(false)
@@ -14,110 +13,222 @@ export default function Admin() {
 
   const handleAddUser = (e) => {
     e.preventDefault()
-    setUsuarios([...usuarios, { ...formData, id: Date.now(), status: 'ativo' }])
+    if (!formData.nome.trim() || !formData.email.trim()) {
+      alert('Preencha todos os campos obrigatórios')
+      return
+    }
+    setUsuarios([...usuarios, { 
+      ...formData, 
+      id: Date.now(), 
+      status: 'ativo',
+      criadoEm: new Date().toISOString().split('T')[0]
+    }])
     setFormData({ nome: '', email: '', role: 'cliente' })
     setShowForm(false)
-    alert('✅ Usuário criado!')
+    alert('✅ Usuário criado com sucesso!')
+  }
+
+  const handleDeleteUser = (id) => {
+    if (confirm('Tem certeza que deseja deletar este usuário?')) {
+      setUsuarios(usuarios.filter(u => u.id !== id))
+    }
+  }
+
+  const getRoleColor = (role) => {
+    switch(role) {
+      case 'admin': return { bg: 'rgba(139, 92, 246, 0.1)', color: '#a78bfa', label: '👑 Admin' }
+      case 'atendimento': return { bg: 'rgba(99, 102, 241, 0.1)', color: '#818cf8', label: '💬 Atendimento' }
+      default: return { bg: 'rgba(107, 114, 128, 0.1)', color: '#9ca3af', label: '👤 Cliente' }
+    }
   }
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
       <Sidebar />
-      <div style={{ flex: 1, padding: '40px', overflowY: 'auto', background: '#f5f5f5' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-          <h1>Administração - Usuários</h1>
-          <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
-            ➕ Novo Usuário
+
+      <div className="main-content">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
+          <div>
+            <h1>Administração</h1>
+            <p>Gerencie usuários, funções e permissões</p>
+          </div>
+          <button 
+            onClick={() => setShowForm(!showForm)}
+            className="btn btn-primary"
+          >
+            {showForm ? '❌ Cancelar' : '➕ Novo Usuário'}
           </button>
         </div>
 
         {showForm && (
-          <div style={{ background: 'white', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
+          <div className="card" style={{ marginBottom: '40px' }}>
             <h2>Criar Novo Usuário</h2>
             <form onSubmit={handleAddUser}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                <input
-                  type="text"
-                  placeholder="Nome"
-                  value={formData.nome}
-                  onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                  required
-                  style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '5px' }}
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                  style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '5px' }}
-                />
-                <select
-                  value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                  style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '5px', gridColumn: '1 / -1' }}
-                >
-                  <option value="cliente">Cliente</option>
-                  <option value="atendimento">Atendimento</option>
-                  <option value="admin">Admin</option>
-                </select>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginBottom: '20px' }}>
+                <div className="form-group">
+                  <label>Nome Completo *</label>
+                  <input
+                    type="text"
+                    placeholder="João da Silva"
+                    value={formData.nome}
+                    onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Email *</label>
+                  <input
+                    type="email"
+                    placeholder="joao@empresa.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                  <label>Função</label>
+                  <select
+                    value={formData.role}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      background: 'rgba(15, 23, 42, 0.5)',
+                      border: '1px solid rgba(99, 102, 241, 0.2)',
+                      borderRadius: '12px',
+                      color: '#f1f5f9',
+                      fontFamily: 'inherit',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <option value="cliente">👤 Cliente</option>
+                    <option value="atendimento">💬 Atendimento</option>
+                    <option value="admin">👑 Admin</option>
+                  </select>
+                </div>
               </div>
-              <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
-                <button type="submit" className="btn btn-primary">Criar</button>
-                <button type="button" onClick={() => setShowForm(false)} className="btn btn-secondary">Cancelar</button>
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                <button type="button" onClick={() => setShowForm(false)} className="btn btn-secondary">
+                  Cancelar
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  💾 Criar Usuário
+                </button>
               </div>
             </form>
           </div>
         )}
 
-        <div style={{ background: 'white', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <table className="table">
-            <thead>
-              <tr style={{ background: '#f0f0f0' }}>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Perfil</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {usuarios.map(u => (
-                <tr key={u.id}>
-                  <td><strong>{u.nome}</strong></td>
-                  <td>{u.email}</td>
-                  <td>
-                    <span style={{ background: u.role === 'admin' ? '#0066cc' : '#666', color: 'white', padding: '5px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>
-                      {u.role === 'admin' ? '👑 Admin' : u.role === 'atendimento' ? '💬 Atendimento' : '👤 Cliente'}
-                    </span>
-                  </td>
-                  <td><span style={{ color: '#28a745', fontWeight: '600' }}>✅ {u.status}</span></td>
-                  <td>
-                    <button className="btn btn-secondary" style={{ fontSize: '12px', padding: '5px 10px', marginRight: '5px' }}>Editar</button>
-                    <button className="btn btn-secondary" style={{ fontSize: '12px', padding: '5px 10px', background: '#dc3545', color: 'white' }}>Remover</button>
-                  </td>
+        <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
+          <div style={{ padding: '24px', borderBottom: '1px solid rgba(99, 102, 241, 0.1)' }}>
+            <h2 style={{ margin: '0' }}>Usuários Cadastrados ({usuarios.length})</h2>
+          </div>
+          <div style={{ overflowX: 'auto' }}>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Função</th>
+                  <th>Status</th>
+                  <th>Criado em</th>
+                  <th>Ações</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {usuarios.map(u => {
+                  const roleInfo = getRoleColor(u.role)
+                  return (
+                    <tr key={u.id}>
+                      <td><strong>{u.nome}</strong></td>
+                      <td>{u.email}</td>
+                      <td>
+                        <span style={{
+                          background: roleInfo.bg,
+                          color: roleInfo.color,
+                          padding: '6px 12px',
+                          borderRadius: '20px',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          display: 'inline-block'
+                        }}>
+                          {roleInfo.label}
+                        </span>
+                      </td>
+                      <td>
+                        <span style={{ color: '#10b981', fontWeight: '600' }}>
+                          ✅ {u.status}
+                        </span>
+                      </td>
+                      <td style={{ fontSize: '13px', color: '#cbd5e1' }}>{u.criadoEm}</td>
+                      <td style={{ display: 'flex', gap: '8px' }}>
+                        <button className="btn btn-secondary" style={{ fontSize: '12px', padding: '6px 12px' }}>
+                          ✏️ Editar
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteUser(u.id)}
+                          className="btn btn-danger"
+                          style={{ fontSize: '12px', padding: '6px 12px', background: 'rgba(239, 68, 68, 0.1)', color: '#fca5a5', border: '1px solid rgba(239, 68, 68, 0.3)' }}
+                        >
+                          🗑️ Remover
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style={{ marginTop: '40px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+          <SettingCard title="🔒 Segurança" desc="Gerencie permissões e acesso" />
+          <SettingCard title="📊 Relatórios" desc="Visualize estatísticas" />
+          <SettingCard title="⚙️ Configurações" desc="Ajustes do sistema" />
+          <SettingCard title="🔄 Backups" desc="Gerenciamento de backups" />
         </div>
       </div>
     </div>
   )
 }
 
+function SettingCard({ title, desc }) {
+  return (
+    <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '24px', cursor: 'pointer' }}>
+      <div style={{ fontSize: '32px', marginBottom: '12px' }}>
+        {title.split(' ')[0]}
+      </div>
+      <h3 style={{ margin: '0 0 6px 0', fontSize: '15px' }}>{title}</h3>
+      <p style={{ margin: '0', fontSize: '12px', color: '#64748b' }}>{desc}</p>
+    </div>
+  )
+}
+
 function Sidebar() {
   return (
-    <div style={{ width: '250px', background: '#1a1a1a', color: 'white', padding: '20px', overflowY: 'auto', height: '100vh' }}>
-      <h2 style={{ marginBottom: '30px' }}>🎯 AprovaAí</h2>
-      <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <Link href="/dashboard" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Dashboard</Link>
-        <Link href="/clientes" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Clientes</Link>
-        <Link href="/entregaveis" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Entregáveis</Link>
-        <Link href="/calendario" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Calendário</Link>
-        <Link href="/aprovacoes" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Aprovações</Link>
-        <Link href="/admin" style={{ padding: '10px', color: '#0066cc', textDecoration: 'none', fontWeight: 'bold' }}>Admin</Link>
+    <div className="sidebar">
+      <h2>🎯 AprovaAí</h2>
+      <nav style={{ marginBottom: '40px' }}>
+        <NavLink href="/dashboard" label="Dashboard" icon="📊" />
+        <NavLink href="/clientes" label="Clientes" icon="🏢" />
+        <NavLink href="/entregaveis" label="Entregáveis" icon="📦" />
+        <NavLink href="/calendario" label="Calendário" icon="📅" />
+        <NavLink href="/aprovacoes" label="Aprovações" icon="✅" />
+        <NavLink href="/admin" label="Administração" icon="⚙️" active />
       </nav>
+      <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+        🚪 Sair
+      </Link>
     </div>
+  )
+}
+
+function NavLink({ href, label, icon, active }) {
+  return (
+    <Link href={href} className={`nav-item ${active ? 'active' : ''}`} style={{ justifyContent: 'flex-start' }}>
+      <span style={{ fontSize: '18px' }}>{icon}</span>
+      <a style={{ flex: 1, textAlign: 'left' }}>{label}</a>
+    </Link>
   )
 }

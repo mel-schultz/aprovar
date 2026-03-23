@@ -23,58 +23,91 @@ export default function Calendario() {
 
   const handleSaveEvent = (e) => {
     e.preventDefault()
+    if (!eventData.titulo.trim()) {
+      alert('Digite um título para o evento')
+      return
+    }
     setEvents([...events, { ...eventData, id: Date.now(), date: selectedDate }])
     setEventData({ titulo: '', descricao: '' })
     setShowEventForm(false)
-    alert('✅ Evento adicionado!')
+    alert('✅ Evento adicionado ao calendário!')
   }
 
   const getDayEvents = (date) => {
     return events.filter(e => format(e.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
   }
 
-  return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      <Sidebar />
-      <div style={{ flex: 1, padding: '40px', overflowY: 'auto', background: '#f5f5f5' }}>
-        <h1>Calendário</h1>
+  const previousMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))
+  const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))
 
-        <div style={{ background: 'white', borderRadius: '8px', padding: '20px', marginTop: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))} className="btn btn-secondary">
+  return (
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      <Sidebar />
+
+      <div className="main-content">
+        <div>
+          <h1>Calendário</h1>
+          <p>Visualize e gerencie seus eventos</p>
+        </div>
+
+        <div className="card" style={{ marginBottom: '40px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+            <button onClick={previousMonth} className="btn btn-secondary">
               ← Anterior
             </button>
-            <h2>{format(currentDate, 'MMMM yyyy', { locale: ptBR })}</h2>
-            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))} className="btn btn-secondary">
+            <h2 style={{ margin: '0' }}>
+              {format(currentDate, 'MMMM yyyy', { locale: ptBR })}
+            </h2>
+            <button onClick={nextMonth} className="btn btn-secondary">
               Próximo →
             </button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '5px' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(7, 1fr)',
+            gap: '10px',
+          }}>
             {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map(day => (
-              <div key={day} style={{ fontWeight: 'bold', textAlign: 'center', padding: '10px' }}>{day}</div>
+              <div key={day} style={{ fontWeight: 'bold', textAlign: 'center', padding: '10px', color: '#cbd5e1' }}>
+                {day}
+              </div>
             ))}
 
             {days.map((day, idx) => {
               const dayEvents = getDayEvents(day)
+              const isCurrentMonth = isSameMonth(day, currentDate)
               return (
                 <div
                   key={idx}
                   onClick={() => handleAddEvent(day)}
                   style={{
-                    border: '1px solid #ddd',
-                    padding: '10px',
-                    minHeight: '100px',
+                    border: '1px solid rgba(99, 102, 241, 0.2)',
+                    padding: '12px',
+                    minHeight: '120px',
                     cursor: 'pointer',
-                    background: isSameMonth(day, currentDate) ? 'white' : '#f9f9f9',
-                    transition: 'background 0.2s',
+                    background: isCurrentMonth ? 'rgba(30, 41, 59, 0.3)' : 'rgba(15, 23, 42, 0.5)',
+                    borderRadius: '12px',
+                    transition: 'all 0.3s',
                   }}
-                  onMouseEnter={(e) => e.target.style.background = '#f0f0f0'}
-                  onMouseLeave={(e) => e.target.style.background = isSameMonth(day, currentDate) ? 'white' : '#f9f9f9'}
+                  onMouseEnter={(e) => e.target.style.borderColor = 'rgba(99, 102, 241, 0.5)'}
+                  onMouseLeave={(e) => e.target.style.borderColor = 'rgba(99, 102, 241, 0.2)'}
                 >
-                  <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>{day.getDate()}</div>
+                  <div style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '14px' }}>
+                    {day.getDate()}
+                  </div>
                   {dayEvents.map(ev => (
-                    <div key={ev.id} style={{ fontSize: '12px', background: '#0066cc', color: 'white', padding: '3px', borderRadius: '3px', marginBottom: '2px' }}>
+                    <div key={ev.id} style={{
+                      fontSize: '11px',
+                      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                      color: 'white',
+                      padding: '4px 6px',
+                      borderRadius: '4px',
+                      marginBottom: '3px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}>
                       {ev.titulo}
                     </div>
                   ))}
@@ -85,28 +118,63 @@ export default function Calendario() {
         </div>
 
         {showEventForm && (
-          <div style={{ background: 'white', padding: '20px', borderRadius: '8px', marginTop: '20px' }}>
+          <div className="card">
             <h2>Novo Evento - {format(selectedDate, 'dd/MM/yyyy', { locale: ptBR })}</h2>
             <form onSubmit={handleSaveEvent}>
-              <input
-                type="text"
-                placeholder="Título"
-                value={eventData.titulo}
-                onChange={(e) => setEventData({ ...eventData, titulo: e.target.value })}
-                required
-                style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '5px', marginBottom: '15px' }}
-              />
-              <textarea
-                placeholder="Descrição"
-                value={eventData.descricao}
-                onChange={(e) => setEventData({ ...eventData, descricao: e.target.value })}
-                style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '5px', marginBottom: '15px' }}
-              />
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button type="submit" className="btn btn-primary">Salvar</button>
-                <button type="button" onClick={() => setShowEventForm(false)} className="btn btn-secondary">Cancelar</button>
+              <div className="form-group">
+                <label>Título do Evento *</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Reunião com cliente"
+                  value={eventData.titulo}
+                  onChange={(e) => setEventData({ ...eventData, titulo: e.target.value })}
+                  required
+                  autoFocus
+                />
+              </div>
+              <div className="form-group">
+                <label>Descrição</label>
+                <textarea
+                  placeholder="Detalhes adicionais do evento..."
+                  value={eventData.descricao}
+                  onChange={(e) => setEventData({ ...eventData, descricao: e.target.value })}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                <button type="button" onClick={() => setShowEventForm(false)} className="btn btn-secondary">
+                  Cancelar
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  💾 Salvar Evento
+                </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {events.length > 0 && (
+          <div className="card">
+            <h2>Próximos Eventos</h2>
+            <div style={{ display: 'grid', gap: '15px', marginTop: '20px' }}>
+              {events.slice().reverse().map(ev => (
+                <div key={ev.id} style={{
+                  padding: '16px',
+                  background: 'rgba(99, 102, 241, 0.1)',
+                  border: '1px solid rgba(99, 102, 241, 0.2)',
+                  borderRadius: '12px',
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                    <div>
+                      <h3 style={{ margin: '0 0 6px 0' }}>{ev.titulo}</h3>
+                      <p style={{ margin: '0', fontSize: '13px', color: '#cbd5e1' }}>
+                        📅 {format(ev.date, 'dd/MM/yyyy', { locale: ptBR })}
+                      </p>
+                      {ev.descricao && <p style={{ margin: '8px 0 0 0', fontSize: '13px' }}>{ev.descricao}</p>}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -116,15 +184,28 @@ export default function Calendario() {
 
 function Sidebar() {
   return (
-    <div style={{ width: '250px', background: '#1a1a1a', color: 'white', padding: '20px', overflowY: 'auto', height: '100vh' }}>
-      <h2 style={{ marginBottom: '30px' }}>🎯 AprovaAí</h2>
-      <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <Link href="/dashboard" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Dashboard</Link>
-        <Link href="/clientes" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Clientes</Link>
-        <Link href="/entregaveis" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Entregáveis</Link>
-        <Link href="/calendario" style={{ padding: '10px', color: '#0066cc', textDecoration: 'none', fontWeight: 'bold' }}>Calendário</Link>
-        <Link href="/aprovacoes" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Aprovações</Link>
+    <div className="sidebar">
+      <h2>🎯 AprovaAí</h2>
+      <nav style={{ marginBottom: '40px' }}>
+        <NavLink href="/dashboard" label="Dashboard" icon="📊" />
+        <NavLink href="/clientes" label="Clientes" icon="🏢" />
+        <NavLink href="/entregaveis" label="Entregáveis" icon="📦" />
+        <NavLink href="/calendario" label="Calendário" icon="📅" active />
+        <NavLink href="/aprovacoes" label="Aprovações" icon="✅" />
+        <NavLink href="/admin" label="Administração" icon="⚙️" />
       </nav>
+      <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+        🚪 Sair
+      </Link>
     </div>
+  )
+}
+
+function NavLink({ href, label, icon, active }) {
+  return (
+    <Link href={href} className={`nav-item ${active ? 'active' : ''}`} style={{ justifyContent: 'flex-start' }}>
+      <span style={{ fontSize: '18px' }}>{icon}</span>
+      <a style={{ flex: 1, textAlign: 'left' }}>{label}</a>
+    </Link>
   )
 }

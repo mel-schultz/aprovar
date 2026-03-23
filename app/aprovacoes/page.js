@@ -5,13 +5,15 @@ import Link from 'next/link'
 
 export default function Aprovacoes() {
   const [aprovacoes, setAprovacoes] = useState([
-    { id: 1, titulo: 'Logo Design v1', cliente: 'Empresa X', dataEnvio: '2024-03-20', status: 'pendente' },
+    { id: 1, titulo: 'Logo Design v2', cliente: 'Empresa X', dataEnvio: '2024-03-20', status: 'pendente' },
     { id: 2, titulo: 'Website Homepage', cliente: 'Empresa Y', dataEnvio: '2024-03-19', status: 'pendente' },
+    { id: 3, titulo: 'Mobile App Design', cliente: 'Empresa Z', dataEnvio: '2024-03-18', status: 'aprovado' },
   ])
+  const [filterStatus, setFilterStatus] = useState('todos')
 
   const handleApprove = (id) => {
     setAprovacoes(aprovacoes.map(a => a.id === id ? { ...a, status: 'aprovado' } : a))
-    alert('✅ Entregável aprovado!')
+    alert('✅ Entregável aprovado com sucesso!')
   }
 
   const handleReject = (id) => {
@@ -19,71 +21,120 @@ export default function Aprovacoes() {
     alert('❌ Entregável rejeitado!')
   }
 
+  const filteredAprovacoes = filterStatus === 'todos' 
+    ? aprovacoes 
+    : aprovacoes.filter(a => a.status === filterStatus)
+
   const getStatusColor = (status) => {
     switch(status) {
-      case 'aprovado': return '#d4edda'
-      case 'rejeitado': return '#f8d7da'
-      default: return '#fff3cd'
+      case 'aprovado': return 'rgba(16, 185, 129, 0.1)'
+      case 'rejeitado': return 'rgba(239, 68, 68, 0.1)'
+      default: return 'rgba(245, 158, 11, 0.1)'
     }
   }
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
       <Sidebar />
-      <div style={{ flex: 1, padding: '40px', overflowY: 'auto', background: '#f5f5f5' }}>
-        <h1>Aprovações de Entregáveis</h1>
-        <p style={{ color: '#666', marginBottom: '30px' }}>Revise e aprove os entregáveis enviados</p>
 
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '30px' }}>
-          <button className="btn btn-secondary">📋 Todos</button>
-          <button className="btn btn-secondary">⏳ Pendentes</button>
-          <button className="btn btn-secondary">✅ Aprovados</button>
-          <button className="btn btn-secondary">❌ Rejeitados</button>
+      <div className="main-content">
+        <div>
+          <h1>Aprovações</h1>
+          <p>Revise e aprove os entregáveis enviados</p>
         </div>
 
-        <div style={{ display: 'grid', gap: '20px' }}>
-          {aprovacoes.map(apr => (
-            <div key={apr.id} style={{
-              background: getStatusColor(apr.status),
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              padding: '20px',
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '15px' }}>
-                <div>
-                  <h3 style={{ margin: 0, marginBottom: '5px' }}>{apr.titulo}</h3>
-                  <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
-                    Cliente: <strong>{apr.cliente}</strong> | Enviado em: <strong>{apr.dataEnvio}</strong>
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '30px', flexWrap: 'wrap' }}>
+          <button 
+            onClick={() => setFilterStatus('todos')}
+            className={filterStatus === 'todos' ? 'btn btn-primary' : 'btn btn-secondary'}
+          >
+            📋 Todos ({aprovacoes.length})
+          </button>
+          <button 
+            onClick={() => setFilterStatus('pendente')}
+            className={filterStatus === 'pendente' ? 'btn btn-primary' : 'btn btn-secondary'}
+          >
+            ⏳ Pendentes ({aprovacoes.filter(a => a.status === 'pendente').length})
+          </button>
+          <button 
+            onClick={() => setFilterStatus('aprovado')}
+            className={filterStatus === 'aprovado' ? 'btn btn-primary' : 'btn btn-secondary'}
+          >
+            ✅ Aprovados ({aprovacoes.filter(a => a.status === 'aprovado').length})
+          </button>
+          <button 
+            onClick={() => setFilterStatus('rejeitado')}
+            className={filterStatus === 'rejeitado' ? 'btn btn-primary' : 'btn btn-secondary'}
+          >
+            ❌ Rejeitados ({aprovacoes.filter(a => a.status === 'rejeitado').length})
+          </button>
+        </div>
+
+        {filteredAprovacoes.length === 0 ? (
+          <div className="card" style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <div style={{ fontSize: '48px', marginBottom: '20px' }}>✅</div>
+            <h3>Nenhuma aprovação {filterStatus !== 'todos' ? `${filterStatus}` : ''}</h3>
+            <p style={{ color: '#cbd5e1' }}>Tudo está em dia!</p>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gap: '20px' }}>
+            {filteredAprovacoes.map(apr => (
+              <div 
+                key={apr.id}
+                className="card"
+                style={{
+                  background: getStatusColor(apr.status),
+                  borderLeft: `4px solid ${
+                    apr.status === 'pendente' ? '#f59e0b' :
+                    apr.status === 'aprovado' ? '#10b981' :
+                    '#ef4444'
+                  }`,
+                  padding: '24px',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '16px' }}>
+                  <div>
+                    <h3 style={{ margin: '0 0 8px 0' }}>{apr.titulo}</h3>
+                    <p style={{ margin: '0', fontSize: '14px', color: '#cbd5e1' }}>
+                      👤 <strong>{apr.cliente}</strong> • 📅 {apr.dataEnvio}
+                    </p>
+                  </div>
+                  <span className={`status-badge status-${apr.status}`}>
+                    {apr.status === 'pendente' ? '⏳ Pendente' : apr.status === 'aprovado' ? '✅ Aprovado' : '❌ Rejeitado'}
+                  </span>
+                </div>
+
+                {apr.status === 'pendente' && (
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
+                    <button 
+                      onClick={() => handleApprove(apr.id)}
+                      className="btn btn-success"
+                      style={{ fontSize: '13px' }}
+                    >
+                      ✅ Aprovar
+                    </button>
+                    <button 
+                      onClick={() => handleReject(apr.id)}
+                      className="btn btn-danger"
+                      style={{ fontSize: '13px' }}
+                    >
+                      ❌ Rejeitar
+                    </button>
+                    <button className="btn btn-secondary" style={{ fontSize: '13px' }}>
+                      👁️ Visualizar
+                    </button>
+                  </div>
+                )}
+
+                {apr.status !== 'pendente' && (
+                  <p style={{ margin: '12px 0 0 0', fontSize: '13px', color: '#cbd5e1' }}>
+                    {apr.status === 'aprovado' ? '✅ Aprovado com sucesso' : '❌ Rejeitado pelo revisor'}
                   </p>
-                </div>
-                <span className="status-badge" style={{
-                  background: apr.status === 'pendente' ? '#fff3cd' : apr.status === 'aprovado' ? '#d4edda' : '#f8d7da',
-                  color: apr.status === 'pendente' ? '#856404' : apr.status === 'aprovado' ? '#155724' : '#721c24',
-                }}>
-                  {apr.status === 'pendente' ? '⏳ Pendente' : apr.status === 'aprovado' ? '✅ Aprovado' : '❌ Rejeitado'}
-                </span>
+                )}
               </div>
-
-              {apr.status === 'pendente' && (
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <button onClick={() => handleApprove(apr.id)} className="btn btn-primary" style={{ background: '#28a745' }}>
-                    ✅ Aprovar
-                  </button>
-                  <button onClick={() => handleReject(apr.id)} className="btn btn-secondary" style={{ background: '#dc3545', color: 'white' }}>
-                    ❌ Rejeitar
-                  </button>
-                  <button className="btn btn-secondary">👁️ Visualizar</button>
-                </div>
-              )}
-
-              {apr.status !== 'pendente' && (
-                <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
-                  {apr.status === 'aprovado' ? '✅ Aprovado' : '❌ Rejeitado'}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
@@ -91,15 +142,28 @@ export default function Aprovacoes() {
 
 function Sidebar() {
   return (
-    <div style={{ width: '250px', background: '#1a1a1a', color: 'white', padding: '20px', overflowY: 'auto', height: '100vh' }}>
-      <h2 style={{ marginBottom: '30px' }}>🎯 AprovaAí</h2>
-      <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <Link href="/dashboard" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Dashboard</Link>
-        <Link href="/clientes" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Clientes</Link>
-        <Link href="/entregaveis" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Entregáveis</Link>
-        <Link href="/calendario" style={{ padding: '10px', color: 'white', textDecoration: 'none' }}>Calendário</Link>
-        <Link href="/aprovacoes" style={{ padding: '10px', color: '#0066cc', textDecoration: 'none', fontWeight: 'bold' }}>Aprovações</Link>
+    <div className="sidebar">
+      <h2>🎯 AprovaAí</h2>
+      <nav style={{ marginBottom: '40px' }}>
+        <NavLink href="/dashboard" label="Dashboard" icon="📊" />
+        <NavLink href="/clientes" label="Clientes" icon="🏢" />
+        <NavLink href="/entregaveis" label="Entregáveis" icon="📦" />
+        <NavLink href="/calendario" label="Calendário" icon="📅" />
+        <NavLink href="/aprovacoes" label="Aprovações" icon="✅" active />
+        <NavLink href="/admin" label="Administração" icon="⚙️" />
       </nav>
+      <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+        🚪 Sair
+      </Link>
     </div>
+  )
+}
+
+function NavLink({ href, label, icon, active }) {
+  return (
+    <Link href={href} className={`nav-item ${active ? 'active' : ''}`} style={{ justifyContent: 'flex-start' }}>
+      <span style={{ fontSize: '18px' }}>{icon}</span>
+      <a style={{ flex: 1, textAlign: 'left' }}>{label}</a>
+    </Link>
   )
 }
