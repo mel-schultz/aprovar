@@ -1,95 +1,92 @@
 /**
- * Ícones Phosphor centralizados — AprovaAí
+ * Ícones centralizados — AprovaAí
+ * Biblioteca: lucide-react (compatível com Next.js 14, App Router e Pages Router)
  *
- * "use client" garante compatibilidade com Next.js 14 (App Router).
- * Importe deste arquivo em qualquer componente do projeto:
- *
+ * Uso em qualquer componente (client ou server):
  *   import { IconUser, IconApproved, IconCalendar } from "@/components/icons";
+ *
+ * lucide-react não exige "use client" — funciona em Server Components nativamente.
  */
-
-"use client";
 
 export {
   // ── Navegação & Layout ──────────────────────────────────────────────────────
-  House          as IconHome,
-  List           as IconMenu,
-  X              as IconClose,
-  MagnifyingGlass as IconSearch,
-  Bell           as IconBell,
-  Gear           as IconSettings,
-  ArrowLeft      as IconBack,
-  ArrowRight     as IconForward,
-  CaretDown      as IconChevronDown,
-  CaretUp        as IconChevronUp,
-  CaretRight     as IconChevronRight,
-  SidebarSimple  as IconSidebar,
-  SquaresFour    as IconGrid,
-  Rows           as IconList,
+  Home            as IconHome,
+  Menu            as IconMenu,
+  X               as IconClose,
+  Search          as IconSearch,
+  Bell            as IconBell,
+  Settings        as IconSettings,
+  ArrowLeft       as IconBack,
+  ArrowRight      as IconForward,
+  ChevronDown     as IconChevronDown,
+  ChevronUp       as IconChevronUp,
+  ChevronRight    as IconChevronRight,
+  PanelLeft       as IconSidebar,
+  LayoutGrid      as IconGrid,
+  List            as IconList,
 
   // ── Usuários & Autenticação ─────────────────────────────────────────────────
-  User           as IconUser,
-  Users          as IconUsers,
-  UserCircle     as IconUserCircle,
-  SignIn         as IconLogin,
-  SignOut        as IconLogout,
-  Lock           as IconLock,
-  Eye            as IconEye,
-  EyeSlash       as IconEyeSlash,
+  User            as IconUser,
+  Users           as IconUsers,
+  UserCircle      as IconUserCircle,
+  LogIn           as IconLogin,
+  LogOut          as IconLogout,
+  Lock            as IconLock,
+  Eye             as IconEye,
+  EyeOff          as IconEyeSlash,
 
   // ── Empresa & Clientes ──────────────────────────────────────────────────────
-  Buildings      as IconBuilding,
-  Briefcase      as IconBriefcase,
-  IdentificationCard as IconId,
+  Building2       as IconBuilding,
+  Briefcase       as IconBriefcase,
+  IdCard          as IconId,
 
   // ── Arquivos & Entregáveis ──────────────────────────────────────────────────
-  Package        as IconPackage,
-  File           as IconFile,
-  FilePlus       as IconFileAdd,
-  FileText       as IconFileText,
-  UploadSimple   as IconUpload,
-  DownloadSimple as IconDownload,
-  Folder         as IconFolder,
-  Image          as IconImage,
-  Link           as IconLink,
+  Package         as IconPackage,
+  File            as IconFile,
+  FilePlus        as IconFileAdd,
+  FileText        as IconFileText,
+  Upload          as IconUpload,
+  Download        as IconDownload,
+  Folder          as IconFolder,
+  Image           as IconImage,
+  Link            as IconLink,
 
   // ── Aprovações & Status ─────────────────────────────────────────────────────
-  CheckCircle    as IconApproved,
-  XCircle        as IconRejected,
-  Clock          as IconPending,
-  WarningCircle  as IconWarning,
-  CheckSquare    as IconCheck,
-  Checks         as IconChecks,
+  CheckCircle     as IconApproved,
+  XCircle         as IconRejected,
+  Clock           as IconPending,
+  AlertCircle     as IconWarning,
+  CheckSquare     as IconCheck,
+  CheckCheck      as IconChecks,
 
   // ── Calendário & Tempo ──────────────────────────────────────────────────────
-  Calendar       as IconCalendar,
-  CalendarPlus   as IconCalendarAdd,
-  CalendarCheck  as IconCalendarCheck,
-  CalendarBlank  as IconCalendarBlank,
-  Timer          as IconTimer,
+  Calendar        as IconCalendar,
+  CalendarPlus    as IconCalendarAdd,
+  CalendarCheck   as IconCalendarCheck,
+  Timer           as IconTimer,
 
   // ── Ações ───────────────────────────────────────────────────────────────────
-  Plus           as IconPlus,
-  Minus          as IconMinus,
-  Pencil         as IconEdit,
-  Trash          as IconDelete,
-  Copy           as IconCopy,
-  Share          as IconShare,
-  ArrowsClockwise as IconRefresh,
-  DotsThreeVertical as IconMoreOptions,
+  Plus            as IconPlus,
+  Minus           as IconMinus,
+  Pencil          as IconEdit,
+  Trash2          as IconDelete,
+  Copy            as IconCopy,
+  Share2          as IconShare,
+  RefreshCw       as IconRefresh,
+  MoreVertical    as IconMoreOptions,
 
   // ── Comunicação ─────────────────────────────────────────────────────────────
-  Chat           as IconChat,
-  ChatText       as IconChatText,
-  Envelope       as IconEmail,
-  Phone          as IconPhone,
+  MessageSquare   as IconChat,
+  Mail            as IconEmail,
+  Phone           as IconPhone,
 
   // ── Feedback & Info ─────────────────────────────────────────────────────────
-  Info           as IconInfo,
-  Question       as IconQuestion,
-  Lightning      as IconLightning,
-  Sparkle        as IconSparkle,
-  Star           as IconStar,
-  Heart          as IconHeart,
-  Tag            as IconTag,
+  Info            as IconInfo,
+  HelpCircle      as IconQuestion,
+  Zap             as IconLightning,
+  Sparkles        as IconSparkle,
+  Star            as IconStar,
+  Heart           as IconHeart,
+  Tag             as IconTag,
 
-} from "@phosphor-icons/react";
+} from "lucide-react";

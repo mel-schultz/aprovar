@@ -1,36 +1,32 @@
 /**
  * Página inicial — AprovaAí
  *
- * ATENÇÃO: Este arquivo é um EXEMPLO de como substituir os emojis da sua
- * página inicial por ícones Phosphor. Adapte conforme o seu app/page.tsx real.
+ * ATENÇÃO: Este é um EXEMPLO de como usar os ícones Lucide na sua página.
+ * Adapte ao seu app/page.tsx real mantendo sua estrutura de estilos/classes.
  *
- * Como a página usa ícones de forma interativa, marcamos como "use client".
- * Para Server Components, basta importar de "@phosphor-icons/react/dist/ssr"
- * caso sua versão instalada suporte (v2.1+).
+ * lucide-react funciona em Server Components (sem "use client") no Next.js 14.
  */
-
-"use client";
 
 import {
   Users,
-  Buildings,
+  Building2,
   Package,
   Calendar,
   CheckCircle,
-  Lightning,
-  Sparkle,
-  RocketLaunch,
-  NotePencil,
+  Zap,
+  Sparkles,
+  Rocket,
+  NotebookPen,
   Heart,
-} from "@phosphor-icons/react";
+} from "lucide-react";
 
 const features = [
-  { Icon: Users,       title: "Usuários",     description: "Admin, Atendimento, Cliente" },
-  { Icon: Buildings,   title: "Clientes",     description: "White label completo" },
-  { Icon: Package,     title: "Entregáveis",  description: "Upload e gerenciamento" },
-  { Icon: Calendar,    title: "Calendário",   description: "Tipo Google Agenda" },
-  { Icon: CheckCircle, title: "Aprovações",   description: "Workflow completo" },
-  { Icon: Lightning,   title: "Moderno",      description: "Design responsivo" },
+  { Icon: Users,        title: "Usuários",     description: "Admin, Atendimento, Cliente" },
+  { Icon: Building2,    title: "Clientes",     description: "White label completo"        },
+  { Icon: Package,      title: "Entregáveis",  description: "Upload e gerenciamento"      },
+  { Icon: Calendar,     title: "Calendário",   description: "Tipo Google Agenda"          },
+  { Icon: CheckCircle,  title: "Aprovações",   description: "Workflow completo"           },
+  { Icon: Zap,          title: "Moderno",      description: "Design responsivo"           },
 ];
 
 export default function HomePage() {
@@ -39,7 +35,7 @@ export default function HomePage() {
       {/* ── Hero ── */}
       <section>
         <div>
-          <Sparkle size={20} weight="fill" />
+          <Sparkles size={20} />
           <span>Bem-vindo ao AprovaAí</span>
         </div>
 
@@ -51,11 +47,11 @@ export default function HomePage() {
 
         <div>
           <a href="/login">
-            <RocketLaunch size={18} weight="fill" />
+            <Rocket size={18} />
             Começar Agora
           </a>
           <a href="/login?tab=signup">
-            <NotePencil size={18} />
+            <NotebookPen size={18} />
             Criar Conta
           </a>
         </div>
@@ -65,7 +61,7 @@ export default function HomePage() {
       <section>
         {features.map(({ Icon, title, description }) => (
           <div key={title}>
-            <Icon size={32} weight="duotone" />
+            <Icon size={32} />
             <h3>{title}</h3>
             <p>{description}</p>
           </div>
@@ -76,7 +72,7 @@ export default function HomePage() {
       <footer>
         <p>
           © 2024 AprovaAí. Desenvolvido com{" "}
-          <Heart size={14} weight="fill" color="#e11d48" />
+          <Heart size={14} fill="currentColor" color="#e11d48" />
         </p>
       </footer>
     </main>
