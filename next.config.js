@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-}
+  // Otimiza o bundle: carrega apenas os ícones importados
+  experimental: {
+    optimizePackageImports: ["@phosphor-icons/react"],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
