@@ -1,5 +1,5 @@
 {
-  "name": "aprovai-light",
+  "name": "aprovai",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -14,7 +14,11 @@
     "react-dom": "^18.3.0",
     "@supabase/supabase-js": "^2.43.4",
     "@supabase/ssr": "^0.4.0",
-    "date-fns": "^3.6.0"
+    "date-fns": "^3.6.0",
+    "lucide-react": "^0.378.0",
+    "react-hot-toast": "^2.4.1",
+    "react-big-calendar": "^1.8.5",
+    "date-fns": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
