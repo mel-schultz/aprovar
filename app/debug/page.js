@@ -100,18 +100,20 @@ export default function Debug() {
       </div>
 
       <div style={{ marginTop: '40px', padding: '20px', background: '#fffbeb', borderRadius: '8px', borderLeft: '4px solid #ffc107' }}>
-        <h3>⚠️ Se alguma verificação falhou:</h3>
-        <ol>
-          <li><strong>Variáveis de Ambiente:</strong> Crie/verifique arquivo `.env.local` na raiz</li>
-          <li><strong>URL ou Chave:</strong> Verifique no Supabase > Settings > API</li>
-          <li><strong>Banco de Dados:</strong> Execute `migrations.sql` no Supabase SQL Editor</li>
-          <li><strong>Reinicie:</strong> Ctrl+C e `npm run dev` novamente</li>
+        <h3>Aviso: Se alguma verificação falhou:</h3>
+        <ol style={{ fontSize: '14px' }}>
+          <li><strong>Variáveis de Ambiente:</strong> Crie/verifique arquivo .env.local na raiz</li>
+          <li><strong>URL ou Chave:</strong> Verifique no Supabase Settings API</li>
+          <li><strong>Banco de Dados:</strong> Execute migrations.sql no Supabase SQL Editor</li>
+          <li><strong>Reinicie:</strong> Ctrl+C e npm run dev novamente</li>
         </ol>
       </div>
 
       <div style={{ marginTop: '20px', padding: '20px', background: '#d4edda', borderRadius: '8px', borderLeft: '4px solid #28a745' }}>
-        <h3>✅ Se tudo passou:</h3>
-        <p>Vá para <a href="/login">http://localhost:3000/login</a> e crie uma conta!</p>
+        <h3>Sucesso: Se tudo passou:</h3>
+        <p>
+          Vá para <a href="/login" style={{ color: '#0066cc' }}>http://localhost:3000/login</a> e crie uma conta!
+        </p>
       </div>
     </div>
   )
