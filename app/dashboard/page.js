@@ -32,7 +32,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="loading-screen">
-        <span className="spinner spinner-lg" aria-label="Carregando" />
+        <div className="spinner spinner-lg" aria-label="Carregando" />
         <p>Carregando...</p>
       </div>
     )
@@ -56,27 +56,102 @@ export default function Dashboard() {
           <StatCard
             icon={<IconClients />}
             title="Clientes"
-            count="--"
-            color="var(--color-accent-fg)"
+            count="12"
+            trend="+2 este mês"
+            color="blue"
           />
           <StatCard
             icon={<IconPackage />}
             title="Entregáveis"
-            count="--"
-            color="var(--color-accent-fg)"
+            count="48"
+            trend="+8 pendentes"
+            color="purple"
           />
           <StatCard
             icon={<IconCheck />}
             title="Aprovados"
-            count="--"
-            color="var(--color-success-fg)"
+            count="35"
+            trend="73% de taxa"
+            color="green"
           />
           <StatCard
             icon={<IconClock />}
             title="Pendentes"
-            count="--"
-            color="var(--color-warning-fg)"
+            count="13"
+            trend="Ação necessária"
+            color="orange"
           />
+        </div>
+
+        {/* RECENT ACTIVITY */}
+        <div className="grid-2col">
+          <div className="card">
+            <div className="card-header">
+              <h2>Atividade Recente</h2>
+            </div>
+            <div className="activity-list">
+              <ActivityItem
+                icon="check"
+                title="Projeto X aprovado"
+                description="Cliente ABC aprovou o design"
+                time="2 horas atrás"
+                status="success"
+              />
+              <ActivityItem
+                icon="alert"
+                title="Prazo próximo"
+                description="Entregável do projeto Y vence amanhã"
+                time="4 horas atrás"
+                status="warning"
+              />
+              <ActivityItem
+                icon="user"
+                title="Novo cliente"
+                description="Empresa XYZ foi adicionada ao sistema"
+                time="1 dia atrás"
+                status="info"
+              />
+              <ActivityItem
+                icon="file"
+                title="Upload concluído"
+                description="Arquivo de apresentação enviado"
+                time="2 dias atrás"
+                status="info"
+              />
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-header">
+              <h2>Próximas Ações</h2>
+            </div>
+            <div className="action-list">
+              <ActionItem
+                title="Revisar protótipos"
+                client="Cliente ABC"
+                dueDate="Hoje"
+                priority="high"
+              />
+              <ActionItem
+                title="Enviar apresentação"
+                client="Empresa XYZ"
+                dueDate="Amanhã"
+                priority="high"
+              />
+              <ActionItem
+                title="Reunião com cliente"
+                client="Projeto Y"
+                dueDate="Quarta-feira"
+                priority="medium"
+              />
+              <ActionItem
+                title="Atualizar documentação"
+                client="Interno"
+                dueDate="Próxima semana"
+                priority="low"
+              />
+            </div>
+          </div>
         </div>
 
         {/* QUICK ACTIONS */}
@@ -92,6 +167,8 @@ export default function Dashboard() {
       </main>
 
       <style>{`
+        .app-shell { display: flex; min-height: 100vh; }
+        
         .loading-screen {
           display: flex;
           flex-direction: column;
@@ -103,78 +180,268 @@ export default function Dashboard() {
           font-size: 14px;
         }
 
+        .spinner {
+          width: 32px;
+          height: 32px;
+          border: 3px solid var(--color-border-muted);
+          border-top-color: var(--color-accent-fg);
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+
         .spinner-lg {
-          width: 24px !important;
-          height: 24px !important;
-          border-width: 2px !important;
+          width: 40px;
+          height: 40px;
+          border-width: 4px;
         }
 
-        .app-shell {
-          display: flex;
-          min-height: 100vh;
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
 
+        /* Stats Grid */
         .stats-grid {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
           gap: 16px;
           margin-bottom: 32px;
         }
 
         .stat-card {
-          background: var(--card-bg);
-          border: 1px solid var(--card-border);
-          border-radius: 6px;
-          padding: 16px 20px;
+          background: var(--color-canvas-default);
+          border: 1px solid var(--color-border-default);
+          border-radius: 8px;
+          padding: 20px;
+          transition: all 0.15s ease;
+        }
+
+        .stat-card:hover {
+          border-color: var(--color-border-muted);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-header {
           display: flex;
-          align-items: flex-start;
+          align-items: center;
           gap: 12px;
+          margin-bottom: 12px;
         }
 
         .stat-icon {
-          width: 32px;
-          height: 32px;
-          border-radius: 6px;
-          background: var(--color-accent-subtle);
-          border: 1px solid var(--color-accent-muted);
+          width: 40px;
+          height: 40px;
+          border-radius: 8px;
           display: flex;
           align-items: center;
           justify-content: center;
-          flex-shrink: 0;
+          font-size: 20px;
+        }
+
+        .stat-icon.blue {
+          background: var(--color-accent-subtle);
           color: var(--color-accent-fg);
         }
 
-        .stat-icon.success {
-          background: var(--color-success-subtle);
-          border-color: var(--color-success-muted);
-          color: var(--color-success-fg);
+        .stat-icon.green {
+          background: #d1fae5;
+          color: #065f46;
         }
 
-        .stat-icon.warning {
-          background: var(--color-warning-subtle);
-          border-color: var(--color-warning-muted);
-          color: var(--color-warning-fg);
+        .stat-icon.orange {
+          background: #fed7aa;
+          color: #92400e;
         }
 
-        .stat-info {
+        .stat-icon.purple {
+          background: #f3e8ff;
+          color: #6b21a8;
+        }
+
+        .stat-title {
+          font-size: 13px;
+          font-weight: 500;
+          color: var(--color-fg-muted);
+          margin: 0;
+        }
+
+        .stat-value {
+          font-size: 28px;
+          font-weight: 700;
+          color: var(--color-fg-default);
+          margin: 8px 0 0;
+        }
+
+        .stat-trend {
+          font-size: 12px;
+          color: var(--color-fg-muted);
+          margin-top: 8px;
+        }
+
+        /* Grid Layout */
+        .grid-2col {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 16px;
+          margin-bottom: 32px;
+        }
+
+        .card {
+          background: var(--color-canvas-default);
+          border: 1px solid var(--color-border-default);
+          border-radius: 8px;
+          overflow: hidden;
+        }
+
+        .card-header {
+          padding: 16px;
+          border-bottom: 1px solid var(--color-border-muted);
+        }
+
+        .card-header h2 {
+          font-size: 15px;
+          font-weight: 600;
+          color: var(--color-fg-default);
+          margin: 0;
+        }
+
+        /* Activity List */
+        .activity-list {
+          display: flex;
+          flex-direction: column;
+          divide-y: 1px solid var(--color-border-muted);
+        }
+
+        .activity-item {
+          padding: 12px 16px;
+          display: flex;
+          gap: 12px;
+          align-items: flex-start;
+          transition: background-color 0.15s ease;
+        }
+
+        .activity-item:hover {
+          background: var(--hover-bg);
+        }
+
+        .activity-icon {
+          width: 32px;
+          height: 32px;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
+          flex-shrink: 0;
+        }
+
+        .activity-icon.success {
+          background: #d1fae5;
+          color: #065f46;
+        }
+
+        .activity-icon.warning {
+          background: #fed7aa;
+          color: #92400e;
+        }
+
+        .activity-icon.info {
+          background: var(--color-accent-subtle);
+          color: var(--color-accent-fg);
+        }
+
+        .activity-content {
           flex: 1;
           min-width: 0;
         }
 
-        .stat-label {
-          font-size: 12px;
-          color: var(--color-fg-muted);
-          margin-bottom: 4px;
-          font-weight: 500;
-        }
-
-        .stat-value {
-          font-size: 24px;
+        .activity-title {
+          font-size: 13px;
           font-weight: 600;
           color: var(--color-fg-default);
-          line-height: 1;
+          margin: 0;
         }
 
+        .activity-desc {
+          font-size: 12px;
+          color: var(--color-fg-muted);
+          margin: 2px 0 0;
+        }
+
+        .activity-time {
+          font-size: 11px;
+          color: var(--color-fg-muted);
+          margin-top: 4px;
+        }
+
+        /* Action List */
+        .action-list {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+
+        .action-item {
+          padding: 12px 16px;
+          border-bottom: 1px solid var(--color-border-muted);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          transition: background-color 0.15s ease;
+        }
+
+        .action-item:hover {
+          background: var(--hover-bg);
+        }
+
+        .action-item:last-child {
+          border-bottom: none;
+        }
+
+        .action-info {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .action-title {
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--color-fg-default);
+          margin: 0;
+        }
+
+        .action-meta {
+          font-size: 11px;
+          color: var(--color-fg-muted);
+          margin-top: 2px;
+        }
+
+        .action-priority {
+          display: inline-flex;
+          align-items: center;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 11px;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+
+        .action-priority.high {
+          background: #fee2e2;
+          color: #991b1b;
+        }
+
+        .action-priority.medium {
+          background: #fed7aa;
+          color: #92400e;
+        }
+
+        .action-priority.low {
+          background: #d1fae5;
+          color: #065f46;
+        }
+
+        /* Section Title */
         .section-title {
           font-size: 16px;
           font-weight: 600;
@@ -182,35 +449,36 @@ export default function Dashboard() {
           margin-bottom: 12px;
         }
 
+        /* Quick Actions Grid */
         .quick-actions-grid {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
           gap: 12px;
         }
 
         .quick-action {
-          background: var(--card-bg);
-          border: 1px solid var(--card-border);
-          border-radius: 6px;
+          background: var(--color-canvas-default);
+          border: 1px solid var(--color-border-default);
+          border-radius: 8px;
           padding: 16px;
           display: flex;
           flex-direction: column;
           gap: 10px;
           text-decoration: none;
           color: inherit;
-          transition: border-color 0.15s ease, box-shadow 0.15s ease;
+          transition: all 0.15s ease;
         }
 
         .quick-action:hover {
           border-color: var(--color-accent-fg);
-          box-shadow: var(--color-shadow-medium);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
           text-decoration: none;
           color: inherit;
         }
 
         .quick-action-icon {
-          width: 32px;
-          height: 32px;
+          width: 36px;
+          height: 36px;
           border-radius: 6px;
           background: var(--color-accent-subtle);
           border: 1px solid var(--color-accent-muted);
@@ -218,13 +486,14 @@ export default function Dashboard() {
           align-items: center;
           justify-content: center;
           color: var(--color-accent-fg);
+          font-size: 18px;
         }
 
         .quick-action h3 {
           font-size: 13px;
           font-weight: 600;
           color: var(--color-fg-default);
-          margin-bottom: 2px;
+          margin: 0;
         }
 
         .quick-action p {
@@ -234,15 +503,25 @@ export default function Dashboard() {
           line-height: 1.4;
         }
 
-        @media (max-width: 1024px) {
-          .stats-grid,
+        @media (max-width: 768px) {
+          .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .grid-2col {
+            grid-template-columns: 1fr;
+          }
+
           .quick-actions-grid {
             grid-template-columns: repeat(2, 1fr);
           }
         }
 
-        @media (max-width: 640px) {
-          .stats-grid,
+        @media (max-width: 480px) {
+          .stats-grid {
+            grid-template-columns: 1fr;
+          }
+
           .quick-actions-grid {
             grid-template-columns: 1fr;
           }
@@ -252,114 +531,47 @@ export default function Dashboard() {
   )
 }
 
-function Sidebar({ onLogout, activePath }) {
-  return (
-    <aside className="sidebar">
-      <div className="sidebar-header">
-        <Link href="/dashboard" className="sidebar-logo">
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" fill="none" />
-            <path d="M6 10l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <span>AprovaAí</span>
-        </Link>
-      </div>
-
-      <nav>
-        <NavLink href="/dashboard" label="Dashboard" icon={<IconDashboard />} active={activePath === '/dashboard'} />
-        <NavLink href="/clientes" label="Clientes" icon={<IconBuilding />} active={activePath === '/clientes'} />
-        <NavLink href="/entregaveis" label="Entregáveis" icon={<IconPackage />} active={activePath === '/entregaveis'} />
-        <NavLink href="/calendario" label="Calendário" icon={<IconCalendar />} active={activePath === '/calendario'} />
-        <NavLink href="/aprovacoes" label="Aprovações" icon={<IconCheck />} active={activePath === '/aprovacoes'} />
-        <NavLink href="/admin" label="Administração" icon={<IconGear />} active={activePath === '/admin'} />
-      </nav>
-
-      <div className="sidebar-footer">
-        <ThemeToggle />
-        <button
-          onClick={onLogout}
-          className="sidebar-logout"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M2 2.75C2 1.784 2.784 1 3.75 1h2.5a.75.75 0 0 1 0 1.5h-2.5a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 2 13.25Zm10.44 4.5-1.97-1.97a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.97-1.97H6.75a.75.75 0 0 1 0-1.5Z" />
-          </svg>
-          Sair
-        </button>
-      </div>
-
-      <style>{`
-        .sidebar-logo {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 14px;
-          font-weight: 600;
-          color: var(--color-fg-default);
-          text-decoration: none;
-          padding: 8px 16px 12px;
-        }
-
-        .sidebar-logo:hover {
-          text-decoration: none;
-          color: var(--color-fg-default);
-        }
-
-        .sidebar-logo svg {
-          color: var(--color-accent-fg);
-          flex-shrink: 0;
-        }
-
-        .sidebar-logout {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          width: 100%;
-          padding: 6px 8px;
-          background: transparent;
-          border: 1px solid transparent;
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 13px;
-          font-weight: 500;
-          font-family: inherit;
-          color: var(--color-danger-fg);
-          transition: background-color 0.15s ease, border-color 0.15s ease;
-          margin-top: 8px;
-        }
-
-        .sidebar-logout:hover {
-          background: var(--color-danger-subtle);
-          border-color: var(--color-danger-muted);
-        }
-      `}</style>
-    </aside>
-  )
-}
-
-function NavLink({ href, label, icon, active }) {
-  return (
-    <Link
-      href={href}
-      className={`nav-item${active ? ' active' : ''}`}
-    >
-      <span className="nav-icon">{icon}</span>
-      <span>{label}</span>
-    </Link>
-  )
-}
-
-function StatCard({ icon, title, count, color }) {
-  const isSuccess = color === 'var(--color-success-fg)'
-  const isWarning = color === 'var(--color-warning-fg)'
+function StatCard({ icon, title, count, trend, color }) {
   return (
     <div className="stat-card">
-      <div className={`stat-icon${isSuccess ? ' success' : isWarning ? ' warning' : ''}`}>
-        {icon}
+      <div className="stat-header">
+        <div className={`stat-icon ${color}`}>{icon}</div>
+        <h3 className="stat-title">{title}</h3>
       </div>
-      <div className="stat-info">
-        <p className="stat-label">{title}</p>
-        <p className="stat-value">{count}</p>
+      <div className="stat-value">{count}</div>
+      <div className="stat-trend">{trend}</div>
+    </div>
+  )
+}
+
+function ActivityItem({ icon, title, description, time, status }) {
+  return (
+    <div className="activity-item">
+      <div className={`activity-icon ${status}`}>
+        {icon === 'check' && '✓'}
+        {icon === 'alert' && '!'}
+        {icon === 'user' && '👤'}
+        {icon === 'file' && '📄'}
       </div>
+      <div className="activity-content">
+        <h3 className="activity-title">{title}</h3>
+        <p className="activity-desc">{description}</p>
+        <div className="activity-time">{time}</div>
+      </div>
+    </div>
+  )
+}
+
+function ActionItem({ title, client, dueDate, priority }) {
+  return (
+    <div className="action-item">
+      <div className="action-info">
+        <h3 className="action-title">{title}</h3>
+        <div className="action-meta">{client} • {dueDate}</div>
+      </div>
+      <span className={`action-priority ${priority}`}>
+        {priority === 'high' ? 'Alta' : priority === 'medium' ? 'Média' : 'Baixa'}
+      </span>
     </div>
   )
 }
@@ -368,92 +580,213 @@ function QuickAction({ href, title, icon, desc }) {
   return (
     <Link href={href} className="quick-action">
       <div className="quick-action-icon">{icon}</div>
-      <div>
-        <h3>{title}</h3>
-        <p>{desc}</p>
-      </div>
+      <h3>{title}</h3>
+      <p>{desc}</p>
     </Link>
   )
 }
 
-/* ---- SVG Icons ---- */
-function IconDashboard() {
+function Sidebar({ onLogout, activePath }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M1 2.75A.75.75 0 0 1 1.75 2h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 1 7.75ZM1.75 12h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1 0-1.5ZM9 2.75A.75.75 0 0 1 9.75 2h4.5a.75.75 0 0 1 0 1.5h-4.5A.75.75 0 0 1 9 2.75ZM9.75 7h4.5a.75.75 0 0 1 0 1.5h-4.5A.75.75 0 0 1 9 7.75.75.75 0 0 1 9.75 7ZM9 12.75A.75.75 0 0 1 9.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5A.75.75 0 0 1 9 12.75Z" />
-    </svg>
+    <aside className="sidebar">
+      <div className="sidebar-header">
+        <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--color-fg-default)', textDecoration: 'none', padding: '8px 16px 12px' }}>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" fill="none" />
+            <path d="M6 10l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          AprovaAí
+        </Link>
+      </div>
+      <nav>
+        <NavLink href="/dashboard" label="Dashboard" icon="dashboard" active={activePath === '/dashboard'} />
+        <NavLink href="/clientes" label="Clientes" icon="building" active={activePath === '/clientes'} />
+        <NavLink href="/entregaveis" label="Entregáveis" icon="package" active={activePath === '/entregaveis'} />
+        <NavLink href="/calendario" label="Calendário" icon="calendar" active={activePath === '/calendario'} />
+        <NavLink href="/aprovacoes" label="Aprovações" icon="check" active={activePath === '/aprovacoes'} />
+        <NavLink href="/admin" label="Administração" icon="gear" active={activePath === '/admin'} />
+      </nav>
+      <div className="sidebar-footer">
+        <ThemeToggle />
+        <button
+          onClick={onLogout}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            width: '100%',
+            padding: '6px 8px',
+            background: 'transparent',
+            border: '1px solid transparent',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '13px',
+            fontWeight: '500',
+            fontFamily: 'inherit',
+            color: 'var(--color-danger-fg)',
+            transition: 'background-color 0.15s ease, border-color 0.15s ease',
+            marginTop: '8px',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = 'var(--color-danger-subtle)'
+            e.currentTarget.style.borderColor = 'var(--color-danger-muted)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = 'transparent'
+            e.currentTarget.style.borderColor = 'transparent'
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M2 2.75C2 1.784 2.784 1 3.75 1h2.5a.75.75 0 0 1 0 1.5h-2.5a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 2 13.25Zm10.44 4.5-1.97-1.97a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.97-1.97H6.75a.75.75 0 0 1 0-1.5Z" />
+          </svg>
+          Sair
+        </button>
+      </div>
+
+      <style>{`
+        .sidebar {
+          width: 240px;
+          background: var(--color-canvas-subtle);
+          border-right: 1px solid var(--color-border-muted);
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          overflow-y: auto;
+          position: sticky;
+          top: 0;
+        }
+
+        .sidebar-header {
+          padding: 16px 0;
+          border-bottom: 1px solid var(--color-border-muted);
+        }
+
+        .sidebar nav {
+          flex: 1;
+          padding: 8px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .sidebar-footer {
+          padding: 12px 8px;
+          border-top: 1px solid var(--color-border-muted);
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .nav-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 12px;
+          border-radius: 6px;
+          font-size: 13px;
+          font-weight: 500;
+          color: var(--color-fg-muted);
+          text-decoration: none;
+          transition: background-color 0.15s ease, color 0.15s ease;
+        }
+
+        .nav-item:hover {
+          background: var(--hover-bg);
+          color: var(--color-fg-default);
+        }
+
+        .nav-item.active {
+          background: var(--color-accent-subtle);
+          color: var(--color-accent-fg);
+        }
+
+        .nav-icon {
+          width: 16px;
+          height: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+          .sidebar {
+            width: 200px;
+          }
+        }
+      `}</style>
+    </aside>
   )
 }
 
-function IconBuilding() {
+function NavLink({ href, label, icon, active }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M1.75 16A1.75 1.75 0 0 1 0 14.25V1.75C0 .784.784 0 1.75 0h8.5C11.216 0 12 .784 12 1.75v5.5a.75.75 0 0 1-1.5 0v-5.5a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h3.75a.75.75 0 0 1 0 1.5H1.75Z" />
-      <path d="M3 3.75A.75.75 0 0 1 3.75 3h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 3 3.75ZM3.75 6h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 3 6.75.75.75 0 0 1 3.75 6ZM3 9.75A.75.75 0 0 1 3.75 9h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 3 9.75ZM7.75 3h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5ZM7 6.75A.75.75 0 0 1 7.75 6h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 7 6.75ZM7.75 9h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5ZM13 13.25a.75.75 0 0 0 1.5 0v-4.5a.75.75 0 0 0-.75-.75h-4.5a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-1.5h3v1.5Zm-3-3h3v.5h-3v-.5Z" />
-    </svg>
+    <Link href={href} className={`nav-item${active ? ' active' : ''}`}>
+      <span className="nav-icon">
+        {icon === 'dashboard' && (
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M1.75 1a.75.75 0 0 0-.75.75v12.5c0 .414.336.75.75.75h12.5a.75.75 0 0 0 .75-.75V1.75a.75.75 0 0 0-.75-.75H1.75zM2.5 4h3V2.5h-3V4zm0 3h3V5.5h-3V7zm0 3h3v-1.5h-3V10zm4-6h3V2.5h-3V4zm0 3h3V5.5h-3V7zm0 3h3v-1.5h-3V10zm4-6h3V2.5h-3V4zm0 3h3V5.5h-3V7zm0 3h3v-1.5h-3V10z" />
+          </svg>
+        )}
+        {icon === 'building' && (
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M1.75 1a.75.75 0 0 0-.75.75v12.5c0 .414.336.75.75.75h12.5a.75.75 0 0 0 .75-.75V1.75a.75.75 0 0 0-.75-.75H1.75zM2.5 4h2V2.5h-2V4zm3 0h2V2.5h-2V4zm3 0h2V2.5h-2V4zm3 0h2V2.5h-2V4zM2.5 7h2V5.5h-2V7zm3 0h2V5.5h-2V7zm3 0h2V5.5h-2V7zm3 0h2V5.5h-2V7zM2.5 10h2V8.5h-2V10zm3 0h2V8.5h-2V10zm3 0h2V8.5h-2V10zm3 0h2V8.5h-2V10z" />
+          </svg>
+        )}
+        {icon === 'package' && (
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 1.5a.75.75 0 0 1 .75.75v1.5h3.5a1.75 1.75 0 0 1 1.75 1.75v7.5a1.75 1.75 0 0 1-1.75 1.75h-9.5A1.75 1.75 0 0 1 1 14v-7.5A1.75 1.75 0 0 1 2.75 4.5h3.5V2.25a.75.75 0 0 1 .75-.75zM2.5 5.5v8.5a.25.25 0 0 0 .25.25h9.5a.25.25 0 0 0 .25-.25V5.5z" />
+          </svg>
+        )}
+        {icon === 'calendar' && (
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M4.75 0a.75.75 0 0 1 .75.75V2h5V.75a.75.75 0 0 1 1.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 13.25 16H2.75A1.75 1.75 0 0 1 1 14.25V3.75C1 2.784 1.784 2 2.75 2H4V.75A.75.75 0 0 1 4.75 0z" />
+          </svg>
+        )}
+        {icon === 'check' && (
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z" />
+          </svg>
+        )}
+        {icon === 'gear' && (
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zM7 8a1 1 0 1 0 2 0 1 1 0 0 0-2 0z" />
+            <path d="M8.5 1.5a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0z" />
+            <path d="M8.5 14.5a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0z" />
+            <path d="M1.5 8.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+            <path d="M14.5 8.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+          </svg>
+        )}
+      </span>
+      {label}
+    </Link>
   )
+}
+
+// Icons
+function IconClients() {
+  return <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 10a3 3 0 100-6 3 3 0 000 6zM3.172 5.172a4 4 0 015.656 0M15.172 5.172a4 4 0 010 5.656M1.172 15.172a6 6 0 0111.656 0M18.172 15.172a6 6 0 01-11.656 0" /></svg>
 }
 
 function IconPackage() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="m8.878.392 5.25 3.045c.54.314.872.89.872 1.514v6.098a1.75 1.75 0 0 1-.872 1.514l-5.25 3.045a1.75 1.75 0 0 1-1.756 0l-5.25-3.045A1.75 1.75 0 0 1 1 11.049V4.951c0-.624.332-1.2.872-1.514L7.122.392a1.75 1.75 0 0 1 1.756 0ZM7.875 1.69l-4.63 2.685L8 7.133l4.755-2.758-4.63-2.685a.25.25 0 0 0-.25 0ZM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432Zm6.25 8.271 4.625-2.683a.25.25 0 0 0 .125-.216V5.677L8.75 8.432Z" />
-    </svg>
-  )
-}
-
-function IconCalendar() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M4.75 0a.75.75 0 0 1 .75.75V2h5V.75a.75.75 0 0 1 1.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 13.25 16H2.75A1.75 1.75 0 0 1 1 14.25V3.75C1 2.784 1.784 2 2.75 2H4V.75A.75.75 0 0 1 4.75 0ZM2.5 7.5v6.75c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25V7.5Zm10.75-4H2.75a.25.25 0 0 0-.25.25V6h11V3.75a.25.25 0 0 0-.25-.25Z" />
-    </svg>
-  )
+  return <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M2 4a1 1 0 011-1h2.153a1 1 0 01.986.852l.722 5.14h10.282l.722-5.14A1 1 0 0116.847 3H18a1 1 0 011 1v2a1 1 0 01-.923 0.997l-1.923 5.265a2 2 0 01-1.879 1.34H7.773a2 2 0 01-1.877-1.34L3.923 6.997A1 1 0 013 6V4z" /></svg>
 }
 
 function IconCheck() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z" />
-    </svg>
-  )
-}
-
-function IconGear() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M8 0a8.2 8.2 0 0 1 .701.031C9.444.095 9.99.645 10.16 1.29l.288 1.107c.018.066.079.158.212.224.231.114.454.243.668.386.123.082.233.09.299.071l1.103-.303c.644-.176 1.392.021 1.82.63.27.385.506.792.704 1.218.315.675.111 1.422-.364 1.891l-.814.806c-.049.048-.098.147-.088.294.016.257.016.515 0 .772-.01.147.038.246.088.294l.814.806c.475.469.679 1.216.364 1.891a7.977 7.977 0 0 1-.704 1.217c-.428.61-1.176.807-1.82.63l-1.102-.302c-.067-.019-.177-.011-.3.071a5.909 5.909 0 0 1-.668.386c-.133.066-.194.158-.211.224l-.29 1.106c-.168.646-.715 1.196-1.458 1.26a8.006 8.006 0 0 1-1.402 0c-.743-.064-1.289-.614-1.458-1.26l-.289-1.106c-.018-.066-.079-.158-.212-.224a5.738 5.738 0 0 1-.668-.386c-.123-.082-.233-.09-.299-.071l-1.103.303c-.644.176-1.392-.021-1.82-.63a8.12 8.12 0 0 1-.704-1.218c-.315-.675-.111-1.422.363-1.891l.815-.806c.05-.048.098-.147.088-.294a6.214 6.214 0 0 1 0-.772c.01-.147-.038-.246-.088-.294l-.815-.806C.635 6.045.431 5.298.746 4.623a7.92 7.92 0 0 1 .704-1.217c.428-.61 1.176-.807 1.82-.63l1.102.302c.067.019.177.011.3-.071.214-.143.437-.272.668-.386.133-.066.194-.158.211-.224l.29-1.106C6.009.645 6.556.095 7.299.03 7.53.01 7.764 0 8 0Zm-.571 1.525c-.036.003-.108.036-.137.146l-.289 1.105c-.147.561-.549.967-.998 1.189-.173.086-.34.183-.5.29-.417.278-.97.423-1.529.27l-1.103-.303c-.109-.03-.175.016-.195.045-.22.312-.412.644-.573.99-.014.031-.021.11.059.19l.815.806c.411.406.562.957.53 1.456a4.709 4.709 0 0 0 0 .582c.032.499-.119 1.05-.53 1.456l-.815.806c-.081.08-.073.159-.059.19.162.346.353.677.573.989.02.03.085.076.195.046l1.102-.303c.56-.153 1.113-.008 1.53.27.161.107.328.204.501.29.447.222.85.629.997 1.189l.289 1.105c.029.109.101.143.137.146a6.6 6.6 0 0 0 1.142 0c.036-.003.108-.036.137-.146l.289-1.105c.147-.561.549-.967.998-1.189.173-.086.34-.183.5-.29.417-.278.97-.423 1.529-.27l1.103.303c.109.029.175-.016.195-.045.22-.313.411-.644.573-.99.014-.031.021-.11-.059-.19l-.815-.806c-.411-.406-.562-.957-.53-1.456a4.709 4.709 0 0 0 0-.582c-.032-.499.119-1.05.53-1.456l.815-.806c.081-.08.073-.159.059-.19a6.464 6.464 0 0 0-.573-.989c-.02-.03-.085-.076-.195-.046l-1.102.303c-.56.153-1.113.008-1.53-.27a4.44 4.44 0 0 0-.501-.29c-.447-.222-.85-.629-.997-1.189l-.289-1.105c-.029-.11-.101-.143-.137-.146a6.6 6.6 0 0 0-1.142 0ZM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM9.5 8a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 9.5 8Z" />
-    </svg>
-  )
-}
-
-function IconClients() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M5.5 3.5a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM2 5.5a3.5 3.5 0 1 1 5.898 2.549 5.507 5.507 0 0 1 3.034 4.084.75.75 0 1 1-1.482.235 4.001 4.001 0 0 0-7.9 0 .75.75 0 0 1-1.482-.236A5.507 5.507 0 0 1 3.102 8.05 3.493 3.493 0 0 1 2 5.5Z" />
-    </svg>
-  )
+  return <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
 }
 
 function IconClock() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z" />
-    </svg>
-  )
+  return <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12zm.5-13H9v6l5.25 3.15.75-1.23-4.5-2.67z" clipRule="evenodd" /></svg>
 }
 
 function IconPlus() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2Z" />
-    </svg>
-  )
+  return <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11H9v3H6v2h3v3h2v-3h3v-2h-3V7z" clipRule="evenodd" /></svg>
 }
 
 function IconUpload() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M8.75 1.75a.75.75 0 0 0-1.5 0V7H3.75a.75.75 0 0 0 0 1.5H7.25v5.25a.75.75 0 0 0 1.5 0V8.5h3.5a.75.75 0 0 0 0-1.5H8.75V1.75Z" />
-    </svg>
-  )
+  return <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.3A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" /></svg>
+}
+
+function IconCalendar() {
+  return <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M6 2a1 1 0 00-1 1v2H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v2H7V3a1 1 0 00-1-1zm0 5a2 2 0 002-2h8a2 2 0 002 2v8H6V7z" /></svg>
 }
