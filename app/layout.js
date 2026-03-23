@@ -1,8 +1,8 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'AprovaAí - Gerenciador de Aprovações',
-  description: 'Sistema completo de gerenciamento de aprovações de entregáveis',
+  title: 'AprovaAí Light',
+  description: 'Sistema leve de gerenciamento de aprovações',
 }
 
 export default function RootLayout({ children }) {

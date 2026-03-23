@@ -1,129 +1,154 @@
-# 🎯 AprovaAí - Sistema de Gerenciamento de Aprovações
+# 🎯 AprovaAí Light
 
-Sistema completo de gerenciamento de aprovações de entregáveis, baseado em "AprovaAí".
+Versão simplificada e leve do sistema AprovaAí de gerenciamento de aprovações.
 
-## 🚀 Funcionalidades
+## ✨ Características
 
-- ✅ **Autenticação** - Login e cadastro com Supabase
-- ✅ **Gerenciamento de Usuários** - Admin, Atendimento e Cliente
-- ✅ **Cadastro de Clientes** - White label completo
-- ✅ **Entregáveis** - Upload e gerenciamento de arquivos
-- ✅ **Calendário** - Tipo Google Agenda integrado
-- ✅ **Aprovações** - Workflow de aprovações com comentários
+- ✅ Design moderno (Dribbble-style)
+- ✅ Dark theme com glassmorphism
+- ✅ Autenticação com Supabase
+- ✅ Gerenciamento de clientes
+- ✅ Controle de entregáveis
+- ✅ Workflow de aprovações
+- ✅ Responsivo
+- ✅ Leve e rápido
 
-## 📋 Requisitos
+## 🚀 Instalação
 
-- Node.js 18+
-- npm ou yarn
-- Conta no Supabase
+### 1. Clonar ou extrair o projeto
 
-## 🔧 Setup Rápido
+```bash
+unzip aprovai-light.zip
+cd aprovai-light
+```
 
-### 1. Clonar e instalar
+### 2. Instalar dependências
+
 ```bash
 npm install --legacy-peer-deps
 ```
 
-### 2. Configurar Supabase
-- Acesse https://supabase.com
-- Crie novo projeto
-- Copie URL e chave anon
-- Crie arquivo `.env.local`:
+### 3. Configurar variáveis de ambiente
+
+```bash
+cp .env.example .env.local
+```
+
+Edite `.env.local` e adicione suas credenciais do Supabase:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-aqui
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anon-aqui
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-### 3. Executar migrações
-- No Supabase, vá para SQL Editor
-- Cole o conteúdo de `migrations.sql`
-- Execute (Ctrl+Enter)
+### 4. Iniciar o projeto
 
-### 4. Iniciar desenvolvimento
 ```bash
 npm run dev
 ```
 
-Acesse http://localhost:3000
+Acesse: http://localhost:3000
 
-## 📁 Estrutura
+## 📄 Páginas
+
+- **Home** (`/`) - Landing page
+- **Login** (`/login`) - Autenticação
+- **Dashboard** (`/dashboard`) - Painel principal
+- **Clientes** (`/clientes`) - Gerenciamento de clientes
+- **Entregáveis** (`/entregaveis`) - Controle de projetos
+- **Aprovações** (`/aprovacoes`) - Workflow de aprovações
+
+## 🎨 Design System
+
+### Cores
+
+- **Primary:** #6366f1 (Índigo)
+- **Secondary:** #8b5cf6 (Roxo)
+- **Success:** #10b981 (Verde)
+- **Danger:** #ef4444 (Vermelho)
+- **Background:** #0f172a (Azul escuro)
+
+### Efeitos
+
+- Glassmorphism (blur + transparência)
+- Gradientes em botões
+- Hover effects dinâmicos
+- Transições suaves
+
+## 📦 Estrutura
 
 ```
-projeto/
+aprovai-light/
 ├── app/
-│   ├── login/          - Login e cadastro
-│   ├── dashboard/      - Painel principal
-│   ├── clientes/       - Gerenciar clientes
-│   ├── entregaveis/    - Gerenciar entregáveis
-│   ├── calendario/     - Calendário de eventos
-│   ├── aprovacoes/     - Revisar e aprovar
-│   ├── admin/          - Gerenciar usuários
-│   └── api/            - API routes
+│   ├── login/
+│   ├── dashboard/
+│   ├── clientes/
+│   ├── entregaveis/
+│   ├── aprovacoes/
+│   ├── layout.js
+│   ├── page.js
+│   └── globals.css
 ├── lib/
 │   └── supabase-client.js
-├── migrations.sql      - SQL do banco
-└── README.md          - Este arquivo
+├── package.json
+├── .env.example
+└── README.md
 ```
 
-## 👥 Perfis de Usuário
+## 🔧 Customização
 
-1. **Admin** (👑)
-   - Acesso total
-   - Gerenciar usuários
-   - Ver todos os entregáveis
+### Adicionar nova página
 
-2. **Atendimento** (💬)
-   - Gerenciar clientes
-   - Criar entregáveis
-   - Revisar aprovações
+1. Crie a pasta: `app/minha-pagina/`
+2. Crie o arquivo: `app/minha-pagina/page.js`
+3. Importe e use os componentes padrão
 
-3. **Cliente** (👤)
-   - Visualizar próprios entregáveis
-   - Enviar aprovações
-   - Ver calendário
+### Mudar cores
 
-## 🔐 Segurança
+Edite `app/globals.css` e procure por valores hex de cores.
 
-- Auth via Supabase (JWT)
-- Row Level Security (RLS) habilitado
-- Validação de emails
-- Senhas criptografadas
-
-## 📦 Deploy
+## 🚀 Deploy
 
 ### Vercel (Recomendado)
-1. Push para GitHub
-2. Conectar repo no Vercel
-3. Adicionar env vars
-4. Deploy automático
 
-### Outro host
+1. Conecte seu repositório GitHub ao Vercel
+2. Configure as variáveis de ambiente
+3. Deploy automático em cada push
+
+### Outras plataformas
+
 ```bash
 npm run build
 npm start
 ```
 
-## 🆘 Troubleshooting
+## ⚠️ Notas Importantes
 
-**"Credenciais do Supabase não encontradas"**
-- Verifique `.env.local`
-- Reinicie servidor (`npm run dev`)
-
-**"Erro ao fazer login"**
-- Confirme email no Supabase
-- Verifique RLS policies
-
-**"Calendário não funciona"**
-- Verifique se `date-fns` está instalado
-- Limpe cache: `rm -rf .next`
+- Configure o Supabase antes de usar autenticação
+- Usar `--legacy-peer-deps` é necessário para compatibilidade
+- A versão light não inclui calendário ou admin avançado
+- Design é responsivo mas otimizado para desktop
 
 ## 📞 Suporte
 
-Para dúvidas, verifique a documentação do Supabase:
-https://supabase.com/docs
+Para erros de build:
 
-## 📝 Licença
+```bash
+npm run build
+```
 
-MIT
+Para limpador de cache:
+
+```bash
+rm -rf .next
+npm run dev
+```
+
+## 📄 Licença
+
+Projeto de código aberto.
+
+---
+
+**AprovaAí Light v1.0** - 2024
