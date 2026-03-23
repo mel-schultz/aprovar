@@ -70,7 +70,7 @@ export default function Calendario() {
             gap: '10px',
           }}>
             {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map(day => (
-              <div key={day} style={{ fontWeight: 'bold', textAlign: 'center', padding: '10px', color: 'var(--text-secondary)' }}>
+              <div key={day} style={{ fontWeight: 'bold', textAlign: 'center', padding: '10px', color: 'var(--md-sys-color-on-surface-variant)' }}>
                 {day}
               </div>
             ))}
@@ -160,14 +160,14 @@ export default function Calendario() {
               {events.slice().reverse().map(ev => (
                 <div key={ev.id} style={{
                   padding: '16px',
-                  background: 'var(--hover-bg)',
+                  background: 'var(--md-sys-color-surface-container-high)',
                   border: '1px solid var(--card-border)',
                   borderRadius: '12px',
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                     <div>
                       <h3 style={{ margin: '0 0 6px 0' }}>{ev.titulo}</h3>
-                      <p style={{ margin: '0', fontSize: '13px', color: 'var(--text-secondary)' }}>
+                      <p style={{ margin: '0', fontSize: '13px', color: 'var(--md-sys-color-on-surface-variant)' }}>
                         📅 {format(ev.date, 'dd/MM/yyyy', { locale: ptBR })}
                       </p>
                       {ev.descricao && <p style={{ margin: '8px 0 0 0', fontSize: '13px' }}>{ev.descricao}</p>}

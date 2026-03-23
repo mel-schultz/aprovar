@@ -100,7 +100,7 @@ export default function Entregaveis() {
           <div className="card" style={{ textAlign: 'center', padding: '60px 20px' }}>
             <div style={{ fontSize: '48px', marginBottom: '20px' }}>📦</div>
             <h3>Nenhum entregável criado</h3>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '20px' }}>
+            <p style={{ color: 'var(--md-sys-color-on-surface-variant)', marginBottom: '20px' }}>
               Clique em "➕ Novo Entregável" para criar o primeiro
             </p>
             <button onClick={() => setShowForm(true)} className="btn btn-primary">
@@ -114,7 +114,7 @@ export default function Entregaveis() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '16px' }}>
                   <div>
                     <h3 style={{ margin: '0 0 8px 0' }}>{e.titulo}</h3>
-                    <p style={{ margin: '0', fontSize: '14px', color: 'var(--text-secondary)' }}>
+                    <p style={{ margin: '0', fontSize: '14px', color: 'var(--md-sys-color-on-surface-variant)' }}>
                       Cliente: <strong>{e.cliente || '—'}</strong> • Entrega: <strong>{e.dataEntrega || '—'}</strong>
                     </p>
                   </div>

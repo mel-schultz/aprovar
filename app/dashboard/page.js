@@ -64,10 +64,10 @@ export default function Dashboard() {
           gap: '20px',
           marginBottom: '40px',
         }}>
-          <StatCard title="📋 Clientes" count="--" color="linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)" />
-          <StatCard title="📦 Entregáveis" count="--" color="linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)" />
-          <StatCard title="✅ Aprovados" count="--" color="linear-gradient(135deg, #10b981 0%, #059669 100%)" />
-          <StatCard title="⏳ Pendentes" count="--" color="linear-gradient(135deg, #f59e0b 0%, #d97706 100%)" />
+          <StatCard title="📋 Clientes" count="--" color="linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-secondary) 100%)" />
+          <StatCard title="📦 Entregáveis" count="--" color="linear-gradient(135deg, var(--md-sys-color-secondary) 0%, var(--md-sys-color-tertiary) 100%)" />
+          <StatCard title="✅ Aprovados" count="--" color="linear-gradient(135deg, var(--md-sys-color-success) 0%, var(--md-sys-color-success-container) 100%)" />
+          <StatCard title="⏳ Pendentes" count="--" color="linear-gradient(135deg, var(--md-sys-color-warning) 0%, var(--md-sys-color-warning-container) 100%)" />
         </div>
 
         {/* QUICK ACTIONS */}
@@ -104,7 +104,7 @@ function Sidebar({ onLogout }) {
         <NavLink href="/admin" label="Administração" icon="⚙️" />
       </nav>
 
-      <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
+      <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--md-sys-color-outline-variant)' }}>
         <ThemeToggle />
         <button
           onClick={onLogout}
@@ -112,9 +112,9 @@ function Sidebar({ onLogout }) {
           style={{
             width: '100%',
             justifyContent: 'center',
-            background: 'rgba(239, 68, 68, 0.1)',
-            color: '#fca5a5',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
+            background: 'linear-gradient(135deg, var(--md-sys-color-error) 0%, var(--md-sys-color-error-container) 100%)',
+            color: 'var(--md-sys-color-on-error)',
+            border: 'none',
           }}
         >
           🚪 Sair
@@ -128,7 +128,7 @@ function NavLink({ href, label, icon, active }) {
   return (
     <Link
       href={href}
-      className="nav-item"
+      className={`nav-item ${active ? 'active' : ''}`}
       style={{ justifyContent: 'flex-start' }}
     >
       <span style={{ fontSize: '18px' }}>{icon}</span>
@@ -156,7 +156,7 @@ function StatCard({ title, count, color }) {
         transform: 'translate(30%, -30%)',
       }} />
 
-      <p style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#cbd5e1' }}>
+      <p style={{ margin: '0 0 12px 0', fontSize: '14px', color: 'var(--md-sys-color-on-surface-variant)' }}>
         {title}
       </p>
       <p style={{
@@ -194,14 +194,14 @@ function QuickAction({ href, title, icon, desc }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'rgba(99, 102, 241, 0.1)',
-        borderRadius: '12px',
+        background: 'var(--md-sys-color-primary-container)',
+        borderRadius: '16px', /* Material Design 3 */
       }}>
         {icon}
       </div>
       <div>
         <h3 style={{ margin: '0 0 4px 0', fontSize: '15px' }}>{title}</h3>
-        <p style={{ margin: '0', fontSize: '12px', color: '#64748b' }}>{desc}</p>
+        <p style={{ margin: '0', fontSize: '12px', color: 'var(--md-sys-color-on-surface-variant)' }}>{desc}</p>
       </div>
     </Link>
   )

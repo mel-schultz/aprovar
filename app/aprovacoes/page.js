@@ -75,7 +75,7 @@ export default function Aprovacoes() {
           <div className="card" style={{ textAlign: 'center', padding: '60px 20px' }}>
             <div style={{ fontSize: '48px', marginBottom: '20px' }}>✅</div>
             <h3>Nenhuma aprovação {filterStatus !== 'todos' ? `${filterStatus}` : ''}</h3>
-            <p style={{ color: 'var(--text-secondary)' }}>Tudo está em dia!</p>
+            <p style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Tudo está em dia!</p>
           </div>
         ) : (
           <div style={{ display: 'grid', gap: '20px' }}>
@@ -96,7 +96,7 @@ export default function Aprovacoes() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '16px' }}>
                   <div>
                     <h3 style={{ margin: '0 0 8px 0' }}>{apr.titulo}</h3>
-                    <p style={{ margin: '0', fontSize: '14px', color: 'var(--text-secondary)' }}>
+                    <p style={{ margin: '0', fontSize: '14px', color: 'var(--md-sys-color-on-surface-variant)' }}>
                       👤 <strong>{apr.cliente}</strong> • 📅 {apr.dataEnvio}
                     </p>
                   </div>
@@ -128,7 +128,7 @@ export default function Aprovacoes() {
                 )}
 
                 {apr.status !== 'pendente' && (
-                  <p style={{ margin: '12px 0 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
+                  <p style={{ margin: '12px 0 0 0', fontSize: '13px', color: 'var(--md-sys-color-on-surface-variant)' }}>
                     {apr.status === 'aprovado' ? '✅ Aprovado com sucesso' : '❌ Rejeitado pelo revisor'}
                   </p>
                 )}
