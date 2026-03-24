@@ -145,9 +145,12 @@ ALTER TABLE public.blog_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.integrations ENABLE ROW LEVEL SECURITY;
 
--- Profiles: users can read all, update own
+-- Profiles: users can read all, insert and update own
 CREATE POLICY "Profiles are viewable by authenticated users" ON public.profiles
   FOR SELECT TO authenticated USING (true);
+
+CREATE POLICY "Users can insert own profile" ON public.profiles
+  FOR INSERT TO authenticated WITH CHECK (auth.uid() = id);
 
 CREATE POLICY "Users can update own profile" ON public.profiles
   FOR UPDATE TO authenticated USING (auth.uid() = id);
@@ -191,3 +194,20 @@ CREATE INDEX IF NOT EXISTS idx_approvals_scheduled_date ON public.approvals(sche
 CREATE INDEX IF NOT EXISTS idx_blog_posts_client_id ON public.blog_posts(client_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON public.notifications(user_id);
 CREATE INDEX IF NOT EXISTS idx_social_accounts_client_id ON public.social_accounts(client_id);
+
+-- =============================================
+-- BACKFILL: create profiles for existing users
+-- =============================================
+INSERT INTO public.profiles (id, email, full_name, role)
+SELECT
+  u.id,
+  u.email,
+  COALESCE(u.raw_user_meta_data->>'full_name', ''),
+  CASE
+    WHEN u.email = 'mel.schultz@yahoo.com' THEN 'super_admin'
+    ELSE 'cliente'
+  END
+FROM auth.users u
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.profiles p WHERE p.id = u.id
+);
