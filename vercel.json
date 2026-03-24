@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npx vite build",
+  "buildCommand": "cp env.example .env && npx vite build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": null,
