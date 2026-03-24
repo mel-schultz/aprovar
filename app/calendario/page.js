@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Calendario() {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -70,7 +69,7 @@ export default function Calendario() {
             gap: '10px',
           }}>
             {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map(day => (
-              <div key={day} style={{ fontWeight: 'bold', textAlign: 'center', padding: '10px', color: 'var(--text-secondary)' }}>
+              <div key={day} style={{ fontWeight: 'bold', textAlign: 'center', padding: '10px', color: '#cbd5e1' }}>
                 {day}
               </div>
             ))}
@@ -83,16 +82,16 @@ export default function Calendario() {
                   key={idx}
                   onClick={() => handleAddEvent(day)}
                   style={{
-                    border: '1px solid var(--card-border)',
+                    border: '1px solid rgba(99, 102, 241, 0.2)',
                     padding: '12px',
                     minHeight: '120px',
                     cursor: 'pointer',
-                    background: isCurrentMonth ? 'var(--card-bg)' : 'rgba(15, 23, 42, 0.5)',
+                    background: isCurrentMonth ? 'rgba(30, 41, 59, 0.3)' : 'rgba(15, 23, 42, 0.5)',
                     borderRadius: '12px',
                     transition: 'all 0.3s',
                   }}
                   onMouseEnter={(e) => e.target.style.borderColor = 'rgba(99, 102, 241, 0.5)'}
-                  onMouseLeave={(e) => e.target.style.borderColor = 'var(--card-border)'}
+                  onMouseLeave={(e) => e.target.style.borderColor = 'rgba(99, 102, 241, 0.2)'}
                 >
                   <div style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '14px' }}>
                     {day.getDate()}
@@ -100,7 +99,7 @@ export default function Calendario() {
                   {dayEvents.map(ev => (
                     <div key={ev.id} style={{
                       fontSize: '11px',
-                      background: 'linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)',
+                      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
                       color: 'white',
                       padding: '4px 6px',
                       borderRadius: '4px',
@@ -160,14 +159,14 @@ export default function Calendario() {
               {events.slice().reverse().map(ev => (
                 <div key={ev.id} style={{
                   padding: '16px',
-                  background: 'var(--hover-bg)',
-                  border: '1px solid var(--card-border)',
+                  background: 'rgba(99, 102, 241, 0.1)',
+                  border: '1px solid rgba(99, 102, 241, 0.2)',
                   borderRadius: '12px',
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                     <div>
                       <h3 style={{ margin: '0 0 6px 0' }}>{ev.titulo}</h3>
-                      <p style={{ margin: '0', fontSize: '13px', color: 'var(--text-secondary)' }}>
+                      <p style={{ margin: '0', fontSize: '13px', color: '#cbd5e1' }}>
                         📅 {format(ev.date, 'dd/MM/yyyy', { locale: ptBR })}
                       </p>
                       {ev.descricao && <p style={{ margin: '8px 0 0 0', fontSize: '13px' }}>{ev.descricao}</p>}
@@ -195,12 +194,9 @@ function Sidebar() {
         <NavLink href="/aprovacoes" label="Aprovações" icon="✅" />
         <NavLink href="/admin" label="Administração" icon="⚙️" />
       </nav>
-      <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
-        <ThemeToggle />
-        <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
-          🚪 Sair
-        </Link>
-      </div>
+      <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+        🚪 Sair
+      </Link>
     </div>
   )
 }

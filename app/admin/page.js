@@ -2,107 +2,74 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Admin() {
   const [usuarios, setUsuarios] = useState([
-    { id: 1, nome: 'Seu Nome', email: 'seu@email.com', role: 'admin', status: 'ativo', criadoEm: '2024-03-20' },
+    { id: 1, nome: 'Admin', email: 'admin@test.com', role: 'admin', status: 'ativo', criadoEm: '2024-03-20' },
   ])
-
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({ nome: '', email: '', role: 'cliente' })
 
-  const handleAddUser = (e) => {
+  const handleAdd = (e) => {
     e.preventDefault()
     if (!formData.nome.trim() || !formData.email.trim()) {
-      alert('Preencha todos os campos obrigatórios')
+      alert('Preencha todos os campos')
       return
     }
-    setUsuarios([...usuarios, { 
-      ...formData, 
-      id: Date.now(), 
+    setUsuarios([...usuarios, {
+      id: Date.now(),
+      ...formData,
       status: 'ativo',
       criadoEm: new Date().toISOString().split('T')[0]
     }])
     setFormData({ nome: '', email: '', role: 'cliente' })
     setShowForm(false)
-    alert('✅ Usuário criado com sucesso!')
   }
 
-  const handleDeleteUser = (id) => {
-    if (confirm('Tem certeza que deseja deletar este usuário?')) {
+  const handleDelete = (id) => {
+    if (confirm('Deletar usuário?')) {
       setUsuarios(usuarios.filter(u => u.id !== id))
     }
   }
 
   const getRoleColor = (role) => {
     switch(role) {
-      case 'admin': return { bg: 'rgba(139, 92, 246, 0.1)', color: '#a78bfa', label: '👑 Admin' }
-      case 'atendimento': return { bg: 'rgba(99, 102, 241, 0.1)', color: '#818cf8', label: '💬 Atendimento' }
-      default: return { bg: 'rgba(107, 114, 128, 0.1)', color: '#9ca3af', label: '👤 Cliente' }
+      case 'admin': return { bg: 'rgba(139, 92, 246, 0.1)', color: '#a78bfa' }
+      case 'atendimento': return { bg: 'rgba(99, 102, 241, 0.1)', color: '#818cf8' }
+      default: return { bg: 'rgba(107, 114, 128, 0.1)', color: '#9ca3af' }
     }
   }
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <Sidebar />
-
       <div className="main-content">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
           <div>
             <h1>Administração</h1>
             <p>Gerencie usuários, funções e permissões</p>
           </div>
-          <button 
-            onClick={() => setShowForm(!showForm)}
-            className="btn btn-primary"
-          >
+          <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
             {showForm ? '❌ Cancelar' : '➕ Novo Usuário'}
           </button>
         </div>
 
         {showForm && (
-          <div className="card" style={{ marginBottom: '40px' }}>
+          <div className="card" style={{ marginBottom: '32px' }}>
             <h2>Criar Novo Usuário</h2>
-            <form onSubmit={handleAddUser}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginBottom: '20px' }}>
+            <form onSubmit={handleAdd}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 <div className="form-group">
                   <label>Nome Completo *</label>
-                  <input
-                    type="text"
-                    placeholder="João da Silva"
-                    value={formData.nome}
-                    onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                    required
-                  />
+                  <input type="text" placeholder="João Silva" value={formData.nome} onChange={(e) => setFormData({...formData, nome: e.target.value})} required />
                 </div>
                 <div className="form-group">
                   <label>Email *</label>
-                  <input
-                    type="email"
-                    placeholder="joao@empresa.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                  />
+                  <input type="email" placeholder="joao@empresa.com" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required />
                 </div>
                 <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                   <label>Função</label>
-                  <select
-                    value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '12px 16px',
-                      background: 'var(--input-bg)',
-                      border: '1px solid var(--input-border)',
-                      borderRadius: '12px',
-                      color: 'var(--text-primary)',
-                      fontFamily: 'inherit',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                    }}
-                  >
+                  <select value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})}>
                     <option value="cliente">👤 Cliente</option>
                     <option value="atendimento">💬 Atendimento</option>
                     <option value="admin">👑 Admin</option>
@@ -110,98 +77,77 @@ export default function Admin() {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                <button type="button" onClick={() => setShowForm(false)} className="btn btn-secondary">
-                  Cancelar
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  💾 Criar Usuário
-                </button>
+                <button type="button" onClick={() => setShowForm(false)} className="btn btn-secondary">Cancelar</button>
+                <button type="submit" className="btn btn-primary">💾 Criar</button>
               </div>
             </form>
           </div>
         )}
 
-        <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
-          <div style={{ padding: '24px', borderBottom: '1px solid var(--border)' }}>
-            <h2 style={{ margin: '0' }}>Usuários Cadastrados ({usuarios.length})</h2>
-          </div>
-          <div style={{ overflowX: 'auto' }}>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>Email</th>
-                  <th>Função</th>
-                  <th>Status</th>
-                  <th>Criado em</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {usuarios.map(u => {
-                  const roleInfo = getRoleColor(u.role)
-                  return (
-                    <tr key={u.id}>
-                      <td><strong>{u.nome}</strong></td>
-                      <td>{u.email}</td>
-                      <td>
-                        <span style={{
-                          background: roleInfo.bg,
-                          color: roleInfo.color,
-                          padding: '6px 12px',
-                          borderRadius: '20px',
-                          fontSize: '12px',
-                          fontWeight: '600',
-                          display: 'inline-block'
-                        }}>
-                          {roleInfo.label}
-                        </span>
-                      </td>
-                      <td>
-                        <span style={{ color: 'var(--success)', fontWeight: '600' }}>
-                          ✅ {u.status}
-                        </span>
-                      </td>
-                      <td style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{u.criadoEm}</td>
-                      <td style={{ display: 'flex', gap: '8px' }}>
-                        <button className="btn btn-secondary" style={{ fontSize: '12px', padding: '6px 12px' }}>
-                          ✏️ Editar
-                        </button>
-                        <button 
-                          onClick={() => handleDeleteUser(u.id)}
-                          className="btn btn-danger"
-                          style={{ fontSize: '12px', padding: '6px 12px', background: 'rgba(239, 68, 68, 0.1)', color: '#fca5a5', border: '1px solid rgba(239, 68, 68, 0.3)' }}
-                        >
-                          🗑️ Remover
-                        </button>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
+        <div className="card" style={{ overflowX: 'auto' }}>
+          <h2 style={{ marginTop: 0 }}>Usuários ({usuarios.length})</h2>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Função</th>
+                <th>Status</th>
+                <th>Desde</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {usuarios.map(u => {
+                const roleInfo = getRoleColor(u.role)
+                return (
+                  <tr key={u.id}>
+                    <td><strong>{u.nome}</strong></td>
+                    <td>{u.email}</td>
+                    <td>
+                      <span style={{
+                        background: roleInfo.bg,
+                        color: roleInfo.color,
+                        padding: '6px 12px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        display: 'inline-block'
+                      }}>
+                        {u.role === 'admin' ? '👑 Admin' : u.role === 'atendimento' ? '💬 Atendimento' : '👤 Cliente'}
+                      </span>
+                    </td>
+                    <td><span style={{ color: '#10b981', fontWeight: '600' }}>✅ {u.status}</span></td>
+                    <td style={{ fontSize: '13px', color: '#cbd5e1' }}>{u.criadoEm}</td>
+                    <td style={{ display: 'flex', gap: '8px' }}>
+                      <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }}>✏️ Editar</button>
+                      <button onClick={() => handleDelete(u.id)} className="btn btn-danger" style={{ padding: '6px 12px', fontSize: '12px' }}>🗑️ Remover</button>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
 
-        <div style={{ marginTop: '40px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
-          <SettingCard title="🔒 Segurança" desc="Gerencie permissões e acesso" />
-          <SettingCard title="📊 Relatórios" desc="Visualize estatísticas" />
-          <SettingCard title="⚙️ Configurações" desc="Ajustes do sistema" />
-          <SettingCard title="🔄 Backups" desc="Gerenciamento de backups" />
+        <h2 style={{ marginTop: '40px' }}>Configurações</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
+          <SettingCard icon="🔒" title="Segurança" desc="Gerenciar permissões" />
+          <SettingCard icon="📊" title="Relatórios" desc="Visualizar analytics" />
+          <SettingCard icon="⚙️" title="Configurações" desc="Ajustes do sistema" />
+          <SettingCard icon="🔄" title="Backups" desc="Gerenciar backups" />
         </div>
       </div>
     </div>
   )
 }
 
-function SettingCard({ title, desc }) {
+function SettingCard({ icon, title, desc }) {
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '24px', cursor: 'pointer' }}>
-      <div style={{ fontSize: '32px', marginBottom: '12px' }}>
-        {title.split(' ')[0]}
-      </div>
+    <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', cursor: 'pointer' }}>
+      <div style={{ fontSize: '36px', marginBottom: '12px' }}>{icon}</div>
       <h3 style={{ margin: '0 0 6px 0', fontSize: '15px' }}>{title}</h3>
-      <p style={{ margin: '0', fontSize: '12px', color: 'var(--text-secondary)' }}>{desc}</p>
+      <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>{desc}</p>
     </div>
   )
 }
@@ -218,12 +164,7 @@ function Sidebar() {
         <NavLink href="/aprovacoes" label="Aprovações" icon="✅" />
         <NavLink href="/admin" label="Administração" icon="⚙️" active />
       </nav>
-      <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
-        <ThemeToggle />
-        <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
-          🚪 Sair
-        </Link>
-      </div>
+      <Link href="/" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>🚪 Sair</Link>
     </div>
   )
 }
@@ -232,7 +173,7 @@ function NavLink({ href, label, icon, active }) {
   return (
     <Link href={href} className={`nav-item ${active ? 'active' : ''}`} style={{ justifyContent: 'flex-start' }}>
       <span style={{ fontSize: '18px' }}>{icon}</span>
-      <a style={{ flex: 1, textAlign: 'left' }}>{label}</a>
+      <a style={{ flex: 1 }}>{label}</a>
     </Link>
   )
 }
