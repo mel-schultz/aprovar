@@ -1,8 +1,11 @@
 'use client'
 
 import Link from 'next/link'
+import { useTheme } from './ThemeContext'
 
 export default function Home() {
+  const { theme } = useTheme()
+
   return (
     <div style={{ minHeight: '100vh', overflow: 'hidden' }}>
       {/* HERO */}
@@ -12,20 +15,22 @@ export default function Home() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '40px 20px',
+        padding: '48px 20px',
         textAlign: 'center',
-        background: `linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%),
-                      radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-                      radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%)`,
+        background: theme === 'dark' 
+          ? 'linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%)'
+          : 'linear-gradient(135deg, #ffffff 0%, #f5f6f8 100%)',
         position: 'relative',
         overflow: 'hidden',
       }}>
-        {/* ANIMATED BACKGROUND */}
+        {/* ANIMATED BACKGROUND ELEMENTS */}
         <div style={{
           position: 'absolute',
           width: '400px',
           height: '400px',
-          background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
+          background: theme === 'dark'
+            ? 'radial-gradient(circle, rgba(74, 158, 255, 0.1) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(0, 115, 234, 0.05) 0%, transparent 70%)',
           borderRadius: '50%',
           top: '-100px',
           right: '-100px',
@@ -36,7 +41,9 @@ export default function Home() {
           position: 'absolute',
           width: '300px',
           height: '300px',
-          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%)',
+          background: theme === 'dark'
+            ? 'radial-gradient(circle, rgba(76, 175, 80, 0.05) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(0, 133, 77, 0.05) 0%, transparent 70%)',
           borderRadius: '50%',
           bottom: '-50px',
           left: '-50px',
@@ -45,38 +52,42 @@ export default function Home() {
 
         {/* CONTENT */}
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '800px' }}>
+          {/* BADGE */}
           <div style={{
             display: 'inline-block',
             padding: '8px 16px',
-            background: 'rgba(99, 102, 241, 0.1)',
-            border: '1px solid rgba(99, 102, 241, 0.3)',
-            borderRadius: '20px',
+            background: theme === 'dark'
+              ? 'rgba(74, 158, 255, 0.15)'
+              : 'rgba(0, 115, 234, 0.1)',
+            border: theme === 'dark'
+              ? '1px solid rgba(74, 158, 255, 0.3)'
+              : '1px solid rgba(0, 115, 234, 0.2)',
+            borderRadius: '4px',
             marginBottom: '24px',
-            fontSize: '13px',
-            color: '#818cf8',
+            fontSize: '12px',
+            color: theme === 'dark' ? '#4a9eff' : '#0073ea',
             fontWeight: '600',
-            letterSpacing: '0.5px',
+            letterSpacing: '0px',
           }}>
             ✨ Bem-vindo ao AprovaAí
           </div>
 
+          {/* HEADING */}
           <h1 style={{
-            fontSize: '52px',
-            fontWeight: '800',
+            fontSize: '48px',
+            fontWeight: '700',
             marginBottom: '16px',
-            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #10b981 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
+            color: theme === 'dark' ? '#ffffff' : '#1a1a1a',
             lineHeight: '1.2',
-            letterSpacing: '-1px',
+            letterSpacing: '-0.5px',
           }}>
             Gerenciamento de Aprovações Moderno
           </h1>
 
+          {/* SUBHEADING */}
           <p style={{
-            fontSize: '18px',
-            color: '#cbd5e1',
+            fontSize: '16px',
+            color: theme === 'dark' ? '#b0b0b0' : '#626262',
             marginBottom: '40px',
             lineHeight: '1.6',
           }}>
@@ -91,10 +102,10 @@ export default function Home() {
             flexWrap: 'wrap',
             marginBottom: '60px',
           }}>
-            <Link href="/login" className="btn btn-primary" style={{ fontSize: '16px', padding: '14px 32px' }}>
+            <Link href="/login" className="btn btn-primary" style={{ fontSize: '14px', padding: '12px 24px' }}>
               🚀 Começar Agora
             </Link>
-            <Link href="/login?tab=signup" className="btn btn-secondary" style={{ fontSize: '16px', padding: '14px 32px' }}>
+            <Link href="/login?tab=signup" className="btn btn-secondary" style={{ fontSize: '14px', padding: '12px 24px' }}>
               📝 Criar Conta
             </Link>
           </div>
@@ -102,16 +113,16 @@ export default function Home() {
           {/* FEATURES GRID */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: '20px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '24px',
             marginTop: '60px',
           }}>
-            <FeatureCard icon="👥" title="Usuários" desc="Admin, Atendimento, Cliente" />
-            <FeatureCard icon="🏢" title="Clientes" desc="White label completo" />
-            <FeatureCard icon="📦" title="Entregáveis" desc="Upload e gerenciamento" />
-            <FeatureCard icon="📅" title="Calendário" desc="Tipo Google Agenda" />
-            <FeatureCard icon="✅" title="Aprovações" desc="Workflow completo" />
-            <FeatureCard icon="⚡" title="Moderno" desc="Design responsivo" />
+            <FeatureCard icon="👥" title="Usuários" desc="Admin, Atendimento, Cliente" theme={theme} />
+            <FeatureCard icon="🏢" title="Clientes" desc="White label completo" theme={theme} />
+            <FeatureCard icon="📦" title="Entregáveis" desc="Upload e gerenciamento" theme={theme} />
+            <FeatureCard icon="📅" title="Calendário" desc="Tipo Google Agenda" theme={theme} />
+            <FeatureCard icon="✅" title="Aprovações" desc="Workflow completo" theme={theme} />
+            <FeatureCard icon="⚡" title="Moderno" desc="Design responsivo" theme={theme} />
           </div>
         </div>
       </div>
@@ -120,9 +131,10 @@ export default function Home() {
       <div style={{
         padding: '40px 20px',
         textAlign: 'center',
-        borderTop: '1px solid rgba(99, 102, 241, 0.1)',
-        color: '#cbd5e1',
+        borderTop: `1px solid ${theme === 'dark' ? '#3a3a3a' : '#e9ecef'}`,
+        color: theme === 'dark' ? '#b0b0b0' : '#626262',
         fontSize: '13px',
+        background: theme === 'dark' ? '#1e1e1e' : '#ffffff',
       }}>
         <p>© 2024 AprovaAí. Desenvolvido com ❤️</p>
       </div>
@@ -137,18 +149,31 @@ export default function Home() {
   )
 }
 
-function FeatureCard({ icon, title, desc }) {
+function FeatureCard({ icon, title, desc, theme }) {
   return (
     <div className="card" style={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       textAlign: 'center',
-      padding: '20px 16px',
+      padding: '24px 20px',
     }}>
       <div style={{ fontSize: '32px', marginBottom: '12px' }}>{icon}</div>
-      <h3 style={{ margin: '0 0 6px 0', fontSize: '15px' }}>{title}</h3>
-      <p style={{ margin: '0', fontSize: '12px', color: '#64748b' }}>{desc}</p>
+      <h3 style={{ 
+        margin: '0 0 8px 0', 
+        fontSize: '16px',
+        fontWeight: '600',
+        color: theme === 'dark' ? '#ffffff' : '#1a1a1a',
+      }}>
+        {title}
+      </h3>
+      <p style={{ 
+        margin: '0', 
+        fontSize: '13px', 
+        color: theme === 'dark' ? '#808080' : '#999999',
+      }}>
+        {desc}
+      </p>
     </div>
   )
 }

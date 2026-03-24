@@ -1,118 +1,121 @@
 /* =====================================================
-   TEMA ESCURO (PADRÃO)
+   TEMA CLARO (PADRÃO) - Vibe Design System
    ===================================================== */
 :root,
-[data-theme='dark'] {
-  --primary: #6366f1;
-  --primary-dark: #4f46e5;
-  --primary-light: #818cf8;
-  --secondary: #8b5cf6;
-  --success: #10b981;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --bg: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --border: #475569;
+[data-theme='light'] {
+  /* Cores Primárias */
+  --primary: #0073ea;
+  --primary-hover: #0060b9;
+  --primary-selected: #004fa3;
+  --primary-surface: #e8f0ff;
   
-  /* Cores adicionais para componentes */
-  --card-bg: rgba(30, 41, 59, 0.5);
-  --card-border: rgba(99, 102, 241, 0.1);
-  --input-bg: rgba(15, 23, 42, 0.5);
-  --input-border: rgba(99, 102, 241, 0.2);
-  --sidebar-bg: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-  --sidebar-border: rgba(99, 102, 241, 0.1);
-  --hover-bg: rgba(99, 102, 241, 0.05);
-  --active-bg: rgba(99, 102, 241, 0.2);
-  --table-header-bg: rgba(99, 102, 241, 0.1);
-  --table-hover-bg: rgba(99, 102, 241, 0.05);
-  --scrollbar-track: #1e293b;
-  --scrollbar-thumb: #6366f1;
+  /* Cores Semânticas */
+  --positive: #00854d;
+  --positive-hover: #006b3f;
+  --positive-surface: #e8f5e9;
+  --negative: #d83a52;
+  --negative-hover: #c42844;
+  --negative-surface: #ffebee;
+  --warning: #ffcb00;
+  --warning-hover: #e6b800;
+  --warning-surface: #fff9e6;
+  
+  /* Cores de Fundo */
+  --bg: #ffffff;
+  --bg-secondary: #f5f6f8;
+  --bg-tertiary: #e9ecef;
+  
+  /* Cores de Texto */
+  --text-primary: #1a1a1a;
+  --text-secondary: #626262;
+  --text-tertiary: #999999;
+  
+  /* Cores de Borda */
+  --border-light: #e9ecef;
+  --border-medium: #d0d0d0;
+  --border-dark: #999999;
 }
 
 /* =====================================================
-   TEMA CLARO
+   TEMA ESCURO
    ===================================================== */
-[data-theme='light'] {
-  --primary: #4f46e5;
-  --primary-dark: #4338ca;
-  --primary-light: #6366f1;
-  --secondary: #7c3aed;
-  --success: #059669;
-  --danger: #dc2626;
-  --warning: #d97706;
-  --bg: #f8fafc;
-  --bg-secondary: #f1f5f9;
-  --bg-tertiary: #e2e8f0;
-  --text-primary: #1e293b;
-  --text-secondary: #475569;
-  --border: #cbd5e1;
+[data-theme='dark'] {
+  /* Cores Primárias */
+  --primary: #4a9eff;
+  --primary-hover: #2e7fd9;
+  --primary-selected: #1a5fb9;
+  --primary-surface: #1a3a5c;
   
-  /* Cores adicionais para componentes */
-  --card-bg: rgba(248, 250, 252, 0.8);
-  --card-border: rgba(79, 70, 229, 0.15);
-  --input-bg: rgba(248, 250, 252, 0.9);
-  --input-border: rgba(79, 70, 229, 0.25);
-  --sidebar-bg: linear-gradient(180deg, #f1f5f9 0%, #f8fafc 100%);
-  --sidebar-border: rgba(79, 70, 229, 0.15);
-  --hover-bg: rgba(79, 70, 229, 0.08);
-  --active-bg: rgba(79, 70, 229, 0.15);
-  --table-header-bg: rgba(79, 70, 229, 0.12);
-  --table-hover-bg: rgba(79, 70, 229, 0.06);
-  --scrollbar-track: #e2e8f0;
-  --scrollbar-thumb: #4f46e5;
+  /* Cores Semânticas */
+  --positive: #4caf50;
+  --positive-hover: #388e3c;
+  --positive-surface: #1b5e20;
+  --negative: #ff6b7a;
+  --negative-hover: #e53935;
+  --negative-surface: #5c1a1f;
+  --warning: #ffd54f;
+  --warning-hover: #ffb300;
+  --warning-surface: #4d3a1a;
+  
+  /* Cores de Fundo */
+  --bg: #1e1e1e;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #3a3a3a;
+  
+  /* Cores de Texto */
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #808080;
+  
+  /* Cores de Borda */
+  --border-light: #3a3a3a;
+  --border-medium: #4a4a4a;
+  --border-dark: #5a5a5a;
 }
 
 /* =====================================================
    APLICAR VARIÁVEIS AO BODY
    ===================================================== */
 body {
-  background: linear-gradient(135deg, var(--bg) 0%, #1a1f3a 100%);
+  background: var(--bg);
   color: var(--text-primary);
-}
-
-[data-theme='light'] body {
-  background: linear-gradient(135deg, var(--bg) 0%, #f0f4f8 100%);
 }
 
 /* =====================================================
    ATUALIZAR SCROLLBAR
    ===================================================== */
 ::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
+  background: var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
+  background: var(--border-medium);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-light);
+  background: var(--border-dark);
 }
 
 /* =====================================================
    ATUALIZAR CARD
    ===================================================== */
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-[data-theme='light'] .card {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+[data-theme='dark'] .card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .card:hover {
-  border-color: rgba(99, 102, 241, 0.3);
-  box-shadow: 0 12px 48px rgba(99, 102, 241, 0.15);
+  border-color: var(--border-medium);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
-[data-theme='light'] .card:hover {
-  border-color: rgba(79, 70, 229, 0.25);
-  box-shadow: 0 12px 48px rgba(79, 70, 229, 0.1);
+[data-theme='dark'] .card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* =====================================================
@@ -121,45 +124,62 @@ body {
 .form-group input,
 .form-group select,
 .form-group textarea {
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
+  background: var(--bg);
+  border: 1px solid var(--border-light);
   color: var(--text-primary);
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   border-color: var(--primary);
-  background: rgba(79, 70, 229, 0.08);
-}
-
-[data-theme='light'] .form-group input:focus,
-[data-theme='light'] .form-group select:focus,
-[data-theme='light'] .form-group textarea:focus {
-  background: rgba(79, 70, 229, 0.05);
+  background: var(--primary-surface);
 }
 
 /* =====================================================
    ATUALIZAR SIDEBAR
    ===================================================== */
 .sidebar {
-  background: var(--sidebar-bg);
-  border-right: 1px solid var(--sidebar-border);
+  background: var(--bg);
+  border-right: 1px solid var(--border-light);
+}
+
+[data-theme='dark'] .sidebar {
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-medium);
+}
+
+.sidebar h2 {
+  color: var(--text-primary);
+}
+
+.nav-item {
+  color: var(--text-secondary);
 }
 
 .nav-item:hover {
-  background: var(--hover-bg);
-  color: var(--primary-light);
+  background: var(--bg-secondary);
+  color: var(--primary);
+}
+
+[data-theme='dark'] .nav-item:hover {
+  background: var(--bg-tertiary);
+  color: var(--primary);
 }
 
 .nav-item.active {
-  background: var(--active-bg);
+  background: var(--primary-surface);
   border-left: 3px solid var(--primary);
+  color: var(--primary);
+}
+
+[data-theme='dark'] .nav-item.active {
+  background: var(--primary-surface);
   color: var(--primary);
 }
 
@@ -167,119 +187,129 @@ body {
    ATUALIZAR TABELAS
    ===================================================== */
 .table {
-  background: rgba(30, 41, 59, 0.3);
-  border: 1px solid var(--card-border);
+  background: var(--bg);
+  border: 1px solid var(--border-light);
 }
 
-[data-theme='light'] .table {
-  background: rgba(248, 250, 252, 0.5);
-  border: 1px solid var(--card-border);
+[data-theme='dark'] .table {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-medium);
 }
 
 .table th {
-  background: var(--table-header-bg);
-  color: var(--primary-light);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-light);
 }
 
-[data-theme='light'] .table th {
-  color: var(--primary);
+[data-theme='dark'] .table th {
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-medium);
+}
+
+.table td {
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+[data-theme='dark'] .table td {
+  border-bottom: 1px solid var(--border-medium);
 }
 
 .table tr:hover {
-  background: var(--table-hover-bg);
+  background: var(--bg-secondary);
 }
 
-.table th,
-.table td {
-  border-bottom: 1px solid var(--card-border);
+[data-theme='dark'] .table tr:hover {
+  background: var(--bg-tertiary);
 }
 
 /* =====================================================
    ATUALIZAR BADGES DE STATUS
    ===================================================== */
 .status-pending {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: var(--warning-surface);
+  color: #b89000;
+  border: 1px solid rgba(255, 203, 0, 0.3);
 }
 
-[data-theme='light'] .status-pending {
-  background: rgba(217, 119, 6, 0.12);
-  color: #b45309;
-  border: 1px solid rgba(217, 119, 6, 0.25);
+[data-theme='dark'] .status-pending {
+  background: rgba(255, 203, 0, 0.15);
+  color: var(--warning);
+  border: 1px solid rgba(255, 203, 0, 0.4);
 }
 
 .status-approved {
-  background: rgba(16, 185, 129, 0.15);
-  color: #6ee7b7;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: var(--positive-surface);
+  color: var(--positive);
+  border: 1px solid rgba(0, 133, 77, 0.3);
 }
 
-[data-theme='light'] .status-approved {
-  background: rgba(5, 150, 105, 0.12);
-  color: #047857;
-  border: 1px solid rgba(5, 150, 105, 0.25);
+[data-theme='dark'] .status-approved {
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--positive);
+  border: 1px solid rgba(76, 175, 80, 0.4);
 }
 
 .status-rejected {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: var(--negative-surface);
+  color: var(--negative);
+  border: 1px solid rgba(216, 58, 82, 0.3);
 }
 
-[data-theme='light'] .status-rejected {
-  background: rgba(220, 38, 38, 0.12);
-  color: #991b1b;
-  border: 1px solid rgba(220, 38, 38, 0.25);
+[data-theme='dark'] .status-rejected {
+  background: rgba(255, 107, 122, 0.15);
+  color: var(--negative);
+  border: 1px solid rgba(255, 107, 122, 0.4);
 }
 
 /* =====================================================
    ATUALIZAR ALERTAS
    ===================================================== */
 .alert-error {
-  background: rgba(239, 68, 68, 0.1);
-  border-left-color: #ef4444;
-  color: #fca5a5;
+  background: var(--negative-surface);
+  border-left-color: var(--negative);
+  color: var(--negative);
 }
 
-[data-theme='light'] .alert-error {
-  background: rgba(220, 38, 38, 0.1);
-  border-left-color: #dc2626;
-  color: #991b1b;
+[data-theme='dark'] .alert-error {
+  background: rgba(255, 107, 122, 0.15);
+  border-left-color: var(--negative);
+  color: var(--negative);
 }
 
 .alert-success {
-  background: rgba(16, 185, 129, 0.1);
-  border-left-color: #10b981;
-  color: #6ee7b7;
+  background: var(--positive-surface);
+  border-left-color: var(--positive);
+  color: var(--positive);
 }
 
-[data-theme='light'] .alert-success {
-  background: rgba(5, 150, 105, 0.1);
-  border-left-color: #059669;
-  color: #047857;
+[data-theme='dark'] .alert-success {
+  background: rgba(76, 175, 80, 0.15);
+  border-left-color: var(--positive);
+  color: var(--positive);
 }
 
 .alert-warning {
-  background: rgba(245, 158, 11, 0.1);
-  border-left-color: #f59e0b;
-  color: #fbbf24;
+  background: var(--warning-surface);
+  border-left-color: var(--warning);
+  color: #b89000;
 }
 
-[data-theme='light'] .alert-warning {
-  background: rgba(217, 119, 6, 0.1);
-  border-left-color: #d97706;
-  color: #b45309;
+[data-theme='dark'] .alert-warning {
+  background: rgba(255, 213, 79, 0.15);
+  border-left-color: var(--warning);
+  color: var(--warning);
 }
 
 .alert-info {
-  background: rgba(99, 102, 241, 0.1);
+  background: var(--primary-surface);
   border-left-color: var(--primary);
-  color: var(--primary-light);
+  color: var(--primary);
 }
 
-[data-theme='light'] .alert-info {
-  background: rgba(79, 70, 229, 0.1);
+[data-theme='dark'] .alert-info {
+  background: rgba(74, 158, 255, 0.15);
   border-left-color: var(--primary);
   color: var(--primary);
 }
@@ -288,42 +318,45 @@ body {
    ATUALIZAR BOTÕES
    ===================================================== */
 .btn-secondary {
-  background: rgba(99, 102, 241, 0.1);
-  color: var(--primary-light);
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
 }
 
-[data-theme='light'] .btn-secondary {
-  background: rgba(79, 70, 229, 0.1);
-  color: var(--primary);
-  border: 1px solid rgba(79, 70, 229, 0.3);
+[data-theme='dark'] .btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-dark);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: rgba(99, 102, 241, 0.2);
-  border-color: var(--primary);
+  background: var(--bg-tertiary);
+  border-color: var(--border-dark);
 }
 
-[data-theme='light'] .btn-secondary:hover:not(:disabled) {
-  background: rgba(79, 70, 229, 0.15);
-  border-color: var(--primary);
+[data-theme='dark'] .btn-secondary:hover:not(:disabled) {
+  background: #4a4a4a;
+  border-color: #6a6a6a;
 }
 
 /* =====================================================
    ATUALIZAR LINKS
    ===================================================== */
 a {
-  color: var(--primary-light);
-}
-
-[data-theme='light'] a {
   color: var(--primary);
 }
 
 a:hover {
-  color: var(--primary);
+  color: var(--primary-hover);
 }
 
-[data-theme='light'] a:hover {
-  color: var(--primary-dark);
+/* =====================================================
+   ATUALIZAR MAIN CONTENT
+   ===================================================== */
+.main-content {
+  background: var(--bg-secondary);
+}
+
+[data-theme='dark'] .main-content {
+  background: var(--bg);
 }
