@@ -1,6 +1,4 @@
 import './globals.css'
-import './theme.css'
-import { ThemeProvider } from './ThemeContext'
 
 export const metadata = {
   title: 'AprovaAí - Gerenciador de Aprovações',
@@ -10,11 +8,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
-      <body>
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
