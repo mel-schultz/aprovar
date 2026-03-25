@@ -27,6 +27,7 @@ export default function ApprovalFormModal({ approval, clients, onClose, onSaved 
     scheduled_date: approval?.scheduled_date ? approval.scheduled_date.slice(0, 16) : '',
     media_urls: (approval?.media_urls || []).join('\n'),
     notes: approval?.notes || '',
+    external_link: approval?.external_link || '',
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,6 +42,7 @@ export default function ApprovalFormModal({ approval, clients, onClose, onSaved 
       scheduled_date: form.scheduled_date || null,
       media_urls: form.media_urls.split('\n').map(u => u.trim()).filter(Boolean),
       notes: form.notes,
+      external_link: form.external_link,
       created_by: user?.id,
     }
     let error
@@ -108,6 +110,10 @@ export default function ApprovalFormModal({ approval, clients, onClose, onSaved 
                   <option value="published">Publicado</option>
                 </select>
               </div>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Link Externo (Opcional)</label>
+              <input className="form-input" placeholder="https://..." value={form.external_link} onChange={e => setForm(f => ({ ...f, external_link: e.target.value }))} />
             </div>
             <div className="form-group">
               <label className="form-label">Observações internas</label>

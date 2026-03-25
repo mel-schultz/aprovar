@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { Approval, Client } from '../types'
-import { Plus, CheckSquare, Edit2, Trash2, Send, Image } from 'lucide-react'
+import { Plus, CheckSquare, Edit2, Trash2, Send, Image, ExternalLink } from 'lucide-react'
 import toast from 'react-hot-toast'
 import ApprovalFormModal from '../components/approvals/ApprovalFormModal'
 
@@ -125,6 +125,19 @@ export default function ApprovalsPage() {
                 <p style={{ fontSize: 13, color: '#57606a', margin: 0, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                   {a.content}
                 </p>
+                {a.external_link && (
+                  <div style={{ marginTop: 8 }}>
+                    <a 
+                      href={a.external_link} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      style={{ fontSize: 12, color: '#0969da', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 500 }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <ExternalLink size={12} /> Acessar link externo
+                    </a>
+                  </div>
+                )}
                 {a.status === 'pending' && (
                   <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
                     <button className="btn btn-sm" style={{ background: '#dafbe1', border: '1px solid #82e29b', color: '#1a7f37', flex: 1 }} onClick={() => handleStatusChange(a, 'approved')}>

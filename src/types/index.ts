@@ -44,6 +44,7 @@ export interface Approval {
   status: 'draft' | 'pending' | 'approved' | 'rejected' | 'published'
   created_by: string
   notes?: string
+  external_link?: string
   created_at: string
   updated_at: string
   client?: Client
