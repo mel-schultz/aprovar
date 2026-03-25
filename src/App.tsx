@@ -13,6 +13,7 @@ import ApprovalsPage from './pages/ApprovalsPage'
 import IntegrationsPage from './pages/IntegrationsPage'
 import UsersPage from './pages/UsersPage'
 import SettingsPage from './pages/SettingsPage'
+import PublicApprovalPage from './pages/PublicApprovalPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
@@ -33,6 +34,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/auth" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
+      <Route path="/approve/:id" element={<PublicApprovalPage />} />
       <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />

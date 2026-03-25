@@ -111,10 +111,7 @@ export default function ApprovalFormModal({ approval, clients, onClose, onSaved 
                 </select>
               </div>
             </div>
-            <div className="form-group">
-              <label className="form-label">Link Externo (Opcional)</label>
-              <input className="form-input" placeholder="https://..." value={form.external_link} onChange={e => setForm(f => ({ ...f, external_link: e.target.value }))} />
-            </div>
+
             <div className="form-group">
               <label className="form-label">Observações internas</label>
               <textarea className="form-textarea" style={{ minHeight: 70 }} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
