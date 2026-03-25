@@ -57,6 +57,12 @@ export default function ApprovalsPage() {
     fetch()
   }
 
+  const handleResend = async (a: Approval) => {
+    await supabase.from('approvals').update({ status: 'pending', updated_at: new Date().toISOString() }).eq('id', a.id)
+    toast.success('Reenviado para o cliente!')
+    fetch()
+  }
+
   let filtered = approvals
   if (filterStatus) filtered = filtered.filter(a => a.status === filterStatus)
   if (filterClient) filtered = filtered.filter(a => a.client_id === filterClient)
@@ -158,6 +164,11 @@ export default function ApprovalsPage() {
                 {a.status === 'approved' && (
                   <button className="btn btn-primary btn-sm" onClick={() => handlePublish(a)}>
                     <Send size={13} /> Publicar
+                  </button>
+                )}
+                {(a.status === 'rejected' || a.status === 'approved' || a.status === 'published') && (
+                  <button className="btn btn-sm" style={{ background: '#ddf4ff', border: '1px solid #79c0ff', color: '#0969da' }} onClick={() => handleResend(a)}>
+                    <Send size={13} /> Reenviar
                   </button>
                 )}
                 <button className="btn btn-sm" style={{ background: 'none', border: '1px solid transparent', color: '#cf222e', marginLeft: 'auto' }} onClick={() => handleDelete(a.id)}>

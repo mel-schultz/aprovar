@@ -30,7 +30,7 @@ export default function ApprovalFormModal({ approval, clients, onClose, onSaved 
     external_link: approval?.external_link || '',
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, resetStatus: boolean = false) => {
     e.preventDefault()
     setLoading(true)
     const payload = {
@@ -38,7 +38,7 @@ export default function ApprovalFormModal({ approval, clients, onClose, onSaved 
       title: form.title,
       content: form.content,
       platform: form.platform,
-      status: form.status,
+      status: resetStatus ? 'pending' : form.status,
       scheduled_date: form.scheduled_date || null,
       media_urls: form.media_urls.split('\n').map(u => u.trim()).filter(Boolean),
       notes: form.notes,
@@ -53,7 +53,13 @@ export default function ApprovalFormModal({ approval, clients, onClose, onSaved 
     }
     setLoading(false)
     if (error) toast.error(error.message)
-    else { toast.success(isEdit ? 'Aprovação atualizada!' : 'Aprovação criada!'); onSaved() }
+    else { 
+      const message = isEdit ? 
+        (resetStatus ? 'Aprovação reenviada para o cliente!' : 'Aprovação atualizada!') : 
+        'Aprovação criada!'
+      toast.success(message)
+      onSaved() 
+    }
   }
 
   return (
@@ -119,7 +125,18 @@ export default function ApprovalFormModal({ approval, clients, onClose, onSaved 
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={onClose}>Cancelar</button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Salvando...' : 'Salvar'}</button>
+            {isEdit && approval?.status !== 'pending' && (
+              <button 
+                type="button" 
+                className="btn btn-primary" 
+                style={{ background: '#0969da', borderColor: '#0969da' }}
+                onClick={(e) => handleSubmit(e as any, true)}
+                disabled={loading}
+              >
+                {loading ? 'Reenviando...' : 'Salvar e Reenviar para Cliente'}
+              </button>
+            )}
+            <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Salvando...' : isEdit ? 'Atualizar' : 'Criar'}</button>
           </div>
         </form>
       </div>
